@@ -9,12 +9,14 @@ public class Process {
     private long parent;
     private String command;
     private boolean isAlive;
+    private String user;
 
-    public Process(long pid, long parent, String command, boolean isAlive) {
+    public Process(long pid, long parent, String command, boolean isAlive, String user) {
         this.pid = pid;
         this.parent = parent;
         this.command = command;
         this.isAlive = isAlive;
+        this.user = user;
     }
 
     public long getPid() {
@@ -34,6 +36,10 @@ public class Process {
         return isAlive;
     }
 
+    public String getUser() {
+        return user;
+    }
+
     public static Process[] getProcesses() {
         var handles = ProcessHandle.allProcesses().collect(Collectors.toList());
         var result = new Process[handles.size()];
@@ -43,7 +49,8 @@ public class Process {
             var parent = handle.parent().orElse(handle).pid();
             var command = handle.info().command().orElse("");
             var isAlive = handle.isAlive();
-            result[i] = new Process(pid, parent, command, isAlive);
+            var user = handle.info().user().orElse("");
+            result[i] = new Process(pid, parent, command, isAlive, user);
         }
         return result;
     }
