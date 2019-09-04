@@ -57,16 +57,16 @@ pub def getFileSize(p: Path): Int64 =
     let Path(javaPath) = p;
     native method java.io.File.length(javaPath) as Int64
 
-pub def getAccessTime(p: Path): Int64 =
-    let Path(javaFile) = p;
-    let javaPath = native method java.io.File.toPath(javaFile);
-    let fileTime = native method java.nio.file.Files.getAttribute(javaPath, "lastAccessTime", (native method java.nio.file.LinkOption.values())) as ##java.nio.file.attribute.FileTime;
-    native method java.nio.file.attribute.FileTime.toMillis(fileTime)
-
 pub def getCreationTime(p: Path): Int64 =
     let Path(javaFile) = p;
     let javaPath = native method java.io.File.toPath(javaFile);
     let fileTime = native method java.nio.file.Files.getAttribute(javaPath, "creationTime", (native method java.nio.file.LinkOption.values())) as ##java.nio.file.attribute.FileTime;
+    native method java.nio.file.attribute.FileTime.toMillis(fileTime)
+
+pub def getAccessTime(p: Path): Int64 =
+    let Path(javaFile) = p;
+    let javaPath = native method java.io.File.toPath(javaFile);
+    let fileTime = native method java.nio.file.Files.getAttribute(javaPath, "lastAccessTime", (native method java.nio.file.LinkOption.values())) as ##java.nio.file.attribute.FileTime;
     native method java.nio.file.attribute.FileTime.toMillis(fileTime)
 
 pub def getModifiedTime(p: Path): Int64 =
