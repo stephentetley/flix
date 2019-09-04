@@ -1,7 +1,7 @@
 // TODO: Should really be namespaced.
 
 pub rel Process(pid: Int64, command: Str, alive: Bool, parent: Int64, user: Str)
-pub rel File(name: Str, type: Str, size: Int64, readable: Bool, writable: Bool, executable: Bool, created: Int64, accessed: Int64, modified: Int64)
+pub rel File(name: Str, type: Str, size: Int64, readable: Bool, writable: Bool, executable: Bool, created: Int64, accessed: Int64, modified: Int64, parent: Str)
 
 pub def getProcesses(): #{ Process | _ } =
     let ps = native method flix.runtime.library.Process.getProcesses() as Array[##flix.runtime.library.Process];
@@ -51,7 +51,8 @@ pub def getFileFact(p: Path): #{File | _ } =
     let created = getCreationTime(p);
     let accessed = getAccessTime(p);
     let modified = getModifiedTime(p);
-    File(fileName, fileType, fileSize, isReadable, isWritable, isExecutable, created, accessed, modified).
+    let parent = getParentPath(p);
+    File(fileName, fileType, fileSize, isReadable, isWritable, isExecutable, created, accessed, modified, parent).
 
 pub def getFileSize(p: Path): Int64 =
     let Path(javaPath) = p;
@@ -75,4 +76,11 @@ pub def getModifiedTime(p: Path): Int64 =
     let fileTime = native method java.nio.file.Files.getAttribute(javaPath, "lastModifiedTime", (native method java.nio.file.LinkOption.values())) as ##java.nio.file.attribute.FileTime;
     native method java.nio.file.attribute.FileTime.toMillis(fileTime)
 
+pub def getParentPath(p: Path): Str =
+    let Path(javaFile) = p;
+    let parentFile = native method java.io.File.getParentFile(javaFile) as ##java.io.File;
+    native method java.io.File.getCanonicalPath(parentFile) as Str
+
 // TODO: Symlink? extension? owner?
+
+// TODO: We should not use the prefix "get".
