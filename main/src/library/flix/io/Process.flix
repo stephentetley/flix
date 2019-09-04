@@ -1,7 +1,7 @@
 // TODO: Should really be namespaced.
 
 pub rel Process(pid: Int64, command: Str, alive: Bool, parent: Int64, user: Str)
-pub rel File(name: Str, type: Str)
+pub rel File(name: Str, type: Str, readable: Bool, writable: Bool, executable: Bool, size: Int64, modified: Int64)
 
 pub def getProcesses(): #{ Process | _ } =
     let ps = native method flix.runtime.library.Process.getProcesses() as Array[##flix.runtime.library.Process];
@@ -35,9 +35,27 @@ pub def listFiles(p: Path): #{File  | _} =
     match Path.getChildren(p) with {
         case Ok(Some(fs)) =>
             let f = (acc, file) -> {
-                let name = Result.getWithDefault(Path.getName(file), "err");
-                acc <+> File(name, "file").
+                acc <+> getFileFact(file)
             };
             fs |> List.foldLeft(f, #{})
         case _ => #{}
     }
+
+pub def getFileFact(file: Path): #{File | _ } =
+    let name = Result.getWithDefault(Path.getName(file), "err");
+    let type = if (Result.getWithDefault(Path.isDirectory(file), false)) "directory" else "file";
+    let readable = Result.getWithDefault(Path.isReadable(file), false);
+    let writable = Result.getWithDefault(Path.isWritable(file), false);
+    let executable = Result.getWithDefault(Path.isExecutable(file), false);
+    let size = getFileSize(file);
+    let lastModified = getLastModified(file);
+    File(name, type, readable, writable, executable, size, lastModified).
+
+
+pub def getFileSize(p: Path): Int64 =
+    let Path(javaPath) = p;
+    native method java.io.File.length(javaPath) as Int64
+
+pub def getLastModified(p: Path): Int64 =
+    let Path(javaPath) = p;
+    native method java.io.File.lastModified(javaPath) as Int64
