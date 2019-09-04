@@ -49,15 +49,15 @@ pub def getFileFact(p: Path): #{File | _ } =
     let isWritable = Result.getWithDefault(Path.isWritable(p), false);
     let isExecutable = Result.getWithDefault(Path.isExecutable(p), false);
     let created = getCreationTime(p);
-    let accessed = getLastAccessTime(p);
-    let modified = getLastModified(p);
+    let accessed = getAccessTime(p);
+    let modified = getModifiedTime(p);
     File(fileName, fileType, fileSize, isReadable, isWritable, isExecutable, created, accessed, modified).
 
 pub def getFileSize(p: Path): Int64 =
     let Path(javaPath) = p;
     native method java.io.File.length(javaPath) as Int64
 
-pub def getLastAccessTime(p: Path): Int64 =
+pub def getAccessTime(p: Path): Int64 =
     let Path(javaFile) = p;
     let javaPath = native method java.io.File.toPath(javaFile);
     let fileTime = native method java.nio.file.Files.getAttribute(javaPath, "lastAccessTime", (native method java.nio.file.LinkOption.values())) as ##java.nio.file.attribute.FileTime;
@@ -69,7 +69,7 @@ pub def getCreationTime(p: Path): Int64 =
     let fileTime = native method java.nio.file.Files.getAttribute(javaPath, "creationTime", (native method java.nio.file.LinkOption.values())) as ##java.nio.file.attribute.FileTime;
     native method java.nio.file.attribute.FileTime.toMillis(fileTime)
 
-pub def getLastModified(p: Path): Int64 =
+pub def getModifiedTime(p: Path): Int64 =
     let Path(javaFile) = p;
     let javaPath = native method java.io.File.toPath(javaFile);
     let fileTime = native method java.nio.file.Files.getAttribute(javaPath, "lastModifiedTime", (native method java.nio.file.LinkOption.values())) as ##java.nio.file.attribute.FileTime;
