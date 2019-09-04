@@ -1,7 +1,7 @@
 // TODO: Should really be namespaced.
 
 pub rel Process(pid: Int64, command: Str, alive: Bool, parent: Int64, user: Str)
-pub rel File(name: Str, type: Str, readable: Bool, writable: Bool, executable: Bool, size: Int64, accessed: Int64, modified: Int64)
+pub rel File(name: Str, type: Str, size: Int64, readable: Bool, writable: Bool, executable: Bool, accessed: Int64, modified: Int64, created: Int64)
 
 pub def getProcesses(): #{ Process | _ } =
     let ps = native method flix.runtime.library.Process.getProcesses() as Array[##flix.runtime.library.Process];
@@ -50,7 +50,8 @@ pub def getFileFact(file: Path): #{File | _ } =
     let size = getFileSize(file);
     let lastAccess = getLastAccessTime(file);
     let lastModified = getLastModified(file);
-    File(name, type, readable, writable, executable, size, lastAccess, lastModified).
+    let creationTime = getCreationTime(file);
+    File(name, type,  size, readable, writable, executable,lastAccess, lastModified, creationTime).
 
 
 pub def getFileSize(p: Path): Int64 =
@@ -63,6 +64,14 @@ pub def getLastAccessTime(p: Path): Int64 =
     let fileTime = native method java.nio.file.Files.getAttribute(javaPath, "lastAccessTime", (native method java.nio.file.LinkOption.values())) as ##java.nio.file.attribute.FileTime;
     native method java.nio.file.attribute.FileTime.toMillis(fileTime)
 
+pub def getCreationTime(p: Path): Int64 =
+    let Path(javaFile) = p;
+    let javaPath = native method java.io.File.toPath(javaFile);
+    let fileTime = native method java.nio.file.Files.getAttribute(javaPath, "creationTime", (native method java.nio.file.LinkOption.values())) as ##java.nio.file.attribute.FileTime;
+    native method java.nio.file.attribute.FileTime.toMillis(fileTime)
+
 pub def getLastModified(p: Path): Int64 =
     let Path(javaPath) = p;
     native method java.io.File.lastModified(javaPath) as Int64
+
+// TODO: Symlink? created? extension? owner?
