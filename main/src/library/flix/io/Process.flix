@@ -1,7 +1,7 @@
 // TODO: Should really be namespaced.
 
 pub rel Process(pid: Int64, command: Str, alive: Bool, parent: Int64, user: Str)
-pub rel File(name: Str, type: Str, size: Int64, readable: Bool, writable: Bool, executable: Bool, accessed: Int64, modified: Int64, created: Int64)
+pub rel File(name: Str, type: Str, size: Int64, readable: Bool, writable: Bool, executable: Bool, created: Int64, accessed: Int64, modified: Int64)
 
 pub def getProcesses(): #{ Process | _ } =
     let ps = native method flix.runtime.library.Process.getProcesses() as Array[##flix.runtime.library.Process];
@@ -48,10 +48,10 @@ pub def getFileFact(file: Path): #{File | _ } =
     let writable = Result.getWithDefault(Path.isWritable(file), false);
     let executable = Result.getWithDefault(Path.isExecutable(file), false);
     let size = getFileSize(file);
-    let lastAccess = getLastAccessTime(file);
     let lastModified = getLastModified(file);
     let creationTime = getCreationTime(file);
-    File(name, type,  size, readable, writable, executable,lastAccess, lastModified, creationTime).
+    let lastAccess = getLastAccessTime(file);
+    File(name, type,  size, readable, writable, executable, creationTime, lastAccess, lastModified).
 
 
 pub def getFileSize(p: Path): Int64 =
