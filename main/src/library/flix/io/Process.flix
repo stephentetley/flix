@@ -41,18 +41,17 @@ pub def listFiles(p: Path): #{File  | _} =
         case _ => #{}
     }
 
-pub def getFileFact(file: Path): #{File | _ } =
-    let name = Result.getWithDefault(Path.getName(file), "err");
-    let type = if (Result.getWithDefault(Path.isDirectory(file), false)) "directory" else "file";
-    let readable = Result.getWithDefault(Path.isReadable(file), false);
-    let writable = Result.getWithDefault(Path.isWritable(file), false);
-    let executable = Result.getWithDefault(Path.isExecutable(file), false);
-    let size = getFileSize(file);
-    let lastModified = getLastModified(file);
-    let creationTime = getCreationTime(file);
-    let lastAccess = getLastAccessTime(file);
-    File(name, type,  size, readable, writable, executable, creationTime, lastAccess, lastModified).
-
+pub def getFileFact(p: Path): #{File | _ } =
+    let fileName = Result.getWithDefault(Path.getName(p), "err");
+    let fileType = if (Result.getWithDefault(Path.isFile(p), false)) "file" else "directory";
+    let fileSize = getFileSize(p);
+    let isReadable = Result.getWithDefault(Path.isReadable(p), false);
+    let isWritable = Result.getWithDefault(Path.isWritable(p), false);
+    let isExecutable = Result.getWithDefault(Path.isExecutable(p), false);
+    let created = getCreationTime(p);
+    let accessed = getLastAccessTime(p);
+    let modified = getLastModified(p);
+    File(fileName, fileType, fileSize, isReadable, isWritable, isExecutable, created, accessed, modified).
 
 pub def getFileSize(p: Path): Int64 =
     let Path(javaPath) = p;
@@ -71,7 +70,9 @@ pub def getCreationTime(p: Path): Int64 =
     native method java.nio.file.attribute.FileTime.toMillis(fileTime)
 
 pub def getLastModified(p: Path): Int64 =
-    let Path(javaPath) = p;
-    native method java.io.File.lastModified(javaPath) as Int64
+    let Path(javaFile) = p;
+    let javaPath = native method java.io.File.toPath(javaFile);
+    let fileTime = native method java.nio.file.Files.getAttribute(javaPath, "lastModifiedTime", (native method java.nio.file.LinkOption.values())) as ##java.nio.file.attribute.FileTime;
+    native method java.nio.file.attribute.FileTime.toMillis(fileTime)
 
-// TODO: Symlink? created? extension? owner?
+// TODO: Symlink? extension? owner?
