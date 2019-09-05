@@ -84,3 +84,5 @@ pub def getParentPath(p: Path): Str =
 // TODO: Symlink? extension? owner?
 
 // TODO: We should not use the prefix "get".
+
+// TODO:Find a folder with two files that have inconsistent permissions?
