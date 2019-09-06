@@ -90,3 +90,5 @@ pub def getCanonicalPath(p: Path): Str =
     native method java.io.File.getCanonicalPath(javaFile) as Str
 
 // TODO: We should not use the prefix "get".
+
+// TODO:Find a folder with two files that have inconsistent permissions?
