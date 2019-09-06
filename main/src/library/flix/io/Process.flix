@@ -113,3 +113,8 @@ pub def getCanonicalPath(p: Path): Str =
 // TODO: We should not use the prefix "get".
 
 // TODO:Find a folder with two files that have inconsistent permissions?
+
+// TODO: Social network graph
+
+// TODO: Inheritance?
+
