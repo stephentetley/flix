@@ -1,6 +1,6 @@
 // TODO: Should really be namespaced.
 
-pub rel Process(pid: Int64, alive: Bool, cpu: Int64, user: Str, command: Str, parent: Int64)
+pub rel Process(pid: Int64, alive: Bool, cpu: Int64, user: Str, command: Str, parent: Int64, created: Int64)
 pub rel File(name: Str, type: Str, size: Int64, readable: Bool, writable: Bool, executable: Bool, created: Int64, accessed: Int64, modified: Int64, parent: Str)
 
 pub def getProcesses(): #{ Process | _ } =
@@ -13,7 +13,8 @@ pub def getProcesses(): #{ Process | _ } =
         let alive = isAlive(p);
         let user = getUser(p);
         let cpu = getCpu(p);
-        acc <+> Process(pid, alive, cpu, user, command, parent).
+        let created = getCreated(p);
+        acc <+> Process(pid, alive, cpu, user, command, parent, created).
     };
     xs |> List.foldLeft(f, #{})
 
@@ -22,6 +23,9 @@ def getPid(p: ##flix.runtime.library.Process): Int64 =
 
 def getCpu(p: ##flix.runtime.library.Process): Int64 =
     native method flix.runtime.library.Process.getCpu(p) as Int64
+
+def getCreated(p: ##flix.runtime.library.Process): Int64 =
+    native method flix.runtime.library.Process.getCreated(p) as Int64
 
 def getParent(p: ##flix.runtime.library.Process): Int64 =
     native method flix.runtime.library.Process.getParent(p) as Int64

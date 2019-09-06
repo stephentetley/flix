@@ -10,20 +10,18 @@ public class Process {
     private long pid;
     private long parent;
     private String command;
-    private String[] arguments;
     private boolean isAlive;
     private String user;
-    private long start;
+    private long created;
     private long cpu;
 
-    public Process(long pid, long parent, String command, boolean isAlive, String user, String arguments[], long start, long cpu) {
+    public Process(long pid, long parent, String command, boolean isAlive, String user, long created, long cpu) {
         this.pid = pid;
         this.parent = parent;
         this.command = command;
-        this.arguments = arguments;
         this.isAlive = isAlive;
         this.user = user;
-        this.start = start;
+        this.created = created;
         this.cpu = cpu;
     }
 
@@ -48,12 +46,8 @@ public class Process {
         return user;
     }
 
-    public String[] getArguments() {
-        return arguments;
-    }
-
-    public long getStart() {
-        return start;
+    public long getCreated() {
+        return created;
     }
 
     public long getCpu() {
@@ -68,12 +62,12 @@ public class Process {
             var pid = handle.pid();
             var parent = handle.parent().orElse(handle).pid();
             var command = handle.info().command().orElse("");
-            var arguments = handle.info().arguments().orElse(new String[0]);
+            var args = handle.info().arguments().orElse(new String[0]);
             var isAlive = handle.isAlive();
             var user = handle.info().user().orElse("");
             var start = handle.info().startInstant().orElse(Instant.now()).toEpochMilli();
             var cpu = handle.info().totalCpuDuration().orElse(Duration.ZERO).toNanos();
-            result[i] = new Process(pid, parent, command, isAlive, user, arguments, start, cpu);
+            result[i] = new Process(pid, parent, command, isAlive, user, start, cpu);
         }
         return result;
     }
