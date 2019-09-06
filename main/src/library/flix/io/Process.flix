@@ -81,6 +81,12 @@ pub def getParentPath(p: Path): Str =
     let parentFile = native method java.io.File.getParentFile(javaFile) as ##java.io.File;
     native method java.io.File.getCanonicalPath(parentFile) as Str
 
-// TODO: Symlink? extension? owner?
+pub def getAbsolutePath(p: Path): Str =
+    let Path(javaFile) = p;
+    native method java.io.File.getAbsolutePath(javaFile) as Str
+
+pub def getCanonicalPath(p: Path): Str =
+    let Path(javaFile) = p;
+    native method java.io.File.getCanonicalPath(javaFile) as Str
 
 // TODO: We should not use the prefix "get".
