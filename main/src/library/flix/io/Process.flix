@@ -3,6 +3,19 @@
 pub rel Process(pid: Int64, alive: Bool, cpu: Int64, user: Str, command: Str, parent: Int64, created: Int64)
 pub rel File(name: Str, type: Str, size: Int64, readable: Bool, writable: Bool, executable: Bool, created: Int64, accessed: Int64, modified: Int64, parent: Str)
 
+pub rel GitCommit(hash: Str, committer: Str, date: Str, message: Str)
+pub rel GitParent(hash: Str, parent: Str)
+
+
+pub def getGitGraph(): #{ GitCommit, GitParent | _ } = #{
+    GitCommit("70f13baea1f06a3dc7c54b960af5fb93a075cd2d", "Magnus Madsen", "Fri Sep 6 20:17:40 2019 +0200", "WIP.").
+    GitCommit("6aed8820ce1bc08c88d17ce99d4a45d17038bf66", "Magnus Madsen", "Fri Sep 6 20:09:42 2019 +0200", "WIP.").
+    GitCommit("31b5859b4b514b2814c06242ca27b88707e31e59", "Magnus Madsen", "Fri Sep 6 20:09:42 2019 +0200", "Merge remote-tracking branch .").
+
+    GitParent("31b5859b4b514b2814c06242ca27b88707e31e59", "70f13baea1f06a3dc7c54b960af5fb93a075cd2d").
+    GitParent("31b5859b4b514b2814c06242ca27b88707e31e59", "6aed8820ce1bc08c88d17ce99d4a45d17038bf66").
+}
+
 pub def getProcesses(): #{ Process | _ } =
     let ps = native method flix.runtime.library.Process.getProcesses() as Array[##flix.runtime.library.Process];
     let xs = Array.toList(ps);
