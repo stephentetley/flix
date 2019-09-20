@@ -1082,7 +1082,8 @@ object Namer extends Phase[WeededAst.Program, NamedAst.Root] {
       * Inner visitor.
       */
     def visit(tpe0: WeededAst.Type, env0: Map[String, Type.Var]): Validation[NamedAst.Type, NameError] = tpe0 match {
-      case WeededAst.Type.Unit(loc) => NamedAst.Type.Unit(loc).toSuccess
+
+      case WeededAst.Type.Wild(loc) => NamedAst.Type.Wild(loc).toSuccess
 
       case WeededAst.Type.Var(ident, loc) => env0.get(ident.name) match {
         case None => NameError.UndefinedTypeVar(ident.name, loc).toFailure
@@ -1097,6 +1098,8 @@ object Namer extends Phase[WeededAst.Program, NamedAst.Root] {
           }
         else
           NamedAst.Type.Ambiguous(qname, loc).toSuccess
+
+      case WeededAst.Type.Unit(loc) => NamedAst.Type.Unit(loc).toSuccess
 
       case WeededAst.Type.Tuple(elms, loc) =>
         mapN(traverse(elms)(visitType(_, env0))) {
@@ -1271,6 +1274,7 @@ object Namer extends Phase[WeededAst.Program, NamedAst.Root] {
     * Returns the free variables in the given type `tpe`.
     */
   private def freeVars(tpe: WeededAst.Type): List[Name.Ident] = tpe match {
+    case WeededAst.Type.Wild(loc) => Nil
     case WeededAst.Type.Var(ident, loc) => ident :: Nil
     case WeededAst.Type.Ambiguous(qname, loc) => Nil
     case WeededAst.Type.Unit(loc) => Nil

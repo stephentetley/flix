@@ -278,6 +278,8 @@ object NamedAst {
 
   object Type {
 
+    case class Wild(loc: SourceLocation) extends NamedAst.Type
+
     case class Var(tpe: ast.Type.Var, loc: SourceLocation) extends NamedAst.Type
 
     case class Ambiguous(name: Name.QName, loc: SourceLocation) extends NamedAst.Type

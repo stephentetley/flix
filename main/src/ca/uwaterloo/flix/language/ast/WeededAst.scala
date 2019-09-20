@@ -272,6 +272,8 @@ object WeededAst {
 
   object Type {
 
+    case class Wild(loc: SourceLocation) extends WeededAst.Type
+
     case class Var(qname: Name.Ident, loc: SourceLocation) extends WeededAst.Type
 
     case class Ambiguous(qname: Name.QName, loc: SourceLocation) extends WeededAst.Type

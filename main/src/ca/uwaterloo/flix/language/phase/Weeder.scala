@@ -1456,7 +1456,11 @@ object Weeder extends Phase[ParsedAst.Program, WeededAst.Program] {
   private def visitType(tpe: ParsedAst.Type): WeededAst.Type = tpe match {
     case ParsedAst.Type.Unit(sp1, sp2) => WeededAst.Type.Unit(mkSL(sp1, sp2))
 
-    case ParsedAst.Type.Var(sp1, ident, sp2) => WeededAst.Type.Var(ident, mkSL(sp1, sp2))
+    case ParsedAst.Type.Var(sp1, ident, sp2) =>
+      if (ident.name == "_")
+        WeededAst.Type.Wild(mkSL(sp1, sp2))
+      else
+        WeededAst.Type.Var(ident, mkSL(sp1, sp2))
 
     case ParsedAst.Type.Ambiguous(sp1, qname, sp2) => WeededAst.Type.Ambiguous(qname, mkSL(sp1, sp2))
 
