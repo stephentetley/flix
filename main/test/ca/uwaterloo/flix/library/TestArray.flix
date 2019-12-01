@@ -118,3 +118,63 @@ def flatten01(): Bool =
     let a: Array[Array[Int32]] = [];
     let b = Array.flatten(a);
     Array.toList(b) `assertEq!` Nil
+
+@test
+def flatten02(): Bool =
+    let a: Array[Array[Int32]] = [[1], [2,3], [4]];
+    let b = Array.flatten(a);
+    Array.toList(b) `assertEq!` 1 :: 2 :: 3 :: 4 :: Nil
+
+@test
+def flatten03(): Bool =
+    let a: Array[Array[Int32]] = [[], [1], [2,3], []];
+    let b = Array.flatten(a);
+    Array.toList(b) `assertEq!` 1 :: 2 :: 3 :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// toString                                                                //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def toString01(): Bool =
+    let a: Array[Char] = [];
+    Array.toString(a) `assertEq!` ""
+
+@test
+def toString02(): Bool =
+    let a: Array[Char] = ['H', 'e', 'l', 'l', 'o'];
+    Array.toString(a) `assertEq!` "Hello"
+
+@test
+def toString03(): Bool =
+    let a: Array[Char] = ['→', '1', '→', '2', '→'];
+    Array.toString(a) `assertEq!` "→1→2→"
+
+/////////////////////////////////////////////////////////////////////////////
+// map                                                                     //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def map01(): Bool =
+    let a: Array[Int32] = Array.map(x -> x+1, []);
+    Array.toList(a) `assertEq!` Nil
+
+@test
+def map02(): Bool =
+    let a: Array[Int32] = Array.map(x -> x+1, [0,1,2,3]);
+    Array.toList(a) `assertEq!` 1 :: 2 :: 3 :: 4 :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// map2                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def map201(): Bool =
+    let a:Array[Int32] = [];
+    let b:Array[Int32] = [];
+    let c = Array.map2((x,y) -> x+y, a, b);
+    Array.toList(c) `assertEq!` Nil
+
+@test
+def map202(): Bool =
+    let a = [1,2,3,4,5,6];
+    let b = [1,2,3,4,5];
+    let c = Array.map2((x,y) -> x+y, a, b);
+    Array.toList(c) `assertEq!` 2 :: 4 :: 6 :: 8 :: 10 :: Nil
