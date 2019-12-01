@@ -49,6 +49,9 @@ def testLength02(): Bool = Array.length([1]) == 1
 @test
 def testLength03(): Bool = Array.length([1, 2, 3]) == 3
 
+/////////////////////////////////////////////////////////////////////////////
+// slice                                                                   //
+/////////////////////////////////////////////////////////////////////////////
 @test
 def testSlice01(): Bool = Array.slice([1, 2, 3], 0, 1)[0] == 1
 
@@ -58,6 +61,9 @@ def testSlice02(): Bool = Array.slice([1, 2, 3], 1, 2)[0] == 2
 @test
 def testSlice03(): Bool = Array.slice([1, 2, 3], 2, 3)[0] == 3
 
+/////////////////////////////////////////////////////////////////////////////
+// toList                                                                  //
+/////////////////////////////////////////////////////////////////////////////
 @test
 def testToList01(): Bool = Array.toList([]) == Nil
 
@@ -66,3 +72,49 @@ def testToList02(): Bool = Array.toList([1]) == 1 :: Nil
 
 @test
 def testToList03(): Bool = Array.toList([1, 2]) == 1 :: 2 :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// init                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def testInit01(): Bool =
+    let a = Array.init(x -> x + 1, 0);
+    Array.toList(a) `assertEq!` Nil
+
+@test
+def testInit02(): Bool =
+    let a = Array.init(x -> x + 1, 2);
+    Array.toList(a) `assertEq!` 1 :: 2 :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// append                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def append01(): Bool =
+    let a = [1,2,3,4,5];
+    let b = [6,7,8];
+    let c = Array.append(a,b);
+    Array.toList(c) `assertEq!` 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: Nil
+
+@test
+def append02(): Bool =
+    let a = [1,2,3,4,5];
+    let b: Array[Int32] = [];
+    let c = Array.append(a,b);
+    Array.toList(c) `assertEq!` 1 :: 2 :: 3 :: 4 :: 5 :: Nil
+
+@test
+def append03(): Bool =
+    let a: Array[Int32] = [];
+    let b = [1,2,3,4,5];
+    let c = Array.append(a,b);
+    Array.toList(c) `assertEq!` 1 :: 2 :: 3 :: 4 :: 5 :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// flatten                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def flatten01(): Bool =
+    let a: Array[Array[Int32]] = [];
+    let b = Array.flatten(a);
+    Array.toList(b) `assertEq!` Nil
