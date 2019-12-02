@@ -60,6 +60,7 @@ task testAll(dependsOn: ['testClasses'], type: JavaExec) {
     main = 'org.scalatest.tools.Runner'
     args = ['-s', 'ca.uwaterloo.flix.TestAll', '-o']
     classpath = sourceSets.test.runtimeClasspath
+    standardInput = System.in
 }
 
 test.dependsOn testAll
