@@ -200,7 +200,8 @@ namespace String {
     /// If `n` extends past the end of string `s`, return all the characters
     /// of `s`.
     ///
-    pub def takeLeft(n: Int, s: Str) : Str = slice(0, n, s)
+    pub def takeLeft(n: Int, s: Str) : Str =
+        if (n >= length(s)) s else slice(0, n, s)
 
     ///
     /// Take the last `n` characters of string `s` from the right.
@@ -210,7 +211,8 @@ namespace String {
     ///
     pub def takeRight(n: Int, s: Str) : Str =
         let len = length(s);
-        slice(len - n, len, s)
+        if (n >= len) s else slice(len - n, len, s)
+
 
     ///
     /// Alias for `dropLeft`.
@@ -461,12 +463,8 @@ namespace String {
     pub def padRight(w: Int, c: Char, s: Str): Str =
         let x = length(s);
         if (x < w)
-            s + repeat(w- x, Char.toString(c))
+            s + repeat(w - x, Char.toString(c))
         else s
-
-
-    // pub def replace(oldChar: Char, newChar: Char, s: Str): Str =
-    //     native method java.lang.String.replace(s: Str, oldChar: Char, newChar: Char) as Str
 
     ///
     /// Returns `s` with every match of the regular expression `patt` replaced by the string `rep`.

@@ -166,3 +166,44 @@ def init03(): Bool =
     String.length(String.init(_ -> '*', 50)) `assertEq!` 50
 
 
+/////////////////////////////////////////////////////////////////////////////
+// take                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def take01(): Bool = String.take(-1, "") `assertEq!` ""
+
+@test
+def take02(): Bool = String.take(0, "") `assertEq!` ""
+
+@test
+def take03(): Bool = String.take(1, "") `assertEq!` ""
+
+@test
+def take04(): Bool = String.take(-1, "1") `assertEq!` ""
+
+@test
+def take05(): Bool = String.take(0, "1") `assertEq!` ""
+
+@test
+def take06(): Bool = String.take(1, "1") `assertEq!` "1"
+
+@test
+def take07(): Bool = String.take(2, "1") `assertEq!` "1"
+
+@test
+def take08(): Bool = String.take(0, "12") `assertEq!` ""
+
+@test
+def take09(): Bool = String.take(1, "12") `assertEq!` "1"
+
+@test
+def take10(): Bool = String.take(2, "12") `assertEq!` "12"
+
+@test
+def take11(): Bool = String.take(2, "123456") `assertEq!` "12"
+
+@test
+def take12(): Bool = String.take(4, "123456") `assertEq!` "1234"
+
+@test
+def take13(): Bool = String.take(10, "123456") `assertEq!` "123456"
