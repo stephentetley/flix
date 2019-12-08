@@ -52,10 +52,6 @@ sourceSets {
     }
 }
 
-run {
-    standardInput = System.in
-}
-
 task testAll(dependsOn: ['testClasses'], type: JavaExec) {
     main = 'org.scalatest.tools.Runner'
     args = ['-s', 'ca.uwaterloo.flix.TestAll', '-o']
