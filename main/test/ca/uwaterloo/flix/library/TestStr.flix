@@ -150,4 +150,19 @@ def toList02(): Bool = assertEq!(String.toList("ABC"), 'A' :: 'B' :: 'C' :: Nil)
 @test
 def toList03(): Bool = assertEq!(String.toList("1 2 3"), '1' :: ' ' :: '2' :: ' ' :: '3' :: Nil)
 
+/////////////////////////////////////////////////////////////////////////////
+// init                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def init01(): Bool =
+    String.init(_ -> 'A', 0) `assertEq!` ""
+
+@test
+def init02(): Bool =
+    String.init(_ -> 'A', 2) `assertEq!` "AA"
+
+@test
+def init03(): Bool =
+    String.length(String.init(_ -> '*', 50)) `assertEq!` 50
+
 

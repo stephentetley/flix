@@ -86,19 +86,19 @@ namespace String {
         else {
             let c = f(0);
             let a = Array.new(c, len);
-            initHelper(a, f, 1);
+            initHelper(a, f, len, 1);
             Array.toString(a)
         }
 
     ///
     /// Helper function for `init`.
     ///
-    def initHelper(a: Array[Char], f: Int32 -> Char, i: Int32): Unit =
-        if (i >= Array.length(a) || i > 10)
+    def initHelper(a: Array[Char], f: Int32 -> Char, len: Int32, i: Int32): Unit =
+        if (i >= len)
             ()
         else {
             a[i] = f(i);
-            initHelper(a, f, i+1)
+            initHelper(a, f, len, i+1)
         }
 
 
@@ -152,6 +152,44 @@ namespace String {
     }
 
     ///
+    /// Optionally returns the position of the first element in `x` satisfying `f`.
+    ///
+    /// If nothing satisfies `f` return None.
+    ///
+    pub def findIndexOfLeft(f: a -> Bool, s: Str): Option[Int] =
+        let i = findIndexOfLeftHelper(f, s, length(s), 0);
+        if (i < 0) None else Some(i)
+
+    ///
+    /// Helper function for `findIndexOf`.
+    ///
+    def findIndexOfLeftHelper(f: a -> Bool, s:Str, len: Int32, i: Int32): Int32 =
+        if (i >= len)
+            -1
+        else
+            if (f(charAt(i, s))) i else findIndexOfLeftHelper(f, s, len, i+1)
+
+
+    ///
+    /// Optionally return the position of the first character in `s` satisfying `f`, reading right to left.
+    ///
+    /// If nothing satisfies `f` return None.
+    ///
+    pub def findIndexOfRight(f: a -> Bool, s: Str): Option[Int] =
+        let end = length(s) - 1;
+        let i = findIndexOfRightHelper(f, s, end);
+        if (i < 0) None else Some(i)
+
+    ///
+    /// Helper function for `findIndexOf`.
+    ///
+    def findIndexOfRightHelper(f: a -> Bool, s:Str, i: Int32): Int32 =
+        if (i < 0)
+            -1
+        else
+            if (f(charAt(i, s))) i else findIndexOfRightHelper(f, s, i-1)
+
+    ///
     /// Alias for `takeLeft`.
     ///
     pub def take(n: Int, s: Str) : Str = takeLeft(n, s)
@@ -198,29 +236,54 @@ namespace String {
         slice(0, len - n, s)
 
     ///
+    /// Alias for `takeWileLeft`.
+    ///
+    pub def takeWhile(f: Char -> Bool, s: Str): Str = takeWhileLeft(f, s)
+
+
+    ///
     /// Returns the initial prefix of string `s` where all the chars satisfy
     /// the predicate `f`.
     ///
-    pub def takeWhile(f: Char -> Bool, s: Str): Str =
-        takeWhileHelper(f, s) |> List.toString
+    pub def takeWhileLeft(f: Char -> Bool, s: Str): Str =
+        match findIndexOfLeft(x ->!(f(x)), s) {
+            case None => s
+            case Some(i) => take(i, s)
+        }
+    ///
+    /// Returns the suffix of string `s` where all the characters satisfy
+    /// the predicate `f`.
+    ///
+    pub def takeWhileRight(f: Char -> Bool, s: Str): Str =
+        match findIndexOfRight(x ->!(f(x)), s) {
+            case None => s
+            case Some(i) => takeRight(i, s)
+        }
 
     ///
-    /// Helper function for `takeWhile` because we seem to need an intermediate list...
+    /// Alias for `dropWileLeft`.
     ///
-    def takeWhileHelper(f: Char -> Bool, s: Str): List[Char] = match viewl(s) {
-        case None => Nil
-        case Some(c, s1) => if (f(c)) (c :: takeWhileHelper(f, s1)) else Nil
-    }
+    pub def dropWhile(f: Char -> Bool, s: Str): Str = dropWhileLeft(f, s)
 
     ///
     /// Returns the tail of string `s` after dropping all the initial chars
     /// that satisfy the predicate `f`.
     ///
-    pub def dropWhile(f: Char -> Bool, s: Str): Str = match viewl(s) {
-        case None => ""
-        case Some(c, s1) => if (f(c)) dropWhile(f, s1) else s
-    }
+    pub def dropWhileLeft(f: Char -> Bool, s: Str): Str =
+        match findIndexOfLeft(x -> !(f(x)), s) {
+            case None => ""
+            case Some(i) => drop(i, s)
+        }
 
+    ///
+    /// Returns the front of string `s` after dropping all the characters
+    /// from the right end that satisfy the predicate `f`.
+    ///
+    pub def dropWhileRight(f: Char -> Bool, s: Str): Str =
+        match findIndexOfRight(x -> !(f(x)), s) {
+            case None => ""
+            case Some(i) => slice(0, i+1, s)
+        }
 
     ///
     /// Split the string `s` at the position `n` returning the left and
@@ -233,70 +296,80 @@ namespace String {
         (take(n,s), drop(n,s))
 
     ///
-    /// Deconstruct the string `s` from the left returning the first char and the rest of the string.
-    ///
-    /// Return None if `s` is empty.
-    ///
-    pub def viewl(s: Str): Option[(Char, Str)] =
-        if (length(s) == 0)
-            None
-        else
-            Some(charAt(0, s), drop(1,s))
-
-    ///
-    /// Deconstruct the string `s` from the right returning the first char and the rest of the string.
-    ///
-    /// Return None if `s` is empty.
-    ///
-    pub def viewr(s: Str): Option[(Str, Char)] = match length(s) {
-        case x if x > 1  => Some(take(x-1, s), charAt(x-1, s))
-        case x if x == 1 => Some("", charAt(0, s))
-        case x if x < 1  => None
-    }
-
-    ///
     /// Applies `f` to a start value `x` and all elements in `s` going from left to right.
     ///
-    pub def foldLeft(f: (b, Char) -> b, x: b, s: Str) : b = match viewl(s) {
-        case None => x
-        case Some(c,s1) =>
-            let acc = f(x, c);
-            foldLeft(f, acc, s1)
-    }
+    pub def foldLeft(f: (b, Char) -> b, x: b, s: Str) : b =
+        let len = length(s);
+        foldLeftHelper(f, x, len, s, 0)
+
+    ///
+    /// Helper function for `foldLeft`.
+    ///
+    def foldLeftHelper(f: (b, Char) -> b, x: b, len: Int32, s: Str, i: Int32) : b =
+        if (i >= len)
+            x
+        else {
+            let x1 = f(x, charAt(i, s));
+            foldLeftHelper(f, x1, len, s, i+1)
+        }
 
     ///
     /// Accumulates the result of applying `f` pairwise to the elements of `s` and `t`
     /// starting with the initial value `x` and going from left to right.
     ///
     pub def foldLeft2(f: (b, Char, Char) -> b, x: b, s: Str, t: Str) : b =
-        match (viewl(s), viewl(t)) {
-            case (Some(a,s1), Some(b,t1)) =>
-                let acc = f(x, a, b);
-                foldLeft2(f, acc, s1, t1)
-            case (_, _) => x
+        let len = Int32.min(length(s), length(t));
+        foldLeft2Helper(f, x, len, s, t, 0)
+
+
+    ///
+    /// Helper function for `foldLeft2`.
+    ///
+    def foldLeft2Helper(f: (b, Char, Char) -> b, x: b, len: Int32, s: Str, t: Str, i: Int32) : b =
+        if (i >= len)
+            x
+        else {
+            let x1 = f(x, charAt(i, s), charAt(i, t));
+            foldLeft2Helper(f, x1, len, s, t, i+1)
         }
 
 
     ///
     /// Applies `f` to a start value `x and all elements in `s` going from right to left.
     ///
-    pub def foldRight(f: (Char, b) -> b, x: b, s: Str) : b = match viewr(s) {
-        case None => x
-        case Some(s1,c) =>
-            let acc = f(c, x);
-            foldRight(f, acc, s1)
-    }
+    pub def foldRight(f: (Char, b) -> b, x: b, s: Str) : b =
+        let end = length(s) - 1;
+        foldRightHelper(f, x, s, end)
+
+    ///
+    /// Helper function for `foldRight`.
+    ///
+    def foldRightHelper(f: (Char, b) -> b, x: b, s: Str, i: Int32) : b =
+        if (i < 0)
+            x
+        else {
+            let x1 = f(charAt(i, s), x);
+            foldRightHelper(f, x1, s, i-1)
+        }
 
     ///
     /// Accumulates the result of applying `f` pairwise to the elements of `s` and `t`
     /// starting with the initial value `x` and going from right to left.
     ///
     pub def foldRight2(f: (Char, Char, b) -> b, x: b, s: Str, t: Str) : b =
-        match (viewr(s), viewr(t)) {
-            case (Some(s1, a), Some(t1, b)) =>
-                let acc = f(a, b, x);
-                foldRight2(f, acc, s1, t1)
-            case (_, _) => x
+        let sn = length(s) - 1;
+        let tn = length(t) - 1;
+        foldRight2Helper(f, x, s, t, sn, tn)
+
+    ///
+    /// Helper function for `foldRight2`.
+    ///
+    def foldRight2Helper(f: (Char, Char, b) -> b, x: b, s: Str, t: Str, i: Int32, j: Int32) : b =
+        if (i < 0 || j < 0 )
+            x
+        else {
+            let x1 = f(charAt(i, s), charAt(j, t), x);
+            foldRight2Helper(f, x1, s, t, i-1, j-1)
         }
 
     ///
@@ -320,9 +393,9 @@ namespace String {
     ///
     /// Returns `false` if `a` is empty.
     ///
-    pub def exists(f: Char -> Bool, s: Str): Bool = match viewl(s) {
+    pub def exists(f: Char -> Bool, s: Str): Bool = match findIndexOfLeft(f, s) {
         case None => false
-        case Some(c, s1) => if (f(c)) true else exists(f, s1)
+        case Some(_) => true
     }
 
     ///
@@ -330,9 +403,9 @@ namespace String {
     ///
     /// Returns `true` if `s` is empty.
     ///
-    pub def forall(f: Char -> Bool, s: Str): Bool = match viewl(s) {
+    pub def forall(f: Char -> Bool, s: Str): Bool = match findIndexOfLeft(x -> !(f(x)), s) {
         case None => true
-        case Some(c, s1) => if (!f(c)) false else forall(f, s1)
+        case Some(_) => false
     }
 
     ///
@@ -348,24 +421,18 @@ namespace String {
     ///
     /// Returns `true` if `s` is empty.
     ///
-    pub def isBlank(s: Str): Bool =
+    pub def isWhiteSpace(s: Str): Bool =
         forall(Char.isWhiteSpace, s)
 
     ///
     /// Returns string `s` with all leading space characters removed.
     ///
-    pub def trimLeft(s: Str): Str = match viewl(s) {
-        case None => ""
-        case Some(c, s1) => if (!(Char.isWhiteSpace(c))) s else trimLeft(s1)
-    }
+    pub def trimLeft(s: Str): Str = dropWhileLeft(Char.isWhiteSpace, s)
 
     ///
     /// Returns string `s` with all trailing space characters removed.
     ///
-    pub def trimRight(s: Str): Str = match viewr(s) {
-        case None => ""
-        case Some(s1, c) => if (!(Char.isWhiteSpace(c))) s else trimRight(s1)
-    }
+    pub def trimRight(s: Str): Str = dropWhileRight(Char.isWhiteSpace, s)
 
     ///
     /// Returns a string with the string `s` repeated `n` times.
