@@ -1711,4 +1711,17 @@ def toMap03(): Bool = assert!(List.toMap((1, true) :: (2, false) :: Nil) == Map#
 @test
 def toMap04(): Bool = assert!(List.toMap((1, true) :: (1, false) :: Nil) == Map#{1 -> true})
 
+/////////////////////////////////////////////////////////////////////////////
+// toArray                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def toArray01(): Bool = Array.length(List.toArray(Nil)) `assertEq!` 0
+
+@test
+def toArray02(): Bool = Array.length(List.toArray(1 :: Nil)) `assertEq!` 1
+
+@test
+def toArray03(): Bool = Array.length(List.toArray(1 :: 1 :: 1 :: Nil)) `assertEq!` 3
+
+
 }

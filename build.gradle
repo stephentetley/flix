@@ -32,6 +32,7 @@ dependencies {
     compile files('lib/shapeless-2.3.3.jar')
 }
 
+
 tasks.withType(ScalaCompile) {
     scalaCompileOptions.additionalParameters = [
             "-language:postfixOps", "-Xfatal-warnings"
