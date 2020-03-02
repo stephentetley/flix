@@ -103,33 +103,7 @@ namespace String {
     /// Returns the given string `s` as an array of characters.
     ///
     pub def toArray(s: String): Array[Char] & Impure =
-        arrayInit(i -> charAt(i, s), length(s))
-
-    ///
-    /// Build an array of length `len` by applying `f` to the successive indices.
-    ///
-    /// Candidate for stdlib Array
-    ///
-    def arrayInit(f: Int32 -> a, len: Int32): Array[a] & Impure =
-        if (len <= 0)
-            []
-        else {
-            let x = f(0);
-            let a = Array.new(x, len);
-            arrayInitHelper(a, f, len, 1);
-            a
-        }
-
-    ///
-    /// Helper function for `arrayInit`.
-    ///
-    def arrayInitHelper(a: Array[a], f: i -> a, len: Int32, i: Int32): Unit & Impure =
-        if (i >= len)
-            ()
-        else {
-            a[i] = f(i);
-            arrayInitHelper(a, f, len, i+1)
-        }
+        Array.init(i -> charAt(i, s), length(s))
 
     ///
     /// Build a string of length `len` by applying `f` to the successive indices.

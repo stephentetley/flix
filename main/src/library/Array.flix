@@ -63,6 +63,31 @@ namespace Array {
         else
             a[i] :: toListHelper(a, i + 1)
 
+
+    ///
+    /// Build an array of length `len` by applying `f` to the successive indices.
+    ///
+    pub def init(f: Int32 -> a & e, len: Int32): Array[a] & Impure =
+        if (len <= 0)
+            []
+        else {
+            let x = f(0);
+            let a = new(x, len);
+            initHelper(a, f, len, 1);
+            a
+        }
+
+    ///
+    /// Helper function for `init`.
+    ///
+    def initHelper(a: Array[a], f: i -> a & e, len: Int32, i: Int32): Unit & Impure =
+        if (i >= len)
+            ()
+        else {
+            a[i] = f(i);
+            initHelper(a, f, len, i+1)
+        }
+
     ///
     /// Applies `f` to a start value `s` and all elements in `a` going from left to right.
     ///
