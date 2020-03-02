@@ -102,7 +102,7 @@ namespace String {
     ///
     /// Returns the given string `s` as an array of characters.
     ///
-    pub def toArray(s: String): Array[Char] =
+    pub def toArray(s: String): Array[Char] & Impure =
         arrayInit(i -> charAt(i, s), length(s))
 
     ///
@@ -110,7 +110,7 @@ namespace String {
     ///
     /// Candidate for stdlib Array
     ///
-    def arrayInit(f: Int32 -> a, len: Int32): Array[a] =
+    def arrayInit(f: Int32 -> a, len: Int32): Array[a] & Impure =
         if (len <= 0)
             []
         else {
@@ -123,7 +123,7 @@ namespace String {
     ///
     /// Helper function for `arrayInit`.
     ///
-    def arrayInitHelper(a: Array[a], f: i -> a, len: Int32, i: Int32): Unit =
+    def arrayInitHelper(a: Array[a], f: i -> a, len: Int32, i: Int32): Unit & Impure =
         if (i >= len)
             ()
         else {
@@ -134,67 +134,41 @@ namespace String {
     ///
     /// Build a string of length `len` by applying `f` to the successive indices.
     ///
-    pub def init(f: Int32 -> Char, len: Int32): String =
+    pub def init(f: Int32 -> Char, len: Int32): String = initImpure(f, len) as & Pure
+
+    ///
+    /// Helper function for `init`.
+    ///
+    def initImpure(f: Int32 -> Char, len: Int32): String & Impure =
         if (len <= 0)
             ""
         else {
             let c = f(0);
-            let a = Array.new(c, len);
+            let a = Array.new(c, len); // a does not escape
             initHelper(a, f, len, 1);
-            arrayMkStringBy(Char.toString, "", a) // TODO - make more efficient
-        }
-
-    ///
-    /// Render the array `a` as a String. Elements are rendered with the
-    /// function `f` and separated with the string `sep`.
-    ///
-    /// Candidate for inclusion in stdlib Array.
-    ///
-    def arrayMkStringBy(f: a -> Str, sep: Str, a: Array[a]): Str =
-        let sb = StringBuilder.new();
-        let step = (x,i) ->
-            if (i == 0)
-                StringBuilder.appendString(sb, f(x))
-            else {
-                StringBuilder.appendString(sb, sep);
-                StringBuilder.appendString(sb, f(x))
-            };
-        arrayIterWithIndex(step, a);
-        StringBuilder.toString(sb)
-
-    ///
-    /// Apply the effectful function `f` to all the elements in the array `a`.
-    ///
-    def arrayIterWithIndex(f: (a, Int32) -> Unit, a: Array[a]): Unit =
-        let len = Array.length(a);
-        if (len < 1) () else arrayIterWithIndexHelper(f, a, len, 0)
-
-    ///
-    /// Helper for `iterWithIndex`.
-    ///
-    def arrayIterWithIndexHelper(f: (a, Int32) -> Unit, a: Array[a], len: Int32, i: Int32): Unit =
-        if (i >= len)
-            ()
-        else {
-            f(a[i], i);
-            arrayIterWithIndexHelper(f, a, len, i + 1)
+            Array.mkStringBy(Char.toString, "", a)// TODO - use something more efficient
         }
 
     ///
     /// Helper function for `init`.
     ///
-    def initHelper(a: Array[Char], f: Int32 -> Char, len: Int32, i: Int32): Unit =
+    def initHelper(a: Array[Char], f: Int32 -> Char, len: Int32, i: Int32): Unit & Impure =
         if (i >= len)
             ()
         else {
-            a[i] = f(i);
+            Array.put(a, i, f(i));
             initHelper(a, f, len, i+1)
         }
 
     ///
     /// Concatenate a list of strings into a single string.
     ///
-    pub def flatten(xs: List[String]): String =
+    pub def flatten(xs: List[String]): String & Pure = flattenImpure(xs) as & Pure
+
+    ///
+    /// Helper for `flatten`.
+    ///
+    def flattenImpure(xs: List[String]): String & Impure =
         let sb = StringBuilder.new();
         flattenHelper(s -> StringBuilder.appendString(sb, s), xs);
         StringBuilder.toString(sb)
@@ -204,7 +178,7 @@ namespace String {
     /// Note this is a generally useful function usually called `iter` that could be added
     /// to List.
     ///
-    def flattenHelper(f: a -> Unit, xs: List[a]): Unit = match xs with {
+    def flattenHelper(f: a -> Unit & e, xs: List[a]): Unit & Impure = match xs with {
         case Nil => ()
         case x :: rs => {
             f(x);
@@ -245,7 +219,7 @@ namespace String {
     pub def matches(s: String, regex: String): Bool =
         try {
             import java.lang.String.matches(String);
-            s.matches(regex)
+            s.matches(regex) as & Pure
         } catch {
             case _: ##java.util.regex.PatternSyntaxException => false
         }
@@ -255,7 +229,7 @@ namespace String {
     ///
     pub def hashCode(s: String): Int32 =
         import java.lang.String.hashCode();
-        s.hashCode()
+        s.hashCode() as & Pure
 
 
 
@@ -264,9 +238,9 @@ namespace String {
     ///
     /// If `b` or `e` are out-of-bounds, return the empty string.
     ///
-    pub def slice(b: Int32, e: Int32, s: String): String = try {
-       import java.lang.String.substring(Int32, Int32);
-       s.substring(b, e)
+    pub def slice(b: Int32, e: Int32, s: String): String  = try {
+        import java.lang.String.substring(Int32, Int32);
+        s.substring(b, e) as & Pure
     } catch {
         case _: ##java.lang.IndexOutOfBoundsException => ""
     }
@@ -569,7 +543,7 @@ namespace String {
             ""
         else
             import java.lang.String.repeat(Int32);
-            s.repeat(n)
+            s.repeat(n) as & Pure
 
     ///
     /// Pad the string `s` at the left with the supplied char `c` to fit the width `w`.
@@ -595,14 +569,14 @@ namespace String {
     ///
     pub def replaceAll(patt: String, rep: String, s: String): String =
         import java.lang.String.replaceAll(String, String);
-        s.replaceAll(patt, rep)
+        s.replaceAll(patt, rep) as & Pure
 
     ///
     /// Returns `s` with the first match of the regular expression `patt` replaced by the string `rep`.
     ///
     pub def replaceFirst(patt: String, rep: String, s: String): String =
         import java.lang.String.replaceFirst(String, String);
-        s.replaceFirst(patt, rep)
+        s.replaceFirst(patt, rep) as & Pure
 
     ///
     /// Indent every line in string `s` by `n` spaces.
@@ -611,12 +585,12 @@ namespace String {
     ///
     pub def indent(n: Int32, s: String): String =
         import java.lang.String.indent(Int32);
-        s.indent(n)
+        s.indent(n) as & Pure
 
     ///
     /// Split the string `s` into an array of lines on the system dependent line separator.
     ///
-    pub def lines(s: String): Array[String] =
+    pub def lines(s: String): Array[String] & Impure =
         split(s, lineSeparator())
 
     ///
@@ -634,7 +608,7 @@ namespace String {
     ///
     /// Split the string `s` into an array of words, dividing on one or more white space characters.
     ///
-    pub def words(s: String): Array[String] =
+    pub def words(s: String): Array[String] & Impure =
         split(s, "\s+")
 
     ///
@@ -660,7 +634,7 @@ namespace String {
     ///
     pub def indexOfLeft(s: String, sub: String): Option[Int32] =
         import java.lang.String.indexOf(String);
-        let i = s.indexOf(sub);
+        let i = s.indexOf(sub) as & Pure;
         if (i < 0) None else Some(i)
 
     ///
@@ -670,7 +644,7 @@ namespace String {
     ///
     pub def indexOfRight(s: String, sub: String): Option[Int32] =
         import java.lang.String.lastIndexOf(String);
-        let i = s.lastIndexOf(sub);
+        let i = s.lastIndexOf(sub) as & Pure;
         if (i < 0) None else Some(i)
 
     ///
