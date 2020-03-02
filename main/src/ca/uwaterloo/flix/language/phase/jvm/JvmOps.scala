@@ -561,19 +561,11 @@ object JvmOps {
         case (sacc, e) => sacc ++ visitExp(e)
       }
 
-      case Expression.ApplyEff(sym, args, tpe, loc) => args.foldLeft(Set.empty[ClosureInfo]) {
-        case (sacc, e) => sacc ++ visitExp(e)
-      }
-
       case Expression.ApplyCloTail(exp, args, tpe, loc) => args.foldLeft(visitExp(exp)) {
         case (sacc, e) => sacc ++ visitExp(e)
       }
 
       case Expression.ApplyDefTail(sym, args, tpe, loc) => args.foldLeft(Set.empty[ClosureInfo]) {
-        case (sacc, e) => sacc ++ visitExp(e)
-      }
-
-      case Expression.ApplyEffTail(sym, args, tpe, loc) => args.foldLeft(Set.empty[ClosureInfo]) {
         case (sacc, e) => sacc ++ visitExp(e)
       }
 
@@ -640,8 +632,6 @@ object JvmOps {
 
       case Expression.Assign(exp1, exp2, tpe, loc) => visitExp(exp1) ++ visitExp(exp2)
 
-      case Expression.HandleWith(exp, bindings, tpe, loc) => ??? // TODO: HandleWith
-
       case Expression.Existential(fparam, exp, loc) => visitExp(exp)
 
       case Expression.Universal(fparam, exp, loc) => visitExp(exp)
@@ -693,8 +683,6 @@ object JvmOps {
 
       case Expression.ProcessSpawn(exp, tpe, loc) => visitExp(exp)
 
-      case Expression.ProcessSleep(exp, tpe, loc) => visitExp(exp)
-
       case Expression.ProcessPanic(msg, tpe, loc) => Set.empty
 
       case Expression.FixpointConstraintSet(cs, tpe, loc) => cs.foldLeft(Set.empty[ClosureInfo]) {
@@ -714,8 +702,6 @@ object JvmOps {
       case Expression.HoleError(sym, tpe, loc) => Set.empty
 
       case Expression.MatchError(tpe, loc) => Set.empty
-
-      case Expression.SwitchError(tpe, loc) => Set.empty
     }
 
     /**
@@ -809,22 +795,22 @@ object JvmOps {
   // TODO: Should be removed.
   private def hackMonoType2Type(tpe: MonoType): Type = tpe match {
     case MonoType.Var(id) => Type.Var(id, Kind.Star)
-    case MonoType.Unit => Type.Cst(TypeConstructor.Unit)
-    case MonoType.Bool => Type.Cst(TypeConstructor.Bool)
-    case MonoType.Char => Type.Cst(TypeConstructor.Char)
-    case MonoType.Float32 => Type.Cst(TypeConstructor.Float32)
-    case MonoType.Float64 => Type.Cst(TypeConstructor.Float64)
-    case MonoType.Int8 => Type.Cst(TypeConstructor.Int8)
-    case MonoType.Int16 => Type.Cst(TypeConstructor.Int16)
-    case MonoType.Int32 => Type.Cst(TypeConstructor.Int32)
-    case MonoType.Int64 => Type.Cst(TypeConstructor.Int64)
-    case MonoType.BigInt => Type.Cst(TypeConstructor.BigInt)
-    case MonoType.Str => Type.Cst(TypeConstructor.Str)
+    case MonoType.Unit => Type.Unit
+    case MonoType.Bool => Type.Bool
+    case MonoType.Char => Type.Char
+    case MonoType.Float32 => Type.Float32
+    case MonoType.Float64 => Type.Float64
+    case MonoType.Int8 => Type.Int8
+    case MonoType.Int16 => Type.Int16
+    case MonoType.Int32 => Type.Int32
+    case MonoType.Int64 => Type.Int64
+    case MonoType.BigInt => Type.BigInt
+    case MonoType.Str => Type.Str
     case MonoType.Array(elm) => Type.mkApply(Type.Cst(TypeConstructor.Array), hackMonoType2Type(elm) :: Nil)
     case MonoType.Channel(elm) => Type.mkApply(Type.Cst(TypeConstructor.Channel), hackMonoType2Type(elm) :: Nil)
     case MonoType.Native(clazz) => Type.Cst(TypeConstructor.Native(clazz))
     case MonoType.Ref(elm) => Type.Apply(Type.Cst(TypeConstructor.Ref), hackMonoType2Type(elm))
-    case MonoType.Arrow(targs, tresult) => Type.mkArrow(targs map hackMonoType2Type, hackMonoType2Type(tresult))
+    case MonoType.Arrow(targs, tresult) => Type.mkArrow(targs map hackMonoType2Type, Type.Pure, hackMonoType2Type(tresult))
     case MonoType.Enum(sym, args) => Type.mkApply(Type.Cst(TypeConstructor.Enum(sym, Kind.Star)), args map hackMonoType2Type)
 
     case MonoType.Relation(sym, attr) =>
@@ -941,19 +927,11 @@ object JvmOps {
         case (sacc, e) => sacc ++ visitExp(e)
       }
 
-      case Expression.ApplyEff(sym, args, tpe, loc) => args.foldLeft(Set(tpe)) {
-        case (sacc, e) => sacc ++ visitExp(e)
-      }
-
       case Expression.ApplyCloTail(exp, args, tpe, loc) => args.foldLeft(visitExp(exp) + tpe) {
         case (sacc, e) => sacc ++ visitExp(e)
       }
 
       case Expression.ApplyDefTail(sym, args, tpe, loc) => args.foldLeft(Set(tpe)) {
-        case (sacc, e) => sacc ++ visitExp(e)
-      }
-
-      case Expression.ApplyEffTail(sym, args, tpe, loc) => args.foldLeft(Set(tpe)) {
         case (sacc, e) => sacc ++ visitExp(e)
       }
 
@@ -1020,10 +998,6 @@ object JvmOps {
 
       case Expression.Assign(exp1, exp2, tpe, loc) => visitExp(exp1) ++ visitExp(exp2) + tpe
 
-      case Expression.HandleWith(exp, bindings, tpe, loc) => bindings.foldLeft(visitExp(exp)) {
-        case (sacc, HandlerBinding(sym, handler)) => sacc ++ visitExp(handler)
-      }
-
       case Expression.Existential(fparam, exp, loc) => visitExp(exp) + fparam.tpe
 
       case Expression.Universal(fparam, exp, loc) => visitExp(exp) + fparam.tpe
@@ -1074,8 +1048,6 @@ object JvmOps {
 
       case Expression.ProcessSpawn(exp, tpe, loc) => visitExp(exp) + tpe
 
-      case Expression.ProcessSleep(exp, tpe, loc) => visitExp(exp) + tpe
-
       case Expression.ProcessPanic(msg, tpe, loc) => Set(tpe)
 
       case Expression.FixpointConstraintSet(cs, tpe, loc) => cs.foldLeft(Set(tpe))((ts, c) => ts ++ visitConstraint(c))
@@ -1093,8 +1065,6 @@ object JvmOps {
       case Expression.HoleError(sym, tpe, loc) => Set(tpe)
 
       case Expression.MatchError(tpe, loc) => Set(tpe)
-
-      case Expression.SwitchError(tpe, loc) => Set(tpe)
     }
 
     def visitConstraint(c0: Constraint): Set[MonoType] = c0 match {

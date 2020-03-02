@@ -26,11 +26,7 @@ import scala.collection.immutable.List
 object ResolvedAst {
 
   case class Program(defs: Map[Symbol.DefnSym, ResolvedAst.Def],
-                     effs: Map[Symbol.EffSym, ResolvedAst.Eff],
-                     handlers: Map[Symbol.EffSym, ResolvedAst.Handler],
                      enums: Map[Symbol.EnumSym, ResolvedAst.Enum],
-                     classes: Map[Symbol.ClassSym, ResolvedAst.Class],
-                     impls: Map[Symbol.ClassSym, ResolvedAst.Impl],
                      relations: Map[Symbol.RelSym, ResolvedAst.Relation],
                      lattices: Map[Symbol.LatSym, ResolvedAst.Lattice],
                      latticeComponents: Map[Type, ResolvedAst.LatticeComponents],
@@ -40,25 +36,12 @@ object ResolvedAst {
 
   case class Def(doc: Ast.Doc, ann: Ast.Annotations, mod: Ast.Modifiers, sym: Symbol.DefnSym, tparams: List[ResolvedAst.TypeParam], fparams: List[ResolvedAst.FormalParam], exp: ResolvedAst.Expression, sc: Scheme, eff: Type, loc: SourceLocation)
 
-  case class Eff(doc: Ast.Doc, ann: Ast.Annotations, mod: Ast.Modifiers, sym: Symbol.EffSym, tparams: List[ResolvedAst.TypeParam], fparams: List[ResolvedAst.FormalParam], sc: Scheme, eff: Type, loc: SourceLocation)
-
-  case class Handler(doc: Ast.Doc, ann: Ast.Annotations, mod: Ast.Modifiers, sym: Symbol.EffSym, tparams: List[ResolvedAst.TypeParam], fparams: List[ResolvedAst.FormalParam], exp: ResolvedAst.Expression, sc: Scheme, eff: Type, loc: SourceLocation)
-
   // TODO
   case class Law()
-
-  // TODO
-  case class Sig()
 
   case class Enum(doc: Ast.Doc, mod: Ast.Modifiers, sym: Symbol.EnumSym, tparams: List[ResolvedAst.TypeParam], cases: Map[String, ResolvedAst.Case], tpe: Type, loc: SourceLocation)
 
   case class Property(law: Symbol.DefnSym, defn: Symbol.DefnSym, exp: ResolvedAst.Expression, loc: SourceLocation)
-
-  case class Class(doc: Ast.Doc, mod: Ast.Modifiers, sym: Symbol.ClassSym, quantifiers: List[Type.Var], head: ResolvedAst.SimpleClass, body: List[ResolvedAst.SimpleClass], sigs: Map[String, ResolvedAst.Sig], laws: List[ResolvedAst.Law], loc: SourceLocation)
-
-  case class Impl(doc: Ast.Doc, mod: Ast.Modifiers, head: ResolvedAst.ComplexClass, body: List[ResolvedAst.ComplexClass], defs: List[ResolvedAst.Def], loc: SourceLocation)
-
-  // TODO: Disallow.
 
   case class Relation(doc: Ast.Doc, mod: Ast.Modifiers, sym: Symbol.RelSym, tparams: List[ResolvedAst.TypeParam], attr: List[ResolvedAst.Attribute], sc: ast.Scheme, loc: SourceLocation)
 
@@ -76,93 +59,97 @@ object ResolvedAst {
 
   object Expression {
 
-    case class Wild(tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
+    case class Wild(tpe: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression {
+      final def eff: Type = Type.Pure
+    }
 
-    case class Var(sym: Symbol.VarSym, tpe: Type, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
+    case class Var(sym: Symbol.VarSym, tpe: Type, loc: SourceLocation) extends ResolvedAst.Expression {
+      final def eff: Type = Type.Pure
+    }
 
-    case class Def(sym: Symbol.DefnSym, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
-
-    case class Eff(sym: Symbol.EffSym, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
-
-    case class Sig(sym: Symbol.SigSym, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
+    case class Def(sym: Symbol.DefnSym, tpe: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression {
+      final def eff: Type = Type.Pure
+    }
 
     case class Hole(sym: Symbol.HoleSym, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
     case class Unit(loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Unit)
+      def tpe: Type = Type.Unit
 
-      def eff: Type = Type.Cst(TypeConstructor.Pure)
+      def eff: Type = Type.Pure
     }
 
     case class True(loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Bool)
+      def tpe: Type = Type.Bool
 
-      def eff: Type = Type.Cst(TypeConstructor.Pure)
+      def eff: Type = Type.Pure
     }
 
     case class False(loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Bool)
+      def tpe: Type = Type.Bool
 
-      def eff: Type = Type.Cst(TypeConstructor.Pure)
+      def eff: Type = Type.Pure
     }
 
     case class Char(lit: scala.Char, loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Char)
+      def tpe: Type = Type.Char
 
-      def eff: Type = Type.Cst(TypeConstructor.Pure)
+      def eff: Type = Type.Pure
     }
 
     case class Float32(lit: scala.Float, loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Float32)
+      def tpe: Type = Type.Float32
 
-      def eff: Type = Type.Cst(TypeConstructor.Pure)
+      def eff: Type = Type.Pure
     }
 
     case class Float64(lit: scala.Double, loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Float64)
+      def tpe: Type = Type.Float64
 
-      def eff: Type = Type.Cst(TypeConstructor.Pure)
+      def eff: Type = Type.Pure
     }
 
     case class Int8(lit: scala.Byte, loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Int8)
+      def tpe: Type = Type.Int8
 
-      def eff: Type = Type.Cst(TypeConstructor.Pure)
+      def eff: Type = Type.Pure
     }
 
     case class Int16(lit: scala.Short, loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Int16)
+      def tpe: Type = Type.Int16
 
-      def eff: Type = Type.Cst(TypeConstructor.Pure)
+      def eff: Type = Type.Pure
     }
 
     case class Int32(lit: scala.Int, loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Int32)
+      def tpe: Type = Type.Int32
 
-      def eff: Type = Type.Cst(TypeConstructor.Pure)
+      def eff: Type = Type.Pure
     }
 
     case class Int64(lit: scala.Long, loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Int64)
+      def tpe: Type = Type.Int64
 
-      def eff: Type = Type.Cst(TypeConstructor.Pure)
+      def eff: Type = Type.Pure
     }
 
     case class BigInt(lit: java.math.BigInteger, loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.BigInt)
+      def tpe: Type = Type.BigInt
 
-      def eff: Type = Type.Cst(TypeConstructor.Pure)
+      def eff: Type = Type.Pure
     }
 
     case class Str(lit: java.lang.String, loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Str)
+      def tpe: Type = Type.Str
 
-      def eff: Type = Type.Cst(TypeConstructor.Pure)
+      def eff: Type = Type.Pure
     }
 
     case class Apply(exp1: ResolvedAst.Expression, exp2: ResolvedAst.Expression, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
-    case class Lambda(fparam: ResolvedAst.FormalParam, exp: ResolvedAst.Expression, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
+    case class Lambda(fparam: ResolvedAst.FormalParam, exp: ResolvedAst.Expression, tpe: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression {
+      def eff: Type = Type.Pure
+    }
 
     case class Unary(op: UnaryOperator, exp: ResolvedAst.Expression, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
@@ -178,13 +165,13 @@ object ResolvedAst {
 
     case class Match(exp: ResolvedAst.Expression, rules: List[ResolvedAst.MatchRule], tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
-    case class Switch(rules: List[(ResolvedAst.Expression, ResolvedAst.Expression)], tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
-
     case class Tag(sym: Symbol.EnumSym, tag: String, exp: ResolvedAst.Expression, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
     case class Tuple(elms: List[ResolvedAst.Expression], tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
-    case class RecordEmpty(tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
+    case class RecordEmpty(tpe: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression {
+      def eff: Type = Type.Pure
+    }
 
     case class RecordSelect(exp: ResolvedAst.Expression, label: String, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
@@ -222,19 +209,21 @@ object ResolvedAst {
 
     case class Assign(exp1: ResolvedAst.Expression, exp2: ResolvedAst.Expression, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
-    case class HandleWith(exp: ResolvedAst.Expression, bindings: List[ResolvedAst.HandlerBinding], tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
+    case class Existential(fparam: ResolvedAst.FormalParam, exp: ResolvedAst.Expression, loc: SourceLocation) extends ResolvedAst.Expression {
+      def tpe: Type = Type.Bool
 
-    case class Existential(fparam: ResolvedAst.FormalParam, exp: ResolvedAst.Expression, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Bool)
+      def eff: Type = Type.Pure
     }
 
-    case class Universal(fparam: ResolvedAst.FormalParam, exp: ResolvedAst.Expression, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression {
-      def tpe: Type = Type.Cst(TypeConstructor.Bool)
+    case class Universal(fparam: ResolvedAst.FormalParam, exp: ResolvedAst.Expression, loc: SourceLocation) extends ResolvedAst.Expression {
+      def tpe: Type = Type.Bool
+
+      def eff: Type = Type.Pure
     }
 
-    case class Ascribe(exp: ResolvedAst.Expression, tpe: Type, eff: Type, loc: SourceLocation) extends ResolvedAst.Expression
+    case class Ascribe(exp: ResolvedAst.Expression, expectedType: Option[Type], expectedEff: Option[Type], tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
-    case class Cast(exp: ResolvedAst.Expression, tpe: Type, eff: Type, loc: SourceLocation) extends ResolvedAst.Expression
+    case class Cast(exp: ResolvedAst.Expression, declaredType: Option[Type], declaredEff: Option[Type], tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
     case class TryCatch(exp: ResolvedAst.Expression, rules: List[ResolvedAst.CatchRule], tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
@@ -262,11 +251,11 @@ object ResolvedAst {
 
     case class ProcessSpawn(exp: ResolvedAst.Expression, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
-    case class ProcessSleep(exp: ResolvedAst.Expression, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
-
     case class ProcessPanic(msg: String, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
-    case class FixpointConstraintSet(cs: List[ResolvedAst.Constraint], tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
+    case class FixpointConstraintSet(cs: List[ResolvedAst.Constraint], tpe: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression {
+      def eff: Type = Type.Pure
+    }
 
     case class FixpointCompose(exp1: ResolvedAst.Expression, exp2: ResolvedAst.Expression, tpe: Type.Var, eff: Type.Var, loc: SourceLocation) extends ResolvedAst.Expression
 
@@ -369,13 +358,7 @@ object ResolvedAst {
   }
 
 
-  case class SimpleClass(sym: Symbol.ClassSym, args: List[Type.Var], loc: SourceLocation)
-
-  case class ComplexClass(sym: Symbol.ClassSym, polarity: Ast.Polarity, args: List[Type], loc: SourceLocation)
-
   case class FormalParam(sym: Symbol.VarSym, mod: Ast.Modifiers, tpe: Type, loc: SourceLocation)
-
-  case class HandlerBinding(sym: Symbol.EffSym, exp: ResolvedAst.Expression)
 
   case class CatchRule(sym: Symbol.VarSym, clazz: java.lang.Class[_], exp: ResolvedAst.Expression)
 

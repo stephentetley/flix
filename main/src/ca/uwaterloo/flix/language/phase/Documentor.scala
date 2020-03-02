@@ -122,7 +122,7 @@ object Documentor extends Phase[TypedAst.Root, TypedAst.Root] {
       * Returns the formal parameters of the lambda expressions in the given expression `exp0`.
       */
     def uncurry(exp0: Expression): List[FormalParam] = exp0 match {
-      case Expression.Lambda(fparam, exp, _, _, _) => fparam :: uncurry(exp)
+      case Expression.Lambda(fparam, exp, _, _) => fparam :: uncurry(exp)
       case _ => Nil
     }
 
@@ -134,7 +134,7 @@ object Documentor extends Phase[TypedAst.Root, TypedAst.Root] {
     */
   @tailrec
   private def getReturnType(tpe0: Type): Type = tpe0 match {
-    case Type.Apply(Type.Apply(Type.Arrow(_), _), tpe) => getReturnType(tpe)
+    case Type.Apply(Type.Apply(Type.Arrow(_, _), _), tpe) => getReturnType(tpe)
     case _ => tpe0
   }
 
@@ -199,7 +199,7 @@ object Documentor extends Phase[TypedAst.Root, TypedAst.Root] {
 
       case Type.Succ(n, t) => n.toString + " " + t.toString
 
-      case Type.Arrow(l) =>
+      case Type.Arrow(l, _) =>
         val argumentTypes = args.init
         val resultType = args.last
         if (argumentTypes.length == 1) {

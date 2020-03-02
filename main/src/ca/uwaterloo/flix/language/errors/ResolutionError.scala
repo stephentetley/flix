@@ -155,26 +155,6 @@ object ResolutionError {
   }
 
   /**
-    * Inaccessible Class Error.
-    *
-    * @param sym the definition symbol.
-    * @param ns  the namespace where the symbol is not accessible.
-    * @param loc the location where the error occurred.
-    */
-  case class InaccessibleClass(sym: Symbol.ClassSym, ns: Name.NName, loc: SourceLocation) extends ResolutionError {
-    val source: Source = loc.source
-    val message: VirtualTerminal = {
-      val vt = new VirtualTerminal
-      vt << Line(kind, source.format) << NewLine
-      vt << ">> Class '" << Red(sym.toString) << s"' is not accessible from the namespace '" << Cyan(ns.toString) << "'." << NewLine
-      vt << NewLine
-      vt << Code(loc, "inaccessible class.") << NewLine
-      vt << NewLine
-      vt << Underline("Tip:") << " Mark the class as public." << NewLine
-    }
-  }
-
-  /**
     * Inaccessible Def Error.
     *
     * @param sym the def symbol.
@@ -191,26 +171,6 @@ object ResolutionError {
       vt << Code(loc, "inaccessible definition.") << NewLine
       vt << NewLine
       vt << Underline("Tip:") << " Mark the definition as public." << NewLine
-    }
-  }
-
-  /**
-    * Inaccessible Eff Error.
-    *
-    * @param sym the eff symbol.
-    * @param ns  the namespace where the symbol is not accessible.
-    * @param loc the location where the error occurred.
-    */
-  case class InaccessibleEff(sym: Symbol.EffSym, ns: Name.NName, loc: SourceLocation) extends ResolutionError {
-    val source: Source = loc.source
-    val message: VirtualTerminal = {
-      val vt = new VirtualTerminal
-      vt << Line(kind, source.format) << NewLine
-      vt << ">> Effect '" << Red(sym.toString) << s"' is not accessible from the namespace '" << Cyan(ns.toString) << "'." << NewLine
-      vt << NewLine
-      vt << Code(loc, "inaccessible effect.") << NewLine
-      vt << NewLine
-      vt << Underline("Tip:") << " Mark the effect as public." << NewLine
     }
   }
 
@@ -312,26 +272,6 @@ object ResolutionError {
   }
 
   /**
-    * Unresolved Class Error.
-    *
-    * @param qn  the unresolved definition name.
-    * @param ns  the current namespace.
-    * @param loc the location where the error occurred.
-    */
-  case class UndefinedClass(qn: Name.QName, ns: Name.NName, loc: SourceLocation) extends ResolutionError {
-    val source: Source = loc.source
-    val message: VirtualTerminal = {
-      val vt = new VirtualTerminal
-      vt << Line(kind, source.format) << NewLine
-      vt << ">> Undefined class '" << Red(qn.toString) << "'." << NewLine
-      vt << NewLine
-      vt << Code(loc, "name not found") << NewLine
-      vt << NewLine
-      vt << Underline("Tip:") << " Possible typo or non-existent class?" << NewLine
-    }
-  }
-
-  /**
     * Undefined Name Error.
     *
     * @param qn  the unresolved name.
@@ -428,24 +368,6 @@ object ResolutionError {
       vt << Code(loc, "type not found.") << NewLine
       vt << NewLine
       vt << Underline("Tip:") << " Possible typo or non-existent type?" << NewLine
-    }
-  }
-
-  /**
-    * Unhandled Effect Error.
-    *
-    * @param sym the unhandled effect symbol.
-    */
-  case class UnhandledEffect(sym: Symbol.EffSym) extends ResolutionError {
-    val source: Source = sym.loc.source
-    val message: VirtualTerminal = {
-      val vt = new VirtualTerminal
-      vt << Line(kind, source.format) << NewLine
-      vt << ">> Unhandled effect '" << Red(sym.toString) << "'." << NewLine
-      vt << NewLine
-      vt << Code(sym.loc, "no default handler.") << NewLine
-      vt << NewLine
-      vt << Underline("Tip:") << " Possible typo or non-existent effect handler?" << NewLine
     }
   }
 
