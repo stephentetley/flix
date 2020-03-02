@@ -57,6 +57,31 @@ object TypeError {
   }
 
   /**
+    * Mismatched Effects.
+    *
+    * @param eff1 the first effect.
+    * @param eff2 the second effect.
+    * @param loc  the location where the error occurred.
+    */
+  case class MismatchedEffects(eff1: Type, eff2: Type, loc: SourceLocation) extends TypeError {
+    val source: Source = loc.source
+    val message: VirtualTerminal = {
+      val vt = new VirtualTerminal()
+      vt << Line(kind, source.format) << NewLine
+      vt << ">> Unable to unify the effects: '" << Red(eff1.show) << "' and '" << Red(eff2.show) << "'." << NewLine
+      vt << NewLine
+      vt << Code(loc, "mismatched effects.") << NewLine
+      vt << "Possible fixes:" << NewLine
+      vt << NewLine
+      vt << "  (1)  Did you forget to mark the function as impure?" << NewLine
+      vt << "  (2)  Are you trying to pass a pure function where an impure is required?" << NewLine
+      vt << "  (3)  Are you trying to pass an impure function where a pure is required?" << NewLine
+      vt << NewLine
+      vt
+    }
+  }
+
+  /**
     * Mismatched Arity.
     *
     * @param tpe1 the first type.
@@ -189,7 +214,7 @@ object TypeError {
     case (Type.Cst(tc1), Type.Cst(tc2)) if tc1 == tc2 => TypeDiff.Star(TyCon.Other)
     case (Type.Zero, Type.Zero) => TypeDiff.Star(TyCon.Other)
     case (Type.Succ(n1, t1), Type.Succ(n2, t2)) => TypeDiff.Star(TyCon.Other)
-    case (Type.Arrow(l1), Type.Arrow(l2)) if l1 == l2 => TypeDiff.Star(TyCon.Arrow)
+    case (Type.Arrow(l1, _), Type.Arrow(l2, _)) if l1 == l2 => TypeDiff.Star(TyCon.Arrow)
     case (Type.Apply(t11, t12), Type.Apply(t21, t22)) =>
       (diff(t11, t21), diff(t12, t22)) match {
         case (TypeDiff.Star(_), TypeDiff.Star(_)) => TypeDiff.Star(TyCon.Other)

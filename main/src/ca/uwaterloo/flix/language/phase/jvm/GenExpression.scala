@@ -159,9 +159,6 @@ object GenExpression {
       visitor.visitInsn(POP)
       AsmOps.compileClosureApplication(visitor, fnType, args.map(_.tpe), tpe)
 
-    case Expression.ApplyEff(sym, args, tpe, loc) =>
-      throw InternalCompilerException(s"ApplyEff not implemented in JVM backend!")
-
     case Expression.ApplyCloTail(exp, args, tpe, loc) =>
       // Type of the function interface
       val functionInterface = JvmOps.getFunctionInterfaceType(exp.tpe)
@@ -259,8 +256,6 @@ object GenExpression {
       visitor.visitFieldInsn(PUTFIELD, JvmName.Context.toInternalName, "continuation", JvmType.Object.toDescriptor)
       // Dummy value, since we have to put a result on top of the arg, this will be thrown away
       pushDummyValue(visitor, tpe)
-
-    case Expression.ApplyEffTail(sym, args, tpe, loc) => ??? // TODO
 
     case Expression.ApplySelfTail(name, formals, actuals, tpe, loc) =>
       // Evaluate each argument and push the result on the stack.
@@ -728,8 +723,6 @@ object GenExpression {
       visitor.visitMethodInsn(INVOKESTATIC, JvmName.Runtime.Value.Unit.toInternalName, "getInstance",
         AsmOps.getMethodDescriptor(Nil, JvmType.Unit), false)
 
-    case Expression.HandleWith(exp, bindings, tpe, loc) => ??? // TODO
-
     case Expression.Existential(params, exp, loc) =>
       // TODO: Better exception.
       addSourceLine(visitor, loc)
@@ -1029,35 +1022,6 @@ object GenExpression {
       // Call spawn method from Channel class
       visitor.visitMethodInsn(INVOKESTATIC, JvmName.Channel.toInternalName, "spawn",
         AsmOps.getMethodDescriptor(List(JvmType.Spawnable), JvmType.Void), false)
-      // Put a Unit value on the stack
-      visitor.visitMethodInsn(INVOKESTATIC, JvmName.Runtime.Value.Unit.toInternalName, "getInstance",
-        AsmOps.getMethodDescriptor(Nil, JvmType.Unit), false)
-
-    case Expression.ProcessSleep(exp, tpe, loc) =>
-      addSourceLine(visitor, loc)
-      // Compile the expression, putting the time to sleep in ns (as a long) on top of the stack
-      compileExpression(exp, visitor, currentClass, lenv0, entryPoint)
-
-      // Convert the time into ms and ns
-      // Dup the time
-      visitor.visitInsn(DUP2)
-
-      // Calculate the ns (time % 1.000.000)
-      visitor.visitLdcInsn(1000000L)
-      visitor.visitInsn(LREM)
-      // Cast to int and store for later
-      visitor.visitInsn(L2I)
-      visitor.visitVarInsn(ISTORE, 2)
-
-      // Calculate the ms (time / 1.000.000)
-      visitor.visitLdcInsn(1000000L)
-      visitor.visitInsn(LDIV)
-
-      // Load the ns, putting ns on top of the stack
-      visitor.visitVarInsn(ILOAD, 2)
-
-      // Call Thread.Sleep with the calculated duration in (ms, ns)
-      visitor.visitMethodInsn(INVOKESTATIC, "java/lang/Thread", "sleep", "(JI)V", false)
       // Put a Unit value on the stack
       visitor.visitMethodInsn(INVOKESTATIC, JvmName.Runtime.Value.Unit.toInternalName, "getInstance",
         AsmOps.getMethodDescriptor(Nil, JvmType.Unit), false)
@@ -1415,10 +1379,6 @@ object GenExpression {
     case Expression.MatchError(_, loc) =>
       addSourceLine(visitor, loc)
       AsmOps.compileThrowFlixError(visitor, JvmName.Runtime.MatchError, loc)
-
-    case Expression.SwitchError(_, loc) =>
-      addSourceLine(visitor, loc)
-      AsmOps.compileThrowFlixError(visitor, JvmName.Runtime.SwitchError, loc)
   }
 
   /*
@@ -1583,6 +1543,10 @@ object GenExpression {
    * Exponentiation takes a separate codepath. Values must be cast to doubles (F2D, I2D, L2D; note that bytes and shorts
    * are represented as ints and so we use I2D), then we invoke the static method `math.pow`, and then we have to cast
    * back to the original type (D2F, D2I, D2L; note that bytes and shorts need to be cast again with I2B and I2S).
+   *
+   * Division also takes a separate codepath in order to implement the defined integer division by zero: n / 0 == 0.
+   * Float types divide normally, but for integer division, divisors are checked for equality with zero. If the divisor
+   * is equal to zero, operands are popped off and zero is pushed onto the stack. Otherwise division occurs normally.
    */
   private def compileArithmeticExpr(e1: Expression,
                                     e2: Expression,
@@ -1614,6 +1578,72 @@ object GenExpression {
         case Float32Op.Exp | Float64Op.Exp | Int32Op.Exp | Int64Op.Exp => visitor.visitInsn(NOP)
         case _ => throw InternalCompilerException(s"Unexpected semantic operator: $sop.")
       }
+    } else if (o == BinaryOperator.Divide) {
+      compileExpression(e1, visitor, currentClassType, jumpLabels, entryPoint)
+      compileExpression(e2, visitor, currentClassType, jumpLabels, entryPoint)
+      val div = new Label()
+      val endDiv = new Label()
+      sop match {
+        case Float32Op.Div => visitor.visitInsn(FDIV)
+        case Float64Op.Div => visitor.visitInsn(DDIV)
+        case Int8Op.Div =>
+          visitor.visitInsn(DUP)
+          visitor.visitJumpInsn(IFNE, div)
+          visitor.visitInsn(POP2)
+          visitor.visitInsn(ICONST_0)
+          visitor.visitJumpInsn(GOTO, endDiv)
+          visitor.visitLabel(div)
+          visitor.visitInsn(IDIV)
+          visitor.visitLabel(endDiv)
+          visitor.visitInsn(I2B)
+        case Int16Op.Div =>
+          visitor.visitInsn(DUP)
+          visitor.visitJumpInsn(IFNE, div)
+          visitor.visitInsn(POP2)
+          visitor.visitInsn(ICONST_0)
+          visitor.visitJumpInsn(GOTO, endDiv)
+          visitor.visitLabel(div)
+          visitor.visitInsn(IDIV)
+          visitor.visitLabel(endDiv)
+          visitor.visitInsn(I2S)
+        case Int32Op.Div =>
+          visitor.visitInsn(DUP)
+          visitor.visitJumpInsn(IFNE, div)
+          visitor.visitInsn(POP2)
+          visitor.visitInsn(ICONST_0)
+          visitor.visitJumpInsn(GOTO, endDiv)
+          visitor.visitLabel(div)
+          visitor.visitInsn(IDIV)
+          visitor.visitLabel(endDiv)
+        case Int64Op.Div =>
+          visitor.visitInsn(DUP2)
+          visitor.visitInsn(LCONST_0)
+          visitor.visitInsn(LCMP)
+          visitor.visitJumpInsn(IFNE, div)
+          visitor.visitInsn(POP2)
+          visitor.visitInsn(POP2)
+          visitor.visitInsn(LCONST_0)
+          visitor.visitJumpInsn(GOTO, endDiv)
+          visitor.visitLabel(div)
+          visitor.visitInsn(LDIV)
+          visitor.visitLabel(endDiv)
+        case BigIntOp.Div =>
+          visitor.visitInsn(DUP)
+          visitor.visitFieldInsn(GETSTATIC, JvmName.BigInteger.toInternalName, "ZERO",
+            JvmType.BigInteger.toDescriptor)
+          visitor.visitMethodInsn(INVOKEVIRTUAL, JvmName.Object.toInternalName, "equals",
+            AsmOps.getMethodDescriptor(List(JvmType.Object), JvmType.PrimBool), false)
+          visitor.visitJumpInsn(IFEQ, div)
+          visitor.visitInsn(POP2)
+          visitor.visitFieldInsn(GETSTATIC, JvmName.BigInteger.toInternalName, "ZERO",
+            JvmType.BigInteger.toDescriptor)
+          visitor.visitJumpInsn(GOTO, endDiv)
+          visitor.visitLabel(div)
+          visitor.visitMethodInsn(INVOKEVIRTUAL, JvmName.BigInteger.toInternalName, "divide",
+            AsmOps.getMethodDescriptor(List(JvmType.BigInteger), JvmType.BigInteger), false)
+          visitor.visitLabel(endDiv)
+        case _ => InternalCompilerException(s"Unexpected sematic operator: $sop.")
+      }
     } else {
       compileExpression(e1, visitor, currentClassType, jumpLabels, entryPoint)
       compileExpression(e2, visitor, currentClassType, jumpLabels, entryPoint)
@@ -1621,8 +1651,8 @@ object GenExpression {
         case BinaryOperator.Plus => (IADD, LADD, FADD, DADD, "add")
         case BinaryOperator.Minus => (ISUB, LSUB, FSUB, DSUB, "subtract")
         case BinaryOperator.Times => (IMUL, LMUL, FMUL, DMUL, "multiply")
-        case BinaryOperator.Divide => (IDIV, LDIV, FDIV, DDIV, "divide")
         case BinaryOperator.Modulo => (IREM, LREM, FREM, DREM, "remainder")
+        case BinaryOperator.Divide => throw InternalCompilerException("BinaryOperator.Divide already handled.")
         case BinaryOperator.Exponentiate => throw InternalCompilerException("BinaryOperator.Exponentiate already handled.")
       }
       sop match {

@@ -1723,5 +1723,20 @@ def toArray02(): Bool = Array.length(List.toArray(1 :: Nil)) `assertEq!` 1
 @test
 def toArray03(): Bool = Array.length(List.toArray(1 :: 1 :: 1 :: Nil)) `assertEq!` 3
 
+/////////////////////////////////////////////////////////////////////////////
+// foreach                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def foreach01(): Bool & Impure =
+    let r = ref 21;
+    List.foreach(x -> r := x, Nil);
+    21 == deref r
+
+@test
+def foreach02(): Bool & Impure =
+    let r = ref 21;
+    List.foreach(x -> r := x, 1 :: 2 :: 3 :: Nil);
+    3 == deref r
 
 }

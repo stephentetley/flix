@@ -135,36 +135,6 @@ class TestResolver extends FunSuite with TestUtils {
     expectError[ResolutionError.AmbiguousTag](result)
   }
 
-  test("InaccessibleClass.01") {
-    val input =
-      s"""
-         |namespace A {
-         |  class X[a]
-         |}
-         |
-         |namespace B {
-         |  class Y[x] <= A.X[a]
-         |}
-       """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.InaccessibleClass](result)
-  }
-
-  test("InaccessibleClass.02") {
-    val input =
-      s"""
-         |namespace A {
-         |  class X[a] <= A/B/C.Y[a]
-         |
-         |  namespace B/C {
-         |    class Y[a]
-         |  }
-         |}
-       """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.InaccessibleClass](result)
-  }
-
   test("InaccessibleDef.01") {
     val input =
       s"""
@@ -193,36 +163,6 @@ class TestResolver extends FunSuite with TestUtils {
        """.stripMargin
     val result = new Flix().addStr(input).compile()
     expectError[ResolutionError.InaccessibleDef](result)
-  }
-
-  test("InaccessibleEff.01") {
-    val input =
-      s"""
-         |namespace A {
-         |  eff f(): Int
-         |}
-         |
-         |namespace B {
-         |  def g(): Int = A.f()
-         |}
-       """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.InaccessibleEff](result)
-  }
-
-  test("InaccessibleEff.02") {
-    val input =
-      s"""
-         |namespace A {
-         |  def f(): Int = A/B/C.g()
-         |
-         |  namespace B/C {
-         |    eff g(): Int
-         |  }
-         |}
-       """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.InaccessibleEff](result)
   }
 
   test("InaccessibleEnum.01") {
@@ -436,111 +376,6 @@ class TestResolver extends FunSuite with TestUtils {
        """.stripMargin
     val result = new Flix().addStr(input).compile()
     expectError[ResolutionError.UndefinedName](result)
-  }
-
-  test("UndefinedClass.01") {
-    val input = "class X[a] <= Y[a]"
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.UndefinedClass](result)
-  }
-
-  test("UndefinedClass.02") {
-    val input = "class X[a] <= X[a], Y[a]"
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.UndefinedClass](result)
-  }
-
-  test("UndefinedClass.03") {
-    val input =
-      """
-        |namespace A {
-        |  class Y[a]
-        |}
-        |
-        |class X[a] <= Y[a]
-      """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.UndefinedClass](result)
-  }
-
-  test("UndefinedClass.04") {
-    val input =
-      """
-        |namespace A {
-        |  class Y[a]
-        |}
-        |
-        |namespace B {
-        |  class X[a] <= Y[a]
-        |}
-      """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.UndefinedClass](result)
-  }
-
-  test("UndefinedClass.05") {
-    val input =
-      """
-        |impl X[Bool]
-      """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.UndefinedClass](result)
-  }
-
-  test("UndefinedClass.06") {
-    val input =
-      """
-        |impl Eq[Bool] <= X[Bool]
-      """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.UndefinedClass](result)
-  }
-
-  test("UndefinedClass.07") {
-    val input =
-      """
-        |namespace A {
-        |  class X[a]
-        |}
-        |
-        |impl X[Bool]
-      """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.UndefinedClass](result)
-  }
-
-  test("UndefinedClass.08") {
-    val input =
-      """
-        |namespace A {
-        |  class X[a]
-        |}
-        |
-        |namespace B {
-        |  class Y[a]
-        |
-        |  impl X[a] <= Y[a]
-        |}
-      """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.UndefinedClass](result)
-  }
-
-  test("UndefinedClass.09") {
-    val input =
-      """
-        |namespace A {
-        |  class X[a]
-        |}
-        |
-        |namespace B {
-        |  class Y[a]
-        |
-        |  impl Y[a] <= X[a]
-        |}
-      """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.UndefinedClass](result)
   }
 
   test("UndefinedJvmConstructor.01") {
@@ -875,26 +710,6 @@ class TestResolver extends FunSuite with TestUtils {
        """.stripMargin
     val result = new Flix().addStr(input).compile()
     expectError[ResolutionError.UndefinedType](result)
-  }
-
-  test("UnhandledEffect.01") {
-    val input =
-      s"""
-         |eff f(): Int
-       """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.UnhandledEffect](result)
-  }
-
-  test("UnhandledEffect.02") {
-    val input =
-      s"""
-         |namespace A {
-         |  eff f(): Int
-         |}
-       """.stripMargin
-    val result = new Flix().addStr(input).compile()
-    expectError[ResolutionError.UnhandledEffect](result)
   }
 
 
