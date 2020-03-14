@@ -99,6 +99,7 @@ namespace String {
         import java.lang.System:lineSeparator();
         lineSeparator() as & Pure
 
+<<<<<<< HEAD
     ///
     /// Returns the given string `s` as an array of characters.
     ///
@@ -589,5 +590,26 @@ namespace String {
         let start = length(s) - 1;
         init(i -> charAt(start - i, s), start+1)
 
+=======
+    /////////////////////////////////////////////////////////////////////////////
+    // Lints                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    ///
+    /// Simplifications.
+    ///
+
+    @lint
+    def leftConcatenateEmptyString(): Bool =
+        forall (s: String). ("" + s) === s
+
+    @lint
+    def rightConcatenateEmptyString(): Bool =
+        forall (s: String). (s + "") === s
+
+    @lint
+    def trimTrim(): Bool =
+        forall (s: String). trim(trim(s)) === trim(s)
+>>>>>>> fc9ec7f346d58a7a8e28c38009b2ec12d1f9e168
 
 }
