@@ -167,6 +167,26 @@ namespace String {
     }
 
     ///
+    /// Concatenate a list of strings into a single string, inserting the separator `sep` between
+    /// each pair of strings.
+    ///
+    pub def flattenWithSepChar(sep: Char, xs: List[String]): String & Pure = flattenWithSepCharImpure(sep, xs) as & Pure
+
+    ///
+    /// Helper for `flattenWithSep`.
+    ///
+    def flattenWithSepCharImpure(sep: Char, xs: List[String]): String & Impure = match xs {
+        case Nil => ""
+        case x :: rs => {
+            let sb = StringBuilder.new();
+            StringBuilder.appendString(sb, x);
+            let append = s -> { StringBuilder.appendChar(sb, sep); StringBuilder.appendString(sb, s) };
+            List.foreach(append, rs);
+            StringBuilder.toString(sb)
+        }
+    }
+
+    ///
     /// Returns the result of applying `f` to every character in `s`.
     ///
     pub def map(f: Char -> Char, s: String): String =
@@ -534,6 +554,20 @@ namespace String {
         if (x < w)
             s + repeat(Char.toString(c), w - x)
         else s
+
+    ///
+    /// Returns `s` with every match of the substring `target` replaced by the string `rep`.
+    ///
+    pub def replace(target: String, rep: String, s: String): String =
+        import flix.runtime.library.StringWrapper:replace(String, String, String);
+        replace(target, rep, s) as & Pure
+
+    ///
+    /// Returns `s` with every match of the character `target` replaced by the character `rep`.
+    ///
+    pub def replaceChar(target: Char, rep: Char, s: String): String =
+        import java.lang.String.replace(Char, Char);
+        s.replace(target, rep) as & Pure
 
     ///
     /// Returns `s` with every match of the regular expression `patt` replaced by the string `rep`.

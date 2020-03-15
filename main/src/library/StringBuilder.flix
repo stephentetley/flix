@@ -32,8 +32,11 @@ namespace StringBuilder {
     /// Append the StringBuilder `sb1` to the end of StringBuilder `sb`.
     ///
     pub def append(sb: StringBuilder, sb1: StringBuilder): Unit & Impure =
-        // TODO: Not efficient.
-        sb.appendString(toString(sb1))
+        import flix.runtime.library.StringWrapper:appendStringBuilder(##java.lang.StringBuilder, ##java.lang.StringBuilder) as append1;
+        let StringBuilder(msb) = sb;
+        let StringBuilder(msb1) = sb1;
+        append1(msb, msb1);
+        ()
 
     ///
     /// Append the String `s` to the StringBuilder `sb`.
