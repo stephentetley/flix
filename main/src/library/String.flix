@@ -212,6 +212,56 @@ namespace String {
         init(i -> f(charAt(i, s), charAt(i, t)), len)
 
     ///
+    /// Returns the reverse of `s`.
+    ///
+    pub def reverse(s: String) : String =
+        let start = length(s) - 1;
+        init(i -> charAt(start - i, s), start+1)
+
+    ///
+    /// Rotate the contents of string `s` by `n` steps to the left.
+    ///
+    pub def rotateLeft(n: Int32, s: String): String =
+        if (length(s) < 1)
+            ""
+        else {
+            if (n < 0)
+                rotateRightHelper(Int32.abs(n), s)
+            else
+                rotateLeftHelper(n, s)
+        }
+
+    ///
+    /// Helper function for `rotateLeft`, `n` must be positive.
+    ///
+    def rotateLeftHelper(n: Int32, s: String): String =
+        let len = length(s);
+        let f = i -> { let i1 = n + i; charAt(i1 % len, s) };
+        init(f, len)
+
+    ///
+    /// Rotate the contents of string `s` by `n` steps to the right.
+    ///
+    pub def rotateRight(n: Int32, s: String): String =
+        if (length(s) < 1)
+            ""
+        else {
+            if (n < 0)
+                rotateLeftHelper(Int32.abs(n), s)
+            else
+                rotateRightHelper(n, s)
+        }
+    ///
+    /// Helper function for `rotateRight`, `n` must be positive.
+    ///
+    def rotateRightHelper(n: Int32, s: String): String =
+        let len = length(s);
+        let n1 = n % len;
+        let start = len - n1;
+        let f = i -> { let i1 = start + i; charAt(i1 % len, s)};
+        init(f, len)
+
+    ///
     /// Returns `true` if the string `s` matches the `regex`.
     ///
     pub def matches(s: String, regex: String): Bool =
@@ -721,13 +771,6 @@ namespace String {
     pub def contains(s: String, substring: String): Bool =
         let a = indexOfLeft(s, substring);
         !Option.isEmpty(a)
-
-    ///
-    /// Returns the reverse of `s`.
-    ///
-    pub def reverse(s: String) : String =
-        let start = length(s) - 1;
-        init(i -> charAt(start - i, s), start+1)
 
     /////////////////////////////////////////////////////////////////////////////
     // Lints                                                                   //

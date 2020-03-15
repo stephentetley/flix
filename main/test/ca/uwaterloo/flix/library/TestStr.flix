@@ -306,6 +306,163 @@ def flattenWithSepChar11(): Bool = String.flattenWithSepChar(' ', "a" :: "bc" ::
 def flattenWithSepChar12(): Bool = String.flattenWithSepChar('/', "a" :: "bc" :: "d" :: Nil) == "a/bc/d"
 
 /////////////////////////////////////////////////////////////////////////////
+// map                                                                     //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def map01(): Bool = String.map(c -> if (Char.isUpperCase(c)) 't' else 'f', "") == ""
+
+@test
+def map02(): Bool = String.map(c -> if (Char.isUpperCase(c)) 't' else 'f', "a") == "f"
+
+@test
+def map03(): Bool = String.map(c -> if (Char.isUpperCase(c)) 't' else 'f', "A") == "t"
+
+@test
+def map04(): Bool = String.map(c -> if (Char.isUpperCase(c)) 't' else 'f', "ab") == "ff"
+
+@test
+def map05(): Bool = String.map(c -> if (Char.isUpperCase(c)) 't' else 'f', "aB") == "ft"
+
+@test
+def map06(): Bool = String.map(c -> if (Char.isUpperCase(c)) 't' else 'f', "Ab") == "tf"
+
+@test
+def map07(): Bool = String.map(c -> if (Char.isUpperCase(c)) 't' else 'f', "AB") == "tt"
+
+/////////////////////////////////////////////////////////////////////////////
+// mapWithIndex                                                            //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def mapWithIndex01(): Bool =
+    let test = (c,i) -> if (i < 1) { if (Char.isUpperCase(c)) 't' else 'f' } else { if (Char.isUpperCase(c)) 'T' else 'F' };
+    String.mapWithIndex(test, "") == ""
+
+@test
+def mapWithIndex02(): Bool =
+    let test = (c,i) -> if (i < 1) { if (Char.isUpperCase(c)) 't' else 'f' } else { if (Char.isUpperCase(c)) 'T' else 'F' };
+    String.mapWithIndex(test, "a") == "f"
+
+@test
+def mapWithIndex03(): Bool =
+    let test = (c,i) -> if (i < 1) { if (Char.isUpperCase(c)) 't' else 'f' } else { if (Char.isUpperCase(c)) 'T' else 'F' };
+    String.mapWithIndex(test, "A") == "t"
+
+@test
+def mapWithIndex04(): Bool =
+    let test = (c,i) -> if (i < 1) { if (Char.isUpperCase(c)) 't' else 'f' } else { if (Char.isUpperCase(c)) 'T' else 'F' };
+    String.mapWithIndex(test, "aB") == "fT"
+
+@test
+def mapWithIndex05(): Bool =
+    let test = (c,i) -> if (i < 1) { if (Char.isUpperCase(c)) 't' else 'f' } else { if (Char.isUpperCase(c)) 'T' else 'F' };
+    String.mapWithIndex(test, "ab") == "fF"
+
+@test
+def mapWithIndex06(): Bool =
+    let test = (c,i) -> if (i < 1) { if (Char.isUpperCase(c)) 't' else 'f' } else { if (Char.isUpperCase(c)) 'T' else 'F' };
+    String.mapWithIndex(test, "AB") == "tT"
+
+@test
+def mapWithIndex07(): Bool =
+    let test = (c,i) -> if (i < 1) { if (Char.isUpperCase(c)) 't' else 'f' } else { if (Char.isUpperCase(c)) 'T' else 'F' };
+    String.mapWithIndex(test, "Ab") == "tF"
+
+/////////////////////////////////////////////////////////////////////////////
+// reverse                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def reverse01(): Bool =
+    String.reverse("") == ""
+
+@test
+def reverse02(): Bool =
+    String.reverse("A") == "A"
+
+@test
+def reverse03(): Bool =
+    String.reverse("Hello World") == "dlroW olleH"
+
+@test
+def reverse04(): Bool =
+    String.reverse("Hello World!") == "!dlroW olleH"
+
+@test
+def reverse05(): Bool =
+    String.reverse("Hello World!") != "!dlroW OLLEH"
+
+/////////////////////////////////////////////////////////////////////////////
+// rotateLeft                                                              //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def rotateLeft01(): Bool = String.rotateLeft(0, "") == ""
+
+@test
+def rotateLeft02(): Bool = String.rotateLeft(1, "") == ""
+
+@test
+def rotateLeft03(): Bool = String.rotateLeft(0, "a") == "a"
+
+@test
+def rotateLeft04(): Bool = String.rotateLeft(0, "ab") == "ab"
+
+@test
+def rotateLeft05(): Bool = String.rotateLeft(1, "ab") == "ba"
+
+@test
+def rotateLeft06(): Bool = String.rotateLeft(2, "ab") == "ab"
+
+@test
+def rotateLeft07(): Bool = String.rotateLeft(3, "ab") == "ba"
+
+@test
+def rotateLeft08(): Bool = String.rotateLeft(-1, "ab") == "ba"
+
+@test
+def rotateLeft09(): Bool = String.rotateLeft(0, "abc") == "abc"
+
+@test
+def rotateLeft10(): Bool = String.rotateLeft(1, "abc") == "bca"
+
+@test
+def rotateLeft11(): Bool = String.rotateLeft(2, "abc") == "cab"
+
+/////////////////////////////////////////////////////////////////////////////
+// rotateRight                                                             //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def rotateRight01(): Bool = String.rotateRight(0, "") == ""
+
+@test
+def rotateRight02(): Bool = String.rotateRight(1, "") == ""
+
+@test
+def rotateRight03(): Bool = String.rotateRight(0, "a") == "a"
+
+@test
+def rotateRight04(): Bool = String.rotateRight(0, "ab") == "ab"
+
+@test
+def rotateRight05(): Bool = String.rotateRight(1, "ab") == "ba"
+
+@test
+def rotateRight06(): Bool = String.rotateRight(2, "ab") == "ab"
+
+@test
+def rotateRight07(): Bool = String.rotateRight(3, "ab") == "ba"
+
+@test
+def rotateRight08(): Bool = String.rotateRight(-1, "ab") == "ba"
+
+@test
+def rotateRight09(): Bool = String.rotateRight(0, "abc") == "abc"
+
+@test
+def rotateRight10(): Bool = String.rotateRight(1, "abc") == "cab"
+
+@test
+def rotateRight11(): Bool = String.rotateRight(2, "abc") == "bca"
+
+/////////////////////////////////////////////////////////////////////////////
 // left                                                                    //
 /////////////////////////////////////////////////////////////////////////////
 @test
@@ -519,26 +676,5 @@ def patch27(): Bool = String.patch(4, 2, "nopq", "abcdefg") == "abcdnog"
 @test
 def patch28(): Bool = String.patch(-1, 10, "ABCDEFGH", "abcdefg") == "BCDEFGH"
 
-/////////////////////////////////////////////////////////////////////////////
-// reverse                                                                 //
-/////////////////////////////////////////////////////////////////////////////
-@test
-def reverse01(): Bool =
-    String.reverse("") == ""
 
-@test
-def reverse02(): Bool =
-    String.reverse("A") == "A"
-
-@test
-def reverse03(): Bool =
-    String.reverse("Hello World") == "dlroW olleH"
-
-@test
-def reverse04(): Bool =
-    String.reverse("Hello World!") == "!dlroW olleH"
-
-@test
-def reverse05(): Bool =
-    String.reverse("Hello World!") != "!dlroW OLLEH"
 
