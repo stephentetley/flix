@@ -126,6 +126,24 @@ namespace Array {
     ///
     /// Apply the effectful function `f` to all the elements in the array `a`.
     ///
+    pub def foreach(f: a ~> Unit, a: Array[a]): Unit & Impure =
+        let len = length(a);
+        if (len < 1) () else foreachHelper(f, a, len, 0)
+
+    ///
+    /// Helper for `foreach`.
+    ///
+    def foreachHelper(f: a ~> Unit, a: Array[a], len: Int32, i: Int32): Unit & Impure =
+        if (i >= len)
+            ()
+        else {
+            f(a[i]);
+            foreachHelper(f, a, len, i + 1)
+        }
+
+    ///
+    /// Apply the effectful function `f` to all the elements in the array `a`.
+    ///
     pub def foreachWithIndex(f: (a, Int32) ~> Unit, a: Array[a]): Unit & Impure =
         let len = length(a);
         if (len < 1) () else foreachWithIndexHelper(f, a, len, 0)

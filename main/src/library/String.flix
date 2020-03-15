@@ -143,22 +143,28 @@ namespace String {
     ///
     def flattenImpure(xs: List[String]): String & Impure =
         let sb = StringBuilder.new();
-        flattenHelper(s -> StringBuilder.appendString(sb, s), xs);
+        List.foreach(StringBuilder.appendString(sb), xs);
         StringBuilder.toString(sb)
 
     ///
-    /// Helper for `flatten`.
-    /// Note this is a generally useful function usually called `iter` that could be added
-    /// to List.
+    /// Concatenate a list of strings into a single string, inserting the separator `sep` between
+    /// each pair of strings.
     ///
-    def flattenHelper(f: a -> Unit & e, xs: List[a]): Unit & Impure = match xs with {
-        case Nil => ()
+    pub def flattenWithSep(sep: String, xs: List[String]): String & Pure = flattenWithSepImpure(sep, xs) as & Pure
+
+    ///
+    /// Helper for `flattenWithSep`.
+    ///
+    def flattenWithSepImpure(sep: String, xs: List[String]): String & Impure = match xs {
+        case Nil => ""
         case x :: rs => {
-            f(x);
-            flattenHelper(f, rs)
+            let sb = StringBuilder.new();
+            StringBuilder.appendString(sb, x);
+            let append = s -> { StringBuilder.appendString(sb, sep); StringBuilder.appendString(sb, s) };
+            List.foreach(append, rs);
+            StringBuilder.toString(sb)
         }
     }
-
 
     ///
     /// Returns the result of applying `f` to every character in `s`.
@@ -185,7 +191,6 @@ namespace String {
         let len = Int32.min(String.length(s), String.length(t));
         init(i -> f(charAt(i, s), charAt(i, t)), len)
 
-
     ///
     /// Returns `true` if the string `s` matches the `regex`.
     ///
@@ -203,8 +208,6 @@ namespace String {
     pub def hashCode(s: String): Int32 =
         import java.lang.String.hashCode();
         s.hashCode() as & Pure
-
-
 
     ///
     /// Returns the substring of `s` from index `b` (inclusive) to index `e` (exclusive).
@@ -312,7 +315,6 @@ namespace String {
     ///
     pub def takeWhile(f: Char -> Bool, s: String): String = takeWhileLeft(f, s)
 
-
     ///
     /// Returns the initial prefix of string `s` where all the chars satisfy
     /// the predicate `f`.
@@ -322,6 +324,7 @@ namespace String {
             case None => s
             case Some(i) => take(i, s)
         }
+
     ///
     /// Returns the suffix of string `s` where all the characters satisfy
     /// the predicate `f`.
@@ -393,7 +396,6 @@ namespace String {
         let len = Int32.min(length(s), length(t));
         foldLeft2Helper(f, x, len, s, t, 0)
 
-
     ///
     /// Helper function for `foldLeft2`.
     ///
@@ -404,7 +406,6 @@ namespace String {
             let x1 = f(x, charAt(i, s), charAt(i, t));
             foldLeft2Helper(f, x1, len, s, t, i+1)
         }
-
 
     ///
     /// Applies `f` to a start value `x and all elements in `s` going from right to left.
@@ -457,8 +458,6 @@ namespace String {
         case None => Nil
         case Some(c, st1) => c :: unfoldHelper(f, st1)
     }
-
-
 
     ///
     /// Returns `true` if and only if at least one char in `s` satisfies the predicate `f`.
@@ -527,7 +526,6 @@ namespace String {
             repeat(Char.toString(c), w - x) + s
         else s
 
-
     ///
     /// Pad the string `s` at the right with the supplied char `c` to fit the width `w`.
     ///
@@ -570,13 +568,15 @@ namespace String {
     /// Join the array of strings `a` with the system dependent line
     /// separator.
     ///
-    pub def unlines(_: Array[String]): String =
-        // TODO - use StringBuilder
-        //if (Array.length(a) > 0)
-        //    let a1 = Array.drop(1,a);
-        //    Array.foldLeft((ac,s) -> ac + lineSeparator() + s, a[0], a1)
-        //else ""
-        "FAIL!"
+    pub def unlines(a: Array[String]): String = unlinesImpure(a) as & Pure
+
+    ///
+    /// Helper function for `unlines`.
+    ///
+    def unlinesImpure(a: Array[String]): String & Impure =
+        let sb = StringBuilder.new();
+        Array.foreach(StringBuilder.appendLine(sb), a);
+        StringBuilder.toString(sb)
 
     ///
     /// Split the string `s` into an array of words, dividing on one or more white space characters.
@@ -587,13 +587,22 @@ namespace String {
     ///
     /// Join the array of strings `a` with a single space character.
     ///
-    pub def unwords(_: Array[String]): String =
-        // TODO - use StringBuilder
-        //if (Array.length(a) > 0) {
-        //    let a1 = Array.drop(1,a);
-        //    Array.foldLeft((ac,s) -> ac + " " + s, a[0], a1)
-        //} else ""
-        "FAIL!"
+    pub def unwords(a: Array[String]): String = unwordsImpure(a) as & Pure
+
+   ///
+   /// Helper function for `unlines`.
+   ///
+   def unwordsImpure(a: Array[String]): String & Impure =
+        let sb = StringBuilder.new();
+        let appendStr = (s,i) ->
+            if (i > 0) {
+                StringBuilder.appendChar(sb, ' ');
+                StringBuilder.appendString(sb, s)
+            } else {
+                StringBuilder.appendString(sb, s)
+            };
+       Array.foreachWithIndex(appendStr, a);
+       StringBuilder.toString(sb)
 
     ///
     /// Alias for `indexOfLeft`.
