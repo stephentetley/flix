@@ -242,6 +242,32 @@ namespace String {
     }
 
     ///
+    /// Get the leftmost `n` characters of string `s`.
+    ///
+    /// If `n <= 0` return the empty string.
+    ///
+    pub def left(n: Int32, s: String): String  =
+        if (n <= 0)
+            ""
+        else {
+            let end = String.length(s);
+            if (n > end) s else slice(0, n, s)
+        }
+
+    ///
+    /// Get the righmost `n` characters of string `s`.
+    ///
+    /// If `n <= 0` return the empty string.
+    ///
+    pub def right(n: Int32, s: String): String  =
+        if (n <= 0)
+            ""
+        else {
+            let end = String.length(s);
+            if (n > end) s else slice(end-n, end, s)
+        }
+
+    ///
     /// Optionally returns the position of the first element in `x` satisfying `f`.
     ///
     /// If nothing satisfies `f` return None.

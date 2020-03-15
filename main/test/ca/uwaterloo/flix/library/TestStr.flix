@@ -177,6 +177,89 @@ def init02(): Bool =
 def init03(): Bool =
     String.length(String.init(_ -> '*', 50)) `assertEq!` 50
 
+/////////////////////////////////////////////////////////////////////////////
+// left                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def left01(): Bool = String.left(-1, "") == ""
+
+@test
+def left02(): Bool = String.left(0, "") == ""
+
+@test
+def left03(): Bool = String.left(1, "") == ""
+
+@test
+def left04(): Bool = String.left(-1, "1") == ""
+
+@test
+def left05(): Bool = String.left(0, "1") == ""
+
+@test
+def left06(): Bool = String.left(1, "1") == "1"
+
+@test
+def left07(): Bool = String.left(2, "1") == "1"
+
+@test
+def left08(): Bool = String.left(0, "12") == ""
+
+@test
+def left09(): Bool = String.left(1, "12") == "1"
+
+@test
+def left10(): Bool = String.left(2, "12") == "12"
+
+@test
+def left11(): Bool = String.left(2, "123456") == "12"
+
+@test
+def left12(): Bool = String.left(4, "123456") == "1234"
+
+@test
+def left13(): Bool = String.left(10, "123456") == "123456"
+
+/////////////////////////////////////////////////////////////////////////////
+// right                                                                   //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def right01(): Bool = String.right(-1, "") == ""
+
+@test
+def right02(): Bool = String.right(0, "") == ""
+
+@test
+def right03(): Bool = String.right(1, "") == ""
+
+@test
+def right04(): Bool = String.right(-1, "1") == ""
+
+@test
+def right05(): Bool = String.right(0, "1") == ""
+
+@test
+def right06(): Bool = String.right(1, "1") == "1"
+
+@test
+def right07(): Bool = String.right(2, "1") == "1"
+
+@test
+def right08(): Bool = String.right(0, "12") == ""
+
+@test
+def right09(): Bool = String.right(1, "12") == "2"
+
+@test
+def right10(): Bool = String.right(2, "12") == "12"
+
+@test
+def right11(): Bool = String.right(2, "123456") == "56"
+
+@test
+def right12(): Bool = String.right(4, "123456") == "3456"
+
+@test
+def right13(): Bool = String.right(10, "123456") == "123456"
 
 /////////////////////////////////////////////////////////////////////////////
 // take                                                                    //
