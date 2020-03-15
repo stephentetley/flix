@@ -136,12 +136,12 @@ namespace String {
     ///
     /// Concatenate a list of strings into a single string.
     ///
-    pub def flatten(xs: List[String]): String & Pure = flattenImpure(xs) as & Pure
+    pub def flatten(xs: List[String]): String & Pure = flattenHelper(xs) as & Pure
 
     ///
     /// Helper for `flatten`.
     ///
-    def flattenImpure(xs: List[String]): String & Impure =
+    def flattenHelper(xs: List[String]): String & Impure =
         let sb = StringBuilder.new();
         List.foreach(StringBuilder.appendString(sb), xs);
         StringBuilder.toString(sb)
@@ -150,12 +150,12 @@ namespace String {
     /// Concatenate a list of strings into a single string, inserting the separator `sep` between
     /// each pair of strings.
     ///
-    pub def flattenWithSep(sep: String, xs: List[String]): String & Pure = flattenWithSepImpure(sep, xs) as & Pure
+    pub def flattenWithSep(sep: String, xs: List[String]): String & Pure = flattenWithSepHelper(sep, xs) as & Pure
 
     ///
     /// Helper for `flattenWithSep`.
     ///
-    def flattenWithSepImpure(sep: String, xs: List[String]): String & Impure = match xs {
+    def flattenWithSepHelper(sep: String, xs: List[String]): String & Impure = match xs {
         case Nil => ""
         case x :: rs => {
             let sb = StringBuilder.new();
@@ -170,12 +170,12 @@ namespace String {
     /// Concatenate a list of strings into a single string, inserting the separator `sep` between
     /// each pair of strings.
     ///
-    pub def flattenWithSepChar(sep: Char, xs: List[String]): String & Pure = flattenWithSepCharImpure(sep, xs) as & Pure
+    pub def flattenWithSepChar(sep: Char, xs: List[String]): String & Pure = flattenWithSepCharHelper(sep, xs) as & Pure
 
     ///
     /// Helper for `flattenWithSep`.
     ///
-    def flattenWithSepCharImpure(sep: Char, xs: List[String]): String & Impure = match xs {
+    def flattenWithSepCharHelper(sep: Char, xs: List[String]): String & Impure = match xs {
         case Nil => ""
         case x :: rs => {
             let sb = StringBuilder.new();

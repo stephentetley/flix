@@ -163,19 +163,147 @@ def toList02(): Bool = assertEq!(String.toList("ABC"), 'A' :: 'B' :: 'C' :: Nil)
 def toList03(): Bool = assertEq!(String.toList("1 2 3"), '1' :: ' ' :: '2' :: ' ' :: '3' :: Nil)
 
 /////////////////////////////////////////////////////////////////////////////
+// toArray                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def toArray01(): Bool & Impure = Array.sameElements(String.toArray(""), []: Array[Char])
+
+@test
+def toArray02(): Bool & Impure = Array.sameElements(String.toArray("ABC"), ['A', 'B', 'C'])
+
+@test
+def toArray03(): Bool & Impure = Array.sameElements(String.toArray("1 2 3"), ['1', ' ', '2', ' ', '3'])
+
+/////////////////////////////////////////////////////////////////////////////
 // init                                                                    //
 /////////////////////////////////////////////////////////////////////////////
 @test
-def init01(): Bool =
-    String.init(_ -> 'A', 0) == ""
+def init01(): Bool = String.init(_ -> 'A', 0) == ""
 
 @test
-def init02(): Bool =
-    String.init(_ -> 'A', 2) == "AA"
+def init02(): Bool = String.init(_ -> 'A', -1) == ""
 
 @test
-def init03(): Bool =
-    String.length(String.init(_ -> '*', 50)) == 50
+def init03(): Bool = String.init(_ -> 'A', 1) == "A"
+
+@test
+def init04(): Bool = String.init(_ -> 'A', 2) == "AA"
+
+@test
+def init05(): Bool =
+    let s = String.init(_ -> 'A', 50);
+    String.length(s) == 50
+
+/////////////////////////////////////////////////////////////////////////////
+// flatten                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def flatten01(): Bool = String.flatten(Nil) == ""
+
+@test
+def flatten02(): Bool = String.flatten("" :: Nil) == ""
+
+@test
+def flatten03(): Bool = String.flatten("a" :: Nil) == "a"
+
+@test
+def flatten04(): Bool = String.flatten("ab" :: Nil) == "ab"
+
+@test
+def flatten05(): Bool = String.flatten("" :: "" :: Nil) == ""
+
+@test
+def flatten06(): Bool = String.flatten("a" :: "" :: Nil) == "a"
+
+@test
+def flatten07(): Bool = String.flatten("" :: "a" :: Nil) == "a"
+
+@test
+def flatten08(): Bool = String.flatten("a" :: "b" :: Nil) == "ab"
+
+@test
+def flatten09(): Bool = String.flatten("ab" :: "cde" :: Nil) == "abcde"
+
+@test
+def flatten10(): Bool = String.flatten("a" :: "bc" :: "d" :: Nil) == "abcd"
+
+/////////////////////////////////////////////////////////////////////////////
+// flattenWithSep                                                          //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def flattenWithSep01(): Bool = String.flattenWithSep("-", Nil) == ""
+
+@test
+def flattenWithSep02(): Bool = String.flattenWithSep("-", "" :: Nil) == ""
+
+@test
+def flattenWithSep03(): Bool = String.flattenWithSep("-", "a" :: Nil) == "a"
+
+@test
+def flattenWithSep04(): Bool = String.flattenWithSep("-", "ab" :: Nil) == "ab"
+
+@test
+def flattenWithSep05(): Bool = String.flattenWithSep("-", "" :: "" :: Nil) == "-"
+
+@test
+def flattenWithSep06(): Bool = String.flattenWithSep("-", "a" :: "" :: Nil) == "a-"
+
+@test
+def flattenWithSep07(): Bool = String.flattenWithSep("-", "" :: "a" :: Nil) == "-a"
+
+@test
+def flattenWithSep08(): Bool = String.flattenWithSep("-", "a" :: "b" :: Nil) == "a-b"
+
+@test
+def flattenWithSep09(): Bool = String.flattenWithSep("-", "ab" :: "cde" :: Nil) == "ab-cde"
+
+@test
+def flattenWithSep10(): Bool = String.flattenWithSep("-", "a" :: "bc" :: "d" :: Nil) == "a-bc-d"
+
+@test
+def flattenWithSep11(): Bool = String.flattenWithSep("", "a" :: "bc" :: "d" :: Nil) == "abcd"
+
+@test
+def flattenWithSep12(): Bool = String.flattenWithSep("<>", "a" :: "bc" :: "d" :: Nil) == "a<>bc<>d"
+
+/////////////////////////////////////////////////////////////////////////////
+// flattenWithSepChar                                                      //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def flattenWithSepChar01(): Bool = String.flattenWithSepChar('-', Nil) == ""
+
+@test
+def flattenWithSepChar02(): Bool = String.flattenWithSepChar('-', "" :: Nil) == ""
+
+@test
+def flattenWithSepChar03(): Bool = String.flattenWithSepChar('-', "a" :: Nil) == "a"
+
+@test
+def flattenWithSepChar04(): Bool = String.flattenWithSepChar('-', "ab" :: Nil) == "ab"
+
+@test
+def flattenWithSepChar05(): Bool = String.flattenWithSepChar('-', "" :: "" :: Nil) == "-"
+
+@test
+def flattenWithSepChar06(): Bool = String.flattenWithSepChar('-', "a" :: "" :: Nil) == "a-"
+
+@test
+def flattenWithSepChar07(): Bool = String.flattenWithSepChar('-', "" :: "a" :: Nil) == "-a"
+
+@test
+def flattenWithSepChar08(): Bool = String.flattenWithSepChar('-', "a" :: "b" :: Nil) == "a-b"
+
+@test
+def flattenWithSepChar09(): Bool = String.flattenWithSepChar('-', "ab" :: "cde" :: Nil) == "ab-cde"
+
+@test
+def flattenWithSepChar10(): Bool = String.flattenWithSepChar('-', "a" :: "bc" :: "d" :: Nil) == "a-bc-d"
+
+@test
+def flattenWithSepChar11(): Bool = String.flattenWithSepChar(' ', "a" :: "bc" :: "d" :: Nil) == "a bc d"
+
+@test
+def flattenWithSepChar12(): Bool = String.flattenWithSepChar('/', "a" :: "bc" :: "d" :: Nil) == "a/bc/d"
 
 /////////////////////////////////////////////////////////////////////////////
 // left                                                                    //

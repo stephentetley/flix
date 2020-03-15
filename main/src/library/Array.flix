@@ -159,4 +159,25 @@ namespace Array {
             foreachWithIndexHelper(f, a, len, i + 1)
         }
 
+    ///
+    /// Returns `true` if arrays `a` and `b` have the same elements, i.e. are structurally equal.
+    ///
+    pub def sameElements(a: Array[a], b: Array[b]): Bool & Pure =
+        let alen = Array.length(a);
+        let blen = Array.length(b);
+        if (alen == blen)
+            sameElementsHelper(a, b, alen, 0) as & Pure
+        else
+            false
+
+    ///
+    /// Helper for `sameElements`.
+    ///
+    def sameElementsHelper(a: Array[a], b: Array[b], len: Int32, i: Int32): Bool & Impure =
+        if (i >= len)
+            true
+        else {
+            if (a[i] != b[i]) false else sameElementsHelper(a, b, len, i+1)
+        }
+
 }
