@@ -610,6 +610,32 @@ namespace String {
         s.replaceFirst(patt, rep) as & Pure
 
     ///
+    /// Returns `s` with the element at index `i` replaced by `a`.
+    ///
+    /// Returns `s` if `i < 0` or `i > length(xs)-1`.
+    ///
+    pub def update(i: Int32, a: Char, s: String): String =
+        let f = ix -> if (ix == i) a else charAt(ix, s);
+        init(f, length(s))
+
+    ///
+    /// Returns `s` with the `n` elements starting at index `i` replaced with the elements of `sub`.
+    ///
+    /// If any of the indices `i, i+1, i+2, ... , i+n-1` are out of range in `s` then no patching is done at these indices.
+    /// If `s` becomes depleted then no further patching is done.
+    /// If patching occurs at index `i+j` in `s`, then the element at index `j` in `sub` is used.
+    ///
+    pub def patch(i: Int32, n: Int32, sub: String, s: String): String =
+        let sublen = length(sub);
+        let f = ix ->
+            if (ix >= i && ix < i + n) {
+                let offset = ix - i;
+                if (offset < 0 || offset >= sublen) charAt(ix,s) else charAt(offset, sub)
+            } else charAt(ix, s);
+        init(f, length(s))
+
+
+    ///
     /// Indent every line in string `s` by `n` spaces.
     ///
     /// The returned string normalizes line termination characters.

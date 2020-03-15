@@ -167,15 +167,15 @@ def toList03(): Bool = assertEq!(String.toList("1 2 3"), '1' :: ' ' :: '2' :: ' 
 /////////////////////////////////////////////////////////////////////////////
 @test
 def init01(): Bool =
-    String.init(_ -> 'A', 0) `assertEq!` ""
+    String.init(_ -> 'A', 0) == ""
 
 @test
 def init02(): Bool =
-    String.init(_ -> 'A', 2) `assertEq!` "AA"
+    String.init(_ -> 'A', 2) == "AA"
 
 @test
 def init03(): Bool =
-    String.length(String.init(_ -> '*', 50)) `assertEq!` 50
+    String.length(String.init(_ -> '*', 50)) == 50
 
 /////////////////////////////////////////////////////////////////////////////
 // left                                                                    //
@@ -265,40 +265,152 @@ def right13(): Bool = String.right(10, "123456") == "123456"
 // take                                                                    //
 /////////////////////////////////////////////////////////////////////////////
 @test
-def take01(): Bool = String.take(-1, "") `assertEq!` ""
+def take01(): Bool = String.take(-1, "") == ""
 
 @test
-def take02(): Bool = String.take(0, "") `assertEq!` ""
+def take02(): Bool = String.take(0, "") == ""
 
 @test
-def take03(): Bool = String.take(1, "") `assertEq!` ""
+def take03(): Bool = String.take(1, "") == ""
 
 @test
-def take04(): Bool = String.take(-1, "1") `assertEq!` ""
+def take04(): Bool = String.take(-1, "1") == ""
 
 @test
-def take05(): Bool = String.take(0, "1") `assertEq!` ""
+def take05(): Bool = String.take(0, "1") == ""
 
 @test
-def take06(): Bool = String.take(1, "1") `assertEq!` "1"
+def take06(): Bool = String.take(1, "1") == "1"
 
 @test
-def take07(): Bool = String.take(2, "1") `assertEq!` "1"
+def take07(): Bool = String.take(2, "1") == "1"
 
 @test
-def take08(): Bool = String.take(0, "12") `assertEq!` ""
+def take08(): Bool = String.take(0, "12") == ""
 
 @test
-def take09(): Bool = String.take(1, "12") `assertEq!` "1"
+def take09(): Bool = String.take(1, "12") == "1"
 
 @test
-def take10(): Bool = String.take(2, "12") `assertEq!` "12"
+def take10(): Bool = String.take(2, "12") == "12"
 
 @test
-def take11(): Bool = String.take(2, "123456") `assertEq!` "12"
+def take11(): Bool = String.take(2, "123456") == "12"
 
 @test
-def take12(): Bool = String.take(4, "123456") `assertEq!` "1234"
+def take12(): Bool = String.take(4, "123456") == "1234"
 
 @test
-def take13(): Bool = String.take(10, "123456") `assertEq!` "123456"
+def take13(): Bool = String.take(10, "123456") == "123456"
+
+
+/////////////////////////////////////////////////////////////////////////////
+// patch                                                                   //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def patch01(): Bool = String.patch(0, 0, "", "") == ""
+
+@test
+def patch02(): Bool = String.patch(0, 2, "ab", "") == ""
+
+@test
+def patch03(): Bool = String.patch(0, 2, "", "ab") == "ab"
+
+@test
+def patch04(): Bool = String.patch(-3, 3, "abd", "ab") == "ab"
+
+@test
+def patch05(): Bool = String.patch(2, 3, "abd", "ab") == "ab"
+
+@test
+def patch06(): Bool = String.patch(0, 0, "", "a") == "a"
+
+@test
+def patch07(): Bool = String.patch(1, 0, "b", "a") == "a"
+
+@test
+def patch08(): Bool = String.patch(0, 1, "b", "a") == "b"
+
+@test
+def patch09(): Bool = String.patch(0, 2, "bd", "a") == "b"
+
+@test
+def patch10(): Bool = String.patch(-1, 2, "bd", "a") == "d"
+
+@test
+def patch11(): Bool = String.patch(-1, 2, "cd", "ab") == "db"
+
+@test
+def patch12(): Bool = String.patch(1, 2, "cd", "ab") == "ac"
+
+@test
+def patch13(): Bool = String.patch(-2, 2, "cd", "ab") == "ab"
+
+@test
+def patch14(): Bool = String.patch(2, 2, "cd", "ab") == "ab"
+
+@test
+def patch15(): Bool = String.patch(1, 1, "c", "ab") == "ac"
+
+@test
+def patch16(): Bool = String.patch(0, 2, "cd", "ab") == "cd"
+
+@test
+def patch17(): Bool = String.patch(0, 1, "d", "abc") == "dbc"
+
+@test
+def patch18(): Bool = String.patch(1, 1, "d", "abc") == "adc"
+
+@test
+def patch19(): Bool = String.patch(2, 1, "d", "abc") == "abd"
+
+@test
+def patch20(): Bool = String.patch(0, 2, "de", "abc") == "dec"
+
+@test
+def patch21(): Bool = String.patch(1, 2, "de", "abc") == "ade"
+
+@test
+def patch22(): Bool = String.patch(0, 2, "def", "abc") == "dec"
+
+@test
+def patch23(): Bool = String.patch(0, 3, "def", "abc") == "def"
+
+@test
+def patch24(): Bool = String.patch(2, 4, "nopq", "abcdefg") == "abnopqg"
+
+@test
+def patch25(): Bool = String.patch(-2, 4, "nopq", "abcdefg") == "pqcdefg"
+
+@test
+def patch26(): Bool = String.patch(4, 5, "nopq", "abcdefg") == "abcdnop"
+
+@test
+def patch27(): Bool = String.patch(4, 2, "nopq", "abcdefg") == "abcdnog"
+
+@test
+def patch28(): Bool = String.patch(-1, 10, "ABCDEFGH", "abcdefg") == "BCDEFGH"
+
+/////////////////////////////////////////////////////////////////////////////
+// reverse                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def reverse01(): Bool =
+    String.reverse("") == ""
+
+@test
+def reverse02(): Bool =
+    String.reverse("A") == "A"
+
+@test
+def reverse03(): Bool =
+    String.reverse("Hello World") == "dlroW olleH"
+
+@test
+def reverse04(): Bool =
+    String.reverse("Hello World!") == "!dlroW olleH"
+
+@test
+def reverse05(): Bool =
+    String.reverse("Hello World!") != "!dlroW OLLEH"
+
