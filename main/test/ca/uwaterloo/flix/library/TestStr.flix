@@ -119,10 +119,12 @@ def length02(): Bool = assertEq!(String.length("0123456789"), 10)
 // split                                                                   //
 /////////////////////////////////////////////////////////////////////////////
 @test
-def split01(): Bool = assertEq!(Array.toList(String.split("", "\s+")), "" :: Nil)
+def split01(): Bool & Impure =
+    assertEq!(Array.toList(String.split("", "\s+")), "" :: Nil)
 
 @test
-def split02(): Bool = assertEq!(Array.length(String.split("1 3", "\s+")), 2)
+def split02(): Bool & Impure =
+    assertEq!(Array.length(String.split("1 3", "\s+")), 2)
 
 /////////////////////////////////////////////////////////////////////////////
 // toLowerCase                                                             //

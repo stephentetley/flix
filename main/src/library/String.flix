@@ -117,21 +117,20 @@ namespace String {
         if (len <= 0)
             ""
         else {
-            let c = f(0);
-            let a = Array.new(c, len); // a does not escape
-            initHelper(a, f, len, 1);
-            Array.mkStringBy(Char.toString, "", a)// TODO - use something more efficient
+            let sb = StringBuilder.new();
+            initHelper(sb, f, len, 0);
+            StringBuilder.toString(sb)
         }
 
     ///
     /// Helper function for `init`.
     ///
-    def initHelper(a: Array[Char], f: Int32 -> Char, len: Int32, i: Int32): Unit & Impure =
+    def initHelper(sb: StringBuilder, f: Int32 -> Char, len: Int32, i: Int32): Unit & Impure =
         if (i >= len)
             ()
         else {
-            Array.put(a, i, f(i));
-            initHelper(a, f, len, i+1)
+            StringBuilder.appendChar(sb, f(i));
+            initHelper(sb, f, len, i+1)
         }
 
     ///
