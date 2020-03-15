@@ -635,4 +635,24 @@ namespace String {
         let start = length(s) - 1;
         init(i -> charAt(start - i, s), start+1)
 
+    /////////////////////////////////////////////////////////////////////////////
+    // Lints                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    ///
+    /// Simplifications.
+    ///
+
+    @lint
+    def leftConcatenateEmptyString(): Bool =
+        forall (s: String). ("" + s) === s
+
+    @lint
+    def rightConcatenateEmptyString(): Bool =
+        forall (s: String). (s + "") === s
+
+    @lint
+    def trimTrim(): Bool =
+        forall (s: String). trim(trim(s)) === trim(s)
+
 }
