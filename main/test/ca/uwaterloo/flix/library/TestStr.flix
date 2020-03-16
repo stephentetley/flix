@@ -588,7 +588,6 @@ def take12(): Bool = String.take(4, "123456") == "1234"
 @test
 def take13(): Bool = String.take(10, "123456") == "123456"
 
-
 /////////////////////////////////////////////////////////////////////////////
 // patch                                                                   //
 /////////////////////////////////////////////////////////////////////////////
@@ -676,5 +675,98 @@ def patch27(): Bool = String.patch(4, 2, "nopq", "abcdefg") == "abcdnog"
 @test
 def patch28(): Bool = String.patch(-1, 10, "ABCDEFGH", "abcdefg") == "BCDEFGH"
 
+/////////////////////////////////////////////////////////////////////////////
+// commonPrefix                                                            //
+/////////////////////////////////////////////////////////////////////////////
 
+@test
+def commonPrefix01(): Bool =
+    String.commonPrefix("", "") == ""
 
+@test
+def commonPrefix02(): Bool =
+    String.commonPrefix("a", "") == ""
+
+@test
+def commonPrefix03(): Bool =
+    String.commonPrefix("", "a") == ""
+
+@test
+def commonPrefix04(): Bool =
+    String.commonPrefix("a", "a") == "a"
+
+@test
+def commonPrefix05(): Bool =
+    String.commonPrefix("a", "b") == ""
+
+@test
+def commonPrefix06(): Bool =
+    String.commonPrefix("ab", "bc") == ""
+
+@test
+def commonPrefix07(): Bool =
+    String.commonPrefix("ab", "ac") == "a"
+
+@test
+def commonPrefix08(): Bool =
+    String.commonPrefix("ab", "ab") == "ab"
+
+@test
+def commonPrefix09(): Bool =
+    String.commonPrefix("abc", "ABC") == ""
+
+@test
+def commonPrefix10(): Bool =
+    String.commonPrefix("abc", "abcd") == "abc"
+
+@test
+def commonPrefix11(): Bool =
+    String.commonPrefix("abcd", "abc") == "abc"
+
+/////////////////////////////////////////////////////////////////////////////
+// commonSuffix                                                            //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def commonSuffix01(): Bool =
+    String.commonSuffix("", "") == ""
+
+@test
+def commonSuffix02(): Bool =
+    String.commonSuffix("a", "") == ""
+
+@test
+def commonSuffix03(): Bool =
+    String.commonSuffix("", "a") == ""
+
+@test
+def commonSuffix04(): Bool =
+    String.commonSuffix("a", "a") == "a"
+
+@test
+def commonSuffix05(): Bool =
+    String.commonSuffix("a", "b") == ""
+
+@test
+def commonSuffix06(): Bool =
+    String.commonSuffix("ab", "bc") == ""
+
+@test
+def commonSuffix07(): Bool =
+    String.commonSuffix("ab", "_b") == "b"
+
+@test
+def commonSuffix08(): Bool =
+    String.commonSuffix("ab", "ab") == "ab"
+
+@test
+def commonSuffix09(): Bool =
+    String.commonSuffix("abc", "ABC") == ""
+
+@test
+def commonSuffix10(): Bool =
+    String.commonSuffix("bcd", "abcd") == "bcd"
+
+@test
+def commonSuffix11(): Bool =
+    String.commonSuffix("abcd", "bcd") == "bcd"

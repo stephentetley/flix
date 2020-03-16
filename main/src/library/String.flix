@@ -308,7 +308,7 @@ namespace String {
     /// Get the righmost `n` characters of string `s`.
     ///
     /// If `n <= 0` return the empty string.
-    ///
+    /// TODO - this is just takeRight, change it to "right of pivot..."
     pub def right(n: Int32, s: String): String  =
         if (n <= 0)
             ""
@@ -771,6 +771,36 @@ namespace String {
     pub def contains(s: String, substring: String): Bool =
         let a = indexOfLeft(s, substring);
         !Option.isEmpty(a)
+
+    pub def commonPrefix(s1: String, s2: String): String =
+        let len1 = length(s1);
+        let len2 = length(s2);
+        commonPrefixHelper(s1, s2, len1, len2, 0)
+
+    def commonPrefixHelper(s1: String, s2: String, len1: Int32, len2: Int32, ix: Int32): String =
+        if (ix >= len1 || ix >= len2)
+            left(ix, s1)
+        else {
+            let c1 = charAt(ix, s1);
+            let c2 = charAt(ix, s2);
+            if (c1 == c2) commonPrefixHelper(s1, s2, len1, len2, ix+1) else left(ix, s1)
+        }
+
+    pub def commonSuffix(s1: String, s2: String): String =
+        let len1 = length(s1);
+        let len2 = length(s2);
+        commonSuffixHelper(s1, s2, len1 - 1, len2 - 1, 0)
+
+    def commonSuffixHelper(s1: String, s2: String, ix1: Int32, ix2: Int32, ac: Int32): String =
+        if (ix1 < 0)
+            s1
+        else if (ix2 < 0)
+            s2
+        else {
+            let c1 = charAt(ix1, s1);
+            let c2 = charAt(ix2, s2);
+            if (c1 == c2) commonSuffixHelper(s1, s2, ix1-1, ix2-1, ac+1) else right(ac, s1)
+       }
 
     /////////////////////////////////////////////////////////////////////////////
     // Lints                                                                   //
