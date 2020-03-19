@@ -20,7 +20,7 @@
 opaque type Pattern = ##java.util.regex.Pattern
 
 ///
-/// Represents a matching engine for a Pattern.
+/// Represents a mutable, matching engine for a Pattern.
 ///
 opaque type Matcher = ##java.util.regex.Matcher
 
@@ -63,5 +63,54 @@ namespace Regex {
         import java.util.regex.Matcher.matches();
         let Matcher(m1) = m;
         m1.matches() as & Pure
+
+    ///
+    ///  __ find __
+    ///
+    pub def find(m: Matcher): Bool & Impure =
+        import java.util.regex.Matcher.find();
+        let Matcher(m1) = m;
+        m1.find()
+
+    ///
+    ///  __ start __
+    ///
+    pub def start(m: Matcher): Int32 & Impure =
+        import java.util.regex.Matcher.start();
+        let Matcher(m1) = m;
+        m1.start()
+
+    ///
+    ///  __ end __
+    ///
+    pub def end(m: Matcher): Int32 & Impure =
+        import java.util.regex.Matcher.end();
+        let Matcher(m1) = m;
+        m1.end()
+
+    ///
+    ///  __ group __
+    ///
+    pub def group(m: Matcher): String & Impure =
+        import java.util.regex.Matcher.group();
+        let Matcher(m1) = m;
+        m1.group()
+
+    ///
+    ///  __ namedGroup __
+    ///
+    pub def namedGroup(m: Matcher, name: String): String & Impure =
+        import java.util.regex.Matcher.group(String);
+        let Matcher(m1) = m;
+        m1.group(name)
+
+    ///
+    ///  __ reset __
+    ///
+    pub def reset(m: Matcher): Unit & Impure =
+        import java.util.regex.Matcher.reset();
+        let Matcher(m1) = m;
+        m1.reset();
+        ()
 
 }
