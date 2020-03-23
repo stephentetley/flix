@@ -52,12 +52,13 @@ namespace Regex {
     /// Create a matcher for Pattern `patt` on the source String `input`.
     ///
     pub def matcher(patt: Pattern, input: String): Matcher =
-        import flix.runtime.library.RegexWrapper:matcher(##java.util.regex.Pattern, String);
+        import java.util.regex.Pattern.matcher(##java.lang.CharSequence);
         let Pattern(p1) = patt;
-        Matcher(matcher(p1, input) as & Pure)
+        let input1 = input as ##java.lang.CharSequence;
+        Matcher(p1.matcher(input1)) as & Pure
 
     ///
-    /// Create a matcher for Pattern `patt` on the source String `input`.
+    /// Asserts whether them Matcher `m` matches its entire input.
     ///
     pub def matches(m: Matcher): Bool =
         import java.util.regex.Matcher.matches();

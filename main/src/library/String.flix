@@ -292,30 +292,23 @@ namespace String {
     }
 
     ///
-    /// Get the leftmost `n` characters of string `s`.
+    /// Get the sequence of characters to the left of index 'i' from string `s`.
     ///
-    /// If `n <= 0` return the empty string.
-    ///
-    pub def left(n: Int32, s: String): String  =
-        if (n <= 0)
-            ""
-        else {
-            let end = String.length(s);
-            if (n > end) s else slice(0, n, s)
-        }
+    pub def leftOfIndex(i: Int32, s: String): String  =
+        if (i > length(s)) s else slice(0, i, s)
+
 
     ///
-    /// Get the righmost `n` characters of string `s`.
+    /// Get the sequence of characters to the right of index 'i' from string `s`.
     ///
-    /// If `n <= 0` return the empty string.
-    /// TODO - this is just takeRight, change it to "right of pivot..."
-    pub def right(n: Int32, s: String): String  =
-        if (n <= 0)
-            ""
+    pub def rightOfIndex(i: Int32, s: String): String  =
+        if (i < 0)
+            s
         else {
             let end = String.length(s);
-            if (n > end) s else slice(end-n, end, s)
+            slice(i+1, end, s)
         }
+
 
     ///
     /// Optionally returns the position of the first element in `x` satisfying `f`.
@@ -635,8 +628,10 @@ namespace String {
     /// Returns `s` with every match of the substring `target` replaced by the string `rep`.
     ///
     pub def replace(target: String, rep: String, s: String): String =
-        import flix.runtime.library.StringWrapper:replace(String, String, String);
-        replace(target, rep, s) as & Pure
+        import java.lang.String.replace(##java.lang.CharSequence, ##java.lang.CharSequence);
+        let t = target as ##java.lang.CharSequence;
+        let r = rep as ##java.lang.CharSequence;
+        s.replace(t, r) as & Pure
 
     ///
     /// Returns `s` with every match of the character `target` replaced by the character `rep`.
@@ -779,11 +774,11 @@ namespace String {
 
     def commonPrefixHelper(s1: String, s2: String, len1: Int32, len2: Int32, ix: Int32): String =
         if (ix >= len1 || ix >= len2)
-            left(ix, s1)
+            takeLeft(ix, s1)
         else {
             let c1 = charAt(ix, s1);
             let c2 = charAt(ix, s2);
-            if (c1 == c2) commonPrefixHelper(s1, s2, len1, len2, ix+1) else left(ix, s1)
+            if (c1 == c2) commonPrefixHelper(s1, s2, len1, len2, ix+1) else takeLeft(ix, s1)
         }
 
     pub def commonSuffix(s1: String, s2: String): String =
@@ -799,7 +794,7 @@ namespace String {
         else {
             let c1 = charAt(ix1, s1);
             let c2 = charAt(ix2, s2);
-            if (c1 == c2) commonSuffixHelper(s1, s2, ix1-1, ix2-1, ac+1) else right(ac, s1)
+            if (c1 == c2) commonSuffixHelper(s1, s2, ix1-1, ix2-1, ac+1) else takeRight(ac, s1)
        }
 
     /////////////////////////////////////////////////////////////////////////////
