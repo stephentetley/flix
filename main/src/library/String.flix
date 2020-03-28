@@ -102,7 +102,7 @@ namespace String {
     ///
     /// Returns the given string `s` as an array of characters.
     ///
-    pub def toArray(s: Str): Array[Char] =
+    pub def toArray(s: Str): Array[Char] & Impure =
         Array.init(i -> charAt(i, s), length(s))
 
     ///

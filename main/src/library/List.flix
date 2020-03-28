@@ -825,7 +825,7 @@ namespace List {
     ///
     /// Returns the list `xs` as an array.
     ///
-    pub def toArray(xs: List[a]) : Array[a] = match head(xs) {
+    pub def toArray(xs: List[a]) : Array[a] & Impure = match head(xs) {
         case None => []
         case Some(x) =>
             let a = Array.new(x, length(xs));
