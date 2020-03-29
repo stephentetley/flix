@@ -790,6 +790,53 @@ namespace String {
             if (c1 == c2) commonSuffixHelper(s1, s2, ix1-1, ix2-1, ac+1) else takeRight(ac, s1)
        }
 
+    ///
+    /// Calculate the Levenshtein distance between the strings `s` and `t`.
+    ///
+    /// The answer is the number deletions, insertions or substitutions needed to turn
+    /// string `s` into string `t`.
+    ///
+    pub def levenshteinDistance(s: String, t: String) : Int32 = levenshteinDistanceHelper(s, t) as & Pure
+
+    ///
+    /// Helper for `levenshteinDistance`.
+    ///
+    /// This is the Wikipedia two-matrix rows algorithm
+    /// https://en.wikipedia.org/wiki/Levenshtein_distance#Iterative_with_two_matrix_rows
+    ///
+    def levenshteinDistanceHelper(s: String, t: String) : Int32 & Impure =
+        let m = String.length(s);
+        let n = String.length(t);
+        let v0 = Array.new(0, n+1);
+        let v1 = Array.new(0, n+1);
+        forIndex(0, n, i -> v0[i] = i );
+        forIndex(0, m-1, i -> {
+            v1[0] = i + 1;
+            forIndex(0, n-1, j -> {
+                let substitutionCost = if (String.charAt(i, s) == String.charAt(j, t)) 0 else 1;
+                let a = v1[j] + 1;
+                let b = v0[j + 1] + 1;
+                let c = v0[j] + substitutionCost;
+                v1[j+1] = Int32.min(a, Int32.min(b, c))
+            });
+            arraySwap(v0,v1)
+        });
+        v0[n]
+
+    ///
+    /// Helper for `levenshteinDistance`.
+    ///
+    /// A for loop end point `e` is inclusive.
+    ///
+    def forIndex(b: Int32, e: Int32, f: Int32 ~> Unit): Unit & Impure =
+        if (b <= e) { f(b); forIndex(b+1, e, f) } else ()
+
+    ///
+    /// Helper for `levenshteinDistance`.
+    ///
+    def arraySwap(a: Array[Int32], b : Array[Int32]): Unit & Impure =
+        forIndex(0, Array.length(a) - 1, {i ->  a[i] = b[i]})
+
     /////////////////////////////////////////////////////////////////////////////
     // Lints                                                                   //
     /////////////////////////////////////////////////////////////////////////////

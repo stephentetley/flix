@@ -686,3 +686,35 @@ def commonSuffix10(): Bool =
 @test
 def commonSuffix11(): Bool =
     String.commonSuffix("abcd", "bcd") == "bcd"
+
+/////////////////////////////////////////////////////////////////////////////
+// commonSuffix                                                            //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def levenshteinDistance01(): Bool =
+    String.levenshteinDistance("", "") == 0
+
+@test
+def levenshteinDistance02(): Bool =
+    String.levenshteinDistance("A", "") == 1
+
+@test
+def levenshteinDistance03(): Bool =
+    String.levenshteinDistance("", "A") == 1
+
+@test
+def levenshteinDistance04(): Bool =
+    String.levenshteinDistance("A", "A") == 0
+
+@test
+def levenshteinDistance05(): Bool =
+    String.levenshteinDistance("kitten", "sitting") == 3
+
+@test
+def levenshteinDistance06(): Bool =
+    String.levenshteinDistance("Saturday", "Sunday") == 3
+
+@test
+def levenshteinDistance07(): Bool =
+    String.levenshteinDistance("Gumbo", "Gambol") == 2
