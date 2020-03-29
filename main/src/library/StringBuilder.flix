@@ -123,9 +123,57 @@ namespace StringBuilder {
     ///
     /// Append the String `s` followed by the system line separator to the StringBuilder `sb`.
     ///
-    pub def appendLine(sb: StringBuilder, s: Str): Unit & Impure =
+    pub def appendLine(sb: StringBuilder, s: String): Unit & Impure =
         sb.appendString(s);
         sb.appendLineSeparator()
+
+    ///
+    /// Use the function `f` to converted the element `x` to a string with `f` append it, followed by the
+    /// system line separator, to the StringBuilder `sb`.
+    ///
+    pub def appendLineBy(sb: StringBuilder, f: a -> String, x: a): Unit & Impure =
+        sb.appendString(f(x));
+        sb.appendLineSeparator()
+
+    ///
+    /// Append the each string in array `a` as a separate line to the StringBuilder `sb`.
+    ///
+    pub def appendLines(sb: StringBuilder, a: Array[String]): Unit & Impure =
+        Array.foreach(appendLine(sb), a)
+
+    ///
+    /// Append the each element in array `a` as a separate line to the StringBuilder `sb`, using `f`.
+    /// to convert each element of `a` to a String.
+    ///
+    pub def appendLinesBy(sb: StringBuilder, f: a -> String, a: Array[a]): Unit & Impure =
+        Array.foreach(appendLineBy(sb, f), a)
+
+    ///
+    /// Append the array of strings `a` separating each pair of string with `sep` to the StringBuilder `sb`.
+    ///
+    pub def appendWithSep(sb: StringBuilder, sep: String, a: Array[String]): Unit & Impure =
+        let append1 = (s,i) ->
+            if (i > 0) {
+                appendString(sb, sep);
+                appendString(sb, s)
+            } else {
+                appendString(sb, s)
+            };
+       Array.foreachWithIndex(append1, a)
+
+    ///
+    /// Append the array `a` separating each pair of string with `sep` to the StringBuilder `sb`, using `f`
+    /// to convert each element of `a` to a String.
+    ///
+    pub def appendWithSepBy(sb: StringBuilder, f: a -> String, sep: String, a: Array[a]): Unit & Impure =
+        let append1 = (x,i) ->
+            if (i > 0) {
+                appendString(sb, sep);
+                appendString(sb, f(x))
+            } else {
+                appendString(sb, f(x))
+            };
+       Array.foreachWithIndex(append1, a)
 
     ///
     /// Return the length of the StringBuilder `sb`.

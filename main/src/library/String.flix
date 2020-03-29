@@ -725,15 +725,8 @@ namespace String {
    ///
    def unwordsImpure(a: Array[String]): String & Impure =
         let sb = StringBuilder.new();
-        let appendStr = (s,i) ->
-            if (i > 0) {
-                StringBuilder.appendChar(sb, ' ');
-                StringBuilder.appendString(sb, s)
-            } else {
-                StringBuilder.appendString(sb, s)
-            };
-       Array.foreachWithIndex(appendStr, a);
-       StringBuilder.toString(sb)
+        StringBuilder.appendWithSep(sb, " ", a);
+        StringBuilder.toString(sb)
 
     ///
     /// Alias for `indexOfLeft`.
