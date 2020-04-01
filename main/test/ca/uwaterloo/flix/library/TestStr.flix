@@ -1,3 +1,21 @@
+/*
+ * Copyright 2019 Magnus Madsen, Stephen Tetley
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+namespace TestStr {
+
 /////////////////////////////////////////////////////////////////////////////
 // concat                                                                  //
 /////////////////////////////////////////////////////////////////////////////
@@ -847,3 +865,46 @@ def levenshteinDistance06(): Bool =
 @test
 def levenshteinDistance07(): Bool =
     String.levenshteinDistance("Gumbo", "Gambol") == 2
+
+
+/////////////////////////////////////////////////////////////////////////////
+// equalsCI                                                                //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def equalsCI01(): Bool =
+    String.equalsCI("", "") == true
+
+@test
+def equalsCI02(): Bool =
+    String.equalsCI("Hello World", "") == false
+
+@test
+def equalsCI03(): Bool =
+    String.equalsCI("", "Hello World") == false
+
+@test
+def equalsCI04(): Bool =
+    String.equalsCI("Hello World", "Hello World") == true
+
+@test
+def equalsCI05(): Bool =
+    String.equalsCI("Hello World", "HELLO WORLD") == true
+
+@test
+def equalsCI06(): Bool =
+    String.equalsCI("Hello World", "hello world") == true
+
+@test
+def equalsCI07(): Bool =
+    String.equalsCI("Hello World", "hELLO wORLD") == true
+
+@test
+def equalsCI08(): Bool =
+    String.equalsCI("hello world", "HELLO WORLD") == true
+
+@test
+def equalsCI09(): Bool =
+    String.equalsCI("hello world", "HELLO WORLD!") == false
+
+}

@@ -67,12 +67,16 @@ namespace String {
     //
     // Returns the lower case version of the string `s`.
     //
+    // Note this uses the default locale of the JVM.
+    //
     pub def toLowerCase(s: String): String =
         import java.lang.String.toLowerCase();
         s.toLowerCase() as & Pure
 
     //
     // Returns the upper case version of the string `s`.
+    //
+    // Note this uses the default locale of the JVM.
     //
     pub def toUpperCase(s: String): String =
         import java.lang.String.toUpperCase();
@@ -869,6 +873,17 @@ namespace String {
     ///
     def arraySwap(a: Array[Int32], b : Array[Int32]): Unit & Impure =
         forIndex(0, Array.length(a) - 1, {i ->  a[i] = b[i]})
+
+
+    ///
+    /// Test equality of strings `s1` and `s2` ignoring case.
+    ///
+    /// TODO - name?
+    /// TODO - should we use Collator?
+    ///
+    pub def equalsCI(s1: String, s2: String): Bool =
+         import java.lang.String.equalsIgnoreCase(String);
+         s1.equalsIgnoreCase(s2) as & Pure
 
     /////////////////////////////////////////////////////////////////////////////
     // Lints                                                                   //
