@@ -315,14 +315,14 @@ namespace String {
     ///
     /// If nothing satisfies `f` return None.
     ///
-    pub def findIndexOfLeft(f: a -> Bool, s: String): Option[Int] =
+    pub def findIndexOfLeft(f: Char -> Bool, s: String): Option[Int] =
         let i = findIndexOfLeftHelper(f, s, length(s), 0);
         if (i < 0) None else Some(i)
 
     ///
     /// Helper function for `findIndexOf`.
     ///
-    def findIndexOfLeftHelper(f: a -> Bool, s: String, len: Int32, i: Int32): Int32 =
+    def findIndexOfLeftHelper(f: Char -> Bool, s: String, len: Int32, i: Int32): Int32 =
         if (i >= len)
             -1
         else
@@ -333,7 +333,7 @@ namespace String {
     ///
     /// If nothing satisfies `f` return None.
     ///
-    pub def findIndexOfRight(f: a -> Bool, s: String): Option[Int] =
+    pub def findIndexOfRight(f: Char -> Bool, s: String): Option[Int] =
         let end = length(s) - 1;
         let i = findIndexOfRightHelper(f, s, end);
         if (i < 0) None else Some(i)
@@ -341,7 +341,7 @@ namespace String {
     ///
     /// Helper function for `findIndexOf`.
     ///
-    def findIndexOfRightHelper(f: a -> Bool, s: String, i: Int32): Int32 =
+    def findIndexOfRightHelper(f: Char -> Bool, s: String, i: Int32): Int32 =
         if (i < 0)
             -1
         else
@@ -791,6 +791,39 @@ namespace String {
        }
 
     ///
+    /// Abbreviate the string `s` if it exceeds the width `w`.
+    ///
+    /// If the length of `s` exceeds `w` and `w >= 3" then `s` is truncated and the first
+    /// three characters are replaced with ellipses.
+    ///
+    /// If the length of `s` exceeds `w` and `w < 3" then the empty string is returned.
+    ///
+    pub def abbreviateLeft(w: Int32, s: String): String =
+        match length(s) {
+            case len if len < w => s
+            case _   if w < 3   => ""
+            case len            => {
+                let start = len - w + 3;
+                "..." + slice(start, len, s)
+            }
+        }
+
+    ///
+    /// Abbreviate the string `s` if it exceeds the width `w`.
+    ///
+    /// If the length of `s` exceeds `w` and `w >= 3" then `s` is truncated and the last
+    /// three characters are replaced with ellipses.
+    ///
+    /// If the length of `s` exceeds `w` and `w < 3" then the empty string is returned.
+    ///
+    pub def abbreviateRight(w: Int32, s: String): String =
+        match length(s) {
+            case len if len < w => s
+            case _   if w < 3   => ""
+            case _              => slice(0, w - 3, s) + "..."
+        }
+
+    ///
     /// Calculate the Levenshtein distance between the strings `s` and `t`.
     ///
     /// The answer is the number deletions, insertions or substitutions needed to turn
@@ -826,7 +859,7 @@ namespace String {
     ///
     /// Helper for `levenshteinDistance`.
     ///
-    /// A for loop end point `e` is inclusive.
+    /// This implements a forloop, the end point `e` is inclusive.
     ///
     def forIndex(b: Int32, e: Int32, f: Int32 ~> Unit): Unit & Impure =
         if (b <= e) { f(b); forIndex(b+1, e, f) } else ()

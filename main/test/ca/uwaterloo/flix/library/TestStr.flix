@@ -688,7 +688,136 @@ def commonSuffix11(): Bool =
     String.commonSuffix("abcd", "bcd") == "bcd"
 
 /////////////////////////////////////////////////////////////////////////////
-// commonSuffix                                                            //
+// abbreviateLeft                                                          //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def abbreviateLeft01(): Bool =
+    String.abbreviateLeft(0, "") == ""
+
+@test
+def abbreviateLeft02(): Bool =
+    String.abbreviateLeft(0, "a") == ""
+
+@test
+def abbreviateLeft03(): Bool =
+    String.abbreviateLeft(0, "abcde") == ""
+
+@test
+def abbreviateLeft04(): Bool =
+    String.abbreviateLeft(1, "") == ""
+
+@test
+def abbreviateLeft05(): Bool =
+    String.abbreviateLeft(1, "a") == ""
+
+@test
+def abbreviateLeft06(): Bool =
+    String.abbreviateLeft(1, "abcde") == ""
+
+@test
+def abbreviateLeft07(): Bool =
+    String.abbreviateLeft(3, "") == ""
+
+@test
+def abbreviateLeft08(): Bool =
+    String.abbreviateLeft(3, "a") == "a"
+
+@test
+def abbreviateLeft09(): Bool =
+    String.abbreviateLeft(3, "abcde") == "..."
+
+@test
+def abbreviateLeft10(): Bool =
+    String.abbreviateLeft(4, "") == ""
+
+@test
+def abbreviateLeft11(): Bool =
+    String.abbreviateLeft(4, "a") == "a"
+
+@test
+def abbreviateLeft12(): Bool =
+    String.abbreviateLeft(4, "abcde") == "...e"
+
+@test
+def abbreviateLeft13(): Bool =
+    String.abbreviateLeft(5, "") == ""
+
+@test
+def abbreviateLeft14(): Bool =
+    String.abbreviateLeft(5, "a") == "a"
+
+@test
+def abbreviateLeft15(): Bool =
+    String.abbreviateLeft(5, "abcde") == "...de"
+
+
+/////////////////////////////////////////////////////////////////////////////
+// abbreviateRight                                                         //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def abbreviateRight01(): Bool =
+    String.abbreviateRight(0, "") == ""
+
+@test
+def abbreviateRight02(): Bool =
+    String.abbreviateRight(0, "a") == ""
+
+@test
+def abbreviateRight03(): Bool =
+    String.abbreviateRight(0, "abcde") == ""
+
+@test
+def abbreviateRight04(): Bool =
+    String.abbreviateRight(1, "") == ""
+
+@test
+def abbreviateRight05(): Bool =
+    String.abbreviateRight(1, "a") == ""
+
+@test
+def abbreviateRight06(): Bool =
+    String.abbreviateRight(1, "abcde") == ""
+
+@test
+def abbreviateRight07(): Bool =
+    String.abbreviateRight(3, "") == ""
+
+@test
+def abbreviateRight08(): Bool =
+    String.abbreviateRight(3, "a") == "a"
+
+@test
+def abbreviateRight09(): Bool =
+    String.abbreviateRight(3, "abcde") == "..."
+
+@test
+def abbreviateRight10(): Bool =
+    String.abbreviateRight(4, "") == ""
+
+@test
+def abbreviateRight11(): Bool =
+    String.abbreviateRight(4, "a") == "a"
+
+@test
+def abbreviateRight12(): Bool =
+    String.abbreviateRight(4, "abcde") == "a..."
+
+@test
+def abbreviateRight13(): Bool =
+    String.abbreviateRight(5, "") == ""
+
+@test
+def abbreviateRight14(): Bool =
+    String.abbreviateRight(5, "a") == "a"
+
+@test
+def abbreviateRight15(): Bool =
+    String.abbreviateRight(5, "abcde") == "ab..."
+
+/////////////////////////////////////////////////////////////////////////////
+// levenshteinDistance                                                     //
 /////////////////////////////////////////////////////////////////////////////
 
 @test
