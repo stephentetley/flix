@@ -192,7 +192,7 @@ def toList01(): Bool = String.toList("") == Nil
 def toList02(): Bool = String.toList("ABC") == 'A' :: 'B' :: 'C' :: Nil
 
 @test
-def toList03(): Bool = String.toList("1 2 3") == '1' :: ' ' :: '2' :: ' ' :: '3' :: Nil)
+def toList03(): Bool = String.toList("1 2 3") == '1' :: ' ' :: '2' :: ' ' :: '3' :: Nil
 
 /////////////////////////////////////////////////////////////////////////////
 // toArray                                                                 //

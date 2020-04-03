@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
 namespace String {
 
     ///
@@ -98,6 +99,7 @@ namespace String {
     pub def lineSeparator(): String =
         import java.lang.System:lineSeparator();
         lineSeparator() as & Pure
+
     ///
     /// Returns the given string `s` as an array of characters.
     ///
@@ -107,29 +109,29 @@ namespace String {
     ///
     /// Build a string of length `len` by applying `f` to the successive indices.
     ///
-    pub def init(f: Int32 -> Char, len: Int32): String = initImpure(f, len) as & Pure
+    pub def init(f: Int32 -> Char, len: Int32): String = initHelper(f, len) as & Pure
 
     ///
     /// Helper function for `init`.
     ///
-    def initImpure(f: Int32 -> Char, len: Int32): String & Impure =
+    def initHelper(f: Int32 -> Char, len: Int32): String & Impure =
         if (len <= 0)
             ""
         else {
             let sb = StringBuilder.new();
-            initHelper(sb, f, len, 0);
+            initWorker(sb, f, len, 0);
             StringBuilder.toString(sb)
         }
 
     ///
     /// Helper function for `init`.
     ///
-    def initHelper(sb: StringBuilder, f: Int32 -> Char, len: Int32, i: Int32): Unit & Impure =
+    def initWorker(sb: StringBuilder, f: Int32 -> Char, len: Int32, i: Int32): Unit & Impure =
         if (i >= len)
             ()
         else {
             StringBuilder.appendChar(sb, f(i));
-            initHelper(sb, f, len, i+1)
+            initWorker(sb, f, len, i+1)
         }
 
     ///
@@ -179,8 +181,8 @@ namespace String {
         case x :: rs => {
             let sb = StringBuilder.new();
             StringBuilder.appendString(sb, x);
-            let append = s -> { StringBuilder.appendChar(sb, sep); StringBuilder.appendString(sb, s) };
-            List.foreach(append, rs);
+            let appendStep = s -> { StringBuilder.appendChar(sb, sep); StringBuilder.appendString(sb, s) };
+            List.foreach(appendStep, rs);
             StringBuilder.toString(sb)
         }
     }
@@ -207,7 +209,7 @@ namespace String {
     /// Functionally equivalent to zipWith.
     ///
     pub def map2(f: (Char, Char) -> Char, s: String, t: String): String =
-        let len = Int32.min(String.length(s), String.length(t));
+        let len = Int32.min(length(s), length(t));
         init(i -> f(charAt(i, s), charAt(i, t)), len)
 
     ///
@@ -303,10 +305,9 @@ namespace String {
     pub def rightOfIndex(i: Int32, s: String): String  =
         if (i < 0)
             s
-        else {
-            let end = String.length(s);
-            slice(i+1, end, s)
-        }
+        else
+            slice(i+1, length(s), s)
+
 
 
     ///
@@ -319,13 +320,16 @@ namespace String {
         if (i < 0) None else Some(i)
 
     ///
-    /// Helper function for `findIndexOf`.
+    /// Helper function for `findIndexOfLeft`.
     ///
     def findIndexOfLeftHelper(f: Char -> Bool, s: String, len: Int32, i: Int32): Int32 =
         if (i >= len)
             -1
         else
-            if (f(charAt(i, s))) i else findIndexOfLeftHelper(f, s, len, i+1)
+            if (f(charAt(i, s)))
+                i
+            else
+                findIndexOfLeftHelper(f, s, len, i+1)
 
     ///
     /// Optionally return the position of the first character in `s` satisfying `f`, reading right to left.
@@ -338,13 +342,16 @@ namespace String {
         if (i < 0) None else Some(i)
 
     ///
-    /// Helper function for `findIndexOf`.
+    /// Helper function for `findIndexOfRight`.
     ///
     def findIndexOfRightHelper(f: Char -> Bool, s: String, i: Int32): Int32 =
         if (i < 0)
             -1
         else
-            if (f(charAt(i, s))) i else findIndexOfRightHelper(f, s, i-1)
+            if (f(charAt(i, s)))
+                i
+            else
+                findIndexOfRightHelper(f, s, i-1)
 
     ///
     /// Alias for `takeLeft`.
@@ -382,10 +389,11 @@ namespace String {
     /// If `n` extends past the end of string s, return the empty string.
     ///
     pub def dropLeft(n: Int32, s: String): String =
-        if (n > 0) {
-            let len = length(s);
-            slice(n, len, s)
-        } else s
+        if (n <= 0)
+            s
+        else
+            slice(n, length(s), s)
+
 
     ///
     /// Drop the last `n` characters of string `s` from the right.
@@ -424,7 +432,7 @@ namespace String {
         }
 
     ///
-    /// Alias for `dropWileLeft`.
+    /// Alias for `dropWhileLeft`.
     ///
     pub def dropWhile(f: Char -> Bool, s: String): String = dropWhileLeft(f, s)
 
@@ -599,29 +607,31 @@ namespace String {
     /// Returns the empty string if `n < 0`.
     ///
     pub def repeat(s: String, n: Int32): String =
+        import java.lang.String.repeat(Int32);
         if (n < 0)
             ""
         else
-            import java.lang.String.repeat(Int32);
             s.repeat(n) as & Pure
 
     ///
     /// Pad the string `s` at the left with the supplied char `c` to fit the width `w`.
     ///
     pub def padLeft(w: Int32, c: Char, s: String): String =
-        let x = length(s);
-        if (x < w)
-            repeat(Char.toString(c), w - x) + s
-        else s
+        let len = length(s);
+        if (len >= w)
+            s
+        else
+            repeat(Char.toString(c), w - len) + s
 
     ///
     /// Pad the string `s` at the right with the supplied char `c` to fit the width `w`.
     ///
     pub def padRight(w: Int32, c: Char, s: String): String =
-        let x = length(s);
-        if (x < w)
-            s + repeat(Char.toString(c), w - x)
-        else s
+        let len = length(s);
+        if (len >= w)
+            s
+        else
+            s + repeat(Char.toString(c), w - len)
 
     ///
     /// Returns `s` with every match of the substring `target` replaced by the string `rep`.
@@ -759,25 +769,40 @@ namespace String {
         let a = indexOfLeft(s, substring);
         !Option.isEmpty(a)
 
+    ///
+    /// Return the common prefix of strings `s` and `s2`.
+    ///
     pub def commonPrefix(s1: String, s2: String): String =
         let len1 = length(s1);
         let len2 = length(s2);
         commonPrefixHelper(s1, s2, len1, len2, 0)
 
+    ///
+    /// Helper function for `commonPrefix`.
+    ///
     def commonPrefixHelper(s1: String, s2: String, len1: Int32, len2: Int32, ix: Int32): String =
         if (ix >= len1 || ix >= len2)
             takeLeft(ix, s1)
         else {
             let c1 = charAt(ix, s1);
             let c2 = charAt(ix, s2);
-            if (c1 == c2) commonPrefixHelper(s1, s2, len1, len2, ix+1) else takeLeft(ix, s1)
+            if (c1 != c2)
+                takeLeft(ix, s1)
+            else
+                commonPrefixHelper(s1, s2, len1, len2, ix+1)
         }
 
+    ///
+    /// Return the common suffix of strings `s` and `s2`.
+    ///
     pub def commonSuffix(s1: String, s2: String): String =
-        let len1 = length(s1);
-        let len2 = length(s2);
-        commonSuffixHelper(s1, s2, len1 - 1, len2 - 1, 0)
+        let start1 = length(s1) - 1;
+        let start2 = length(s2) - 1;
+        commonSuffixHelper(s1, s2, start1, start2, 0)
 
+    ///
+    /// Helper function for `commonSuffix`.
+    ///
     def commonSuffixHelper(s1: String, s2: String, ix1: Int32, ix2: Int32, ac: Int32): String =
         if (ix1 < 0)
             s1
@@ -786,7 +811,10 @@ namespace String {
         else {
             let c1 = charAt(ix1, s1);
             let c2 = charAt(ix2, s2);
-            if (c1 == c2) commonSuffixHelper(s1, s2, ix1-1, ix2-1, ac+1) else takeRight(ac, s1)
+            if (c1 != c2)
+                takeRight(ac, s1)
+            else
+                commonSuffixHelper(s1, s2, ix1-1, ix2-1, ac+1)
        }
 
     ///
@@ -837,15 +865,15 @@ namespace String {
     /// https://en.wikipedia.org/wiki/Levenshtein_distance#Iterative_with_two_matrix_rows
     ///
     def levenshteinDistanceHelper(s: String, t: String) : Int32 & Impure =
-        let m = String.length(s);
-        let n = String.length(t);
+        let m = length(s);
+        let n = length(t);
         let v0 = Array.new(0, n+1);
         let v1 = Array.new(0, n+1);
         forIndex(0, n, i -> v0[i] = i );
         forIndex(0, m-1, i -> {
             v1[0] = i + 1;
             forIndex(0, n-1, j -> {
-                let substitutionCost = if (String.charAt(i, s) == String.charAt(j, t)) 0 else 1;
+                let substitutionCost = if (charAt(i, s) == charAt(j, t)) 0 else 1;
                 let a = v1[j] + 1;
                 let b = v0[j + 1] + 1;
                 let c = v0[j] + substitutionCost;
