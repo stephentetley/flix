@@ -306,8 +306,7 @@ def appendLine01(): Bool & Impure =
 def appendLine02(): Bool & Impure =
     let sb = StringBuilder.new();
     StringBuilder.appendLine(sb, "A");
-    StringBuilder.appendChar(sb, 'B');
-    let s1 = "A" + String.lineSeparator() + "B";
+    let s1 = "A" + String.lineSeparator();
     StringBuilder.toString(sb) == s1
 
 @test
@@ -317,6 +316,258 @@ def appendLine03(): Bool & Impure =
     StringBuilder.appendLine(sb, "B");
     let s1 = "A" + String.lineSeparator() + "B" + String.lineSeparator();
     StringBuilder.toString(sb) == s1
+
+@test
+def appendLine04(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLine(sb, "A");
+    StringBuilder.appendLine(sb, "B");
+    StringBuilder.appendLine(sb, "C");
+    let s1 = "A" + String.lineSeparator() + "B" + String.lineSeparator() + "C" + String.lineSeparator();
+    StringBuilder.toString(sb) == s1
+
+/////////////////////////////////////////////////////////////////////////////
+// appendLineBy                                                            //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def appendLineBy01(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLineBy(sb, Int32.toString, 1);
+    let s1 = "1" + String.lineSeparator();
+    StringBuilder.toString(sb) == s1
+
+@test
+def appendLineBy02(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLineBy(sb, Int32.toString, 1);
+    StringBuilder.appendLineBy(sb, Int32.toString, 2);
+    let s1 = "1" + String.lineSeparator() + "2" + String.lineSeparator();
+    StringBuilder.toString(sb) == s1
+
+@test
+def appendLineBy03(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLineBy(sb, Int32.toString, 1);
+    StringBuilder.appendLineBy(sb, Int32.toString, 2);
+    StringBuilder.appendLineBy(sb, Int32.toString, 3);
+    let s1 = "1" + String.lineSeparator() + "2" + String.lineSeparator() + "3" + String.lineSeparator();
+    StringBuilder.toString(sb) == s1
+
+@test
+def appendLineBy04(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLineBy(sb, Int32.toString, 1);
+    StringBuilder.appendLineBy(sb, Int32.toString, 2);
+    StringBuilder.appendLineBy(sb, Int32.toString, 3);
+    StringBuilder.appendLineBy(sb, Int32.toString, 4);
+    let s1 = "1" + String.lineSeparator() + "2" + String.lineSeparator() + "3" + String.lineSeparator() + "4" + String.lineSeparator();
+    StringBuilder.toString(sb) == s1
+
+/////////////////////////////////////////////////////////////////////////////
+// appendLines                                                             //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def appendLines01(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLines(sb, []);
+    StringBuilder.toString(sb) == ""
+
+@test
+def appendLines02(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLines(sb, ["A"]);
+    let s1 = "A" + String.lineSeparator();
+    StringBuilder.toString(sb) == s1
+
+@test
+def appendLines03(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLines(sb, ["A", "B"]);
+    let s1 = "A" + String.lineSeparator() + "B" + String.lineSeparator();
+    StringBuilder.toString(sb) == s1
+
+@test
+def appendLines04(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLines(sb, ["A", "B", "C"]);
+    let s1 = "A" + String.lineSeparator() + "B" + String.lineSeparator() + "C" + String.lineSeparator();
+    StringBuilder.toString(sb) == s1
+
+/////////////////////////////////////////////////////////////////////////////
+// appendLinesBy                                                           //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def appendLinesBy01(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLinesBy(sb, Int32.toString, []: Array[Int32]);
+    StringBuilder.toString(sb) == ""
+
+@test
+def appendLinesBy02(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLinesBy(sb, Int32.toString, [1]);
+    let s1 = "1" + String.lineSeparator();
+    StringBuilder.toString(sb) == s1
+
+@test
+def appendLinesBy03(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLinesBy(sb, Int32.toString, [1, 2]);
+    let s1 = "1" + String.lineSeparator() + "2" + String.lineSeparator();
+    StringBuilder.toString(sb) == s1
+
+@test
+def appendLinesBy04(): Bool & Impure =
+    let sb = StringBuilder.new();
+    StringBuilder.appendLinesBy(sb, Int32.toString, [1, 2, 3]);
+    let s1 = "1" + String.lineSeparator() + "2" + String.lineSeparator() + "3" + String.lineSeparator();
+    StringBuilder.toString(sb) == s1
+
+/////////////////////////////////////////////////////////////////////////////
+// appendWithSep                                                           //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def appendWithSep01(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = [];
+    StringBuilder.appendWithSep(sb, "-", a);
+    StringBuilder.toString(sb) == ""
+
+@test
+def appendWithSep02(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = ["a"];
+    StringBuilder.appendWithSep(sb, "-", a);
+    StringBuilder.toString(sb) == "a"
+
+@test
+def appendWithSep03(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = ["a", "a"];
+    StringBuilder.appendWithSep(sb, "-", a);
+    StringBuilder.toString(sb) == "a-a"
+
+@test
+def appendWithSep04(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = ["a", "a"];
+    StringBuilder.appendWithSep(sb, "--", a);
+    StringBuilder.toString(sb) == "a--a"
+
+@test
+def appendWithSep05(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = ["aa", "aa"];
+    StringBuilder.appendWithSep(sb, "-", a);
+    StringBuilder.toString(sb) == "aa-aa"
+
+@test
+def appendWithSep06(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = ["aa", "aa"];
+    StringBuilder.appendWithSep(sb, "", a);
+    StringBuilder.toString(sb) == "aaaa"
+
+@test
+def appendWithSep07(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = ["aa", "aa"];
+    StringBuilder.appendWithSep(sb, "--", a);
+    StringBuilder.toString(sb) == "aa--aa"
+
+@test
+def appendWithSep08(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = ["aa", "a", "aa"];
+    StringBuilder.appendWithSep(sb, "-", a);
+    StringBuilder.toString(sb) == "aa-a-aa"
+
+@test
+def appendWithSep09(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = ["aa", "a", "aa"];
+    StringBuilder.appendWithSep(sb, "", a);
+    StringBuilder.toString(sb) == "aaaaa"
+
+@test
+def appendWithSep10(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = ["aa", "a", "aa"];
+    StringBuilder.appendWithSep(sb, "--", a);
+    StringBuilder.toString(sb) == "aa--a--aa"
+
+/////////////////////////////////////////////////////////////////////////////
+// appendWithSepBy                                                         //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def appendWithSepBy01(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = []: Array[Int32];
+    StringBuilder.appendWithSepBy(sb, Int32.toString, "-", a);
+    StringBuilder.toString(sb) == ""
+
+@test
+def appendWithSepBy02(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = [1];
+    StringBuilder.appendWithSepBy(sb, Int32.toString, "-", a);
+    StringBuilder.toString(sb) == "1"
+
+@test
+def appendWithSepBy03(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = [1, 1];
+    StringBuilder.appendWithSepBy(sb, Int32.toString, "-", a);
+    StringBuilder.toString(sb) == "1-1"
+
+@test
+def appendWithSepBy04(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = [1, 1];
+    StringBuilder.appendWithSepBy(sb, Int32.toString, "--", a);
+    StringBuilder.toString(sb) == "1--1"
+
+@test
+def appendWithSepBy05(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = [10, 10];
+    StringBuilder.appendWithSepBy(sb, Int32.toString, "-", a);
+    StringBuilder.toString(sb) == "10-10"
+
+@test
+def appendWithSepBy06(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = [10, 10];
+    StringBuilder.appendWithSepBy(sb, Int32.toString, "", a);
+    StringBuilder.toString(sb) == "1010"
+
+@test
+def appendWithSepBy07(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = [10, 10];
+    StringBuilder.appendWithSepBy(sb, Int32.toString, "--", a);
+    StringBuilder.toString(sb) == "10--10"
+
+@test
+def appendWithSepBy08(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = [10, 1, 10];
+    StringBuilder.appendWithSepBy(sb, Int32.toString, "-", a);
+    StringBuilder.toString(sb) == "10-1-10"
+
+@test
+def appendWithSepBy09(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = [10, 1, 10];
+    StringBuilder.appendWithSepBy(sb, Int32.toString, "", a);
+    StringBuilder.toString(sb) == "10110"
+
+@test
+def appendWithSepBy10(): Bool & Impure =
+    let sb = StringBuilder.new();
+    let a = [10, 1, 10];
+    StringBuilder.appendWithSepBy(sb, Int32.toString, "--", a);
+    StringBuilder.toString(sb) == "10--1--10"
 
 /////////////////////////////////////////////////////////////////////////////
 // length                                                                  //
