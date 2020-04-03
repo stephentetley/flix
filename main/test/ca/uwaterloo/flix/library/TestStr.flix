@@ -19,35 +19,40 @@ namespace TestString {
 /////////////////////////////////////////////////////////////////////////////
 // concat                                                                  //
 /////////////////////////////////////////////////////////////////////////////
-@test
-def concat01(): Bool = assertEq!("Hello World!", "Hello World!")
 
 @test
-def concat02(): Bool = assertEq!("Hello" + " World!", "Hello World!")
+def concat01(): Bool = "Hello World!" == "Hello World!"
 
 @test
-def concat03(): Bool = assertEq!("Hello" + " World!", "Hello" + " World!")
+def concat02(): Bool = "Hello" + " World!" == "Hello World!"
 
 @test
-def concat04(): Bool = assertEq!("Hello World!" + "", "Hello World!")
+def concat03(): Bool = "Hello" + " World!" == "Hello" + " World!"
 
 @test
-def concat05(): Bool = assertEq!("Hello" + " " + "World" + "!", "Hello World!")
+def concat04(): Bool = "Hello World!" + "" == "Hello World!"
+
+@test
+def concat05(): Bool = "Hello" + " " + "World" + "!" == "Hello World!"
 
 @test
 def concat06(): Bool =
     let f = x -> (x + " World!");
-    assertEq!(f("Hello"), "Hello World!")
+    f("Hello") == "Hello World!"
 
 @test
 def concat07(): Bool =
     let f = (x, y) -> (x + y);
-    assertEq!(f("Hello", " World!"), "Hello World!")
+    f("Hello", " World!") == "Hello World!"
 
 @test
 def concat08(): Bool =
     let f = flip((x, y) -> (x + y));
-    assertEq!(f(" World!", "Hello"), "Hello World!")
+    f(" World!", "Hello") == "Hello World!"
+
+/////////////////////////////////////////////////////////////////////////////
+// trim                                                                    //
+/////////////////////////////////////////////////////////////////////////////
 
 @test
 def trim01(): Bool = "Hello World" == String.trim("Hello World")
@@ -67,118 +72,127 @@ def trim05(): Bool = "abc" == String.trim("  abc")
 @test
 def trim06(): Bool = "" == String.trim("  ")
 
-
 /////////////////////////////////////////////////////////////////////////////
 // lineSeparator                                                           //
 /////////////////////////////////////////////////////////////////////////////
+
 @test
 def lineSeparator01(): Bool =
     let newline = String.lineSeparator();
-    assert!(Char.isWhiteSpace(String.charAt(0, newline)))
+    Char.isWhiteSpace(String.charAt(0, newline)) == true
 
 @test
 def lineSeparator02(): Bool =
     let newline = String.lineSeparator();
-    assert!(String.length(newline) == 1 || String.length(newline) == 2)
+    String.length(newline) == 1 || String.length(newline) == 2
 
 /////////////////////////////////////////////////////////////////////////////
 // charAt                                                                  //
 /////////////////////////////////////////////////////////////////////////////
-@test
-def charAt01(): Bool = assertEq!(String.charAt(0, "Hello World!"), 'H')
 
 @test
-def charAt02(): Bool = assertEq!(String.charAt(5, "Hello World!"), ' ')
+def charAt01(): Bool = String.charAt(0, "Hello World!") == 'H'
+
+@test
+def charAt02(): Bool = String.charAt(5, "Hello World!") == ' '
 
 /////////////////////////////////////////////////////////////////////////////
 // endsWith                                                                //
 /////////////////////////////////////////////////////////////////////////////
-@test
-def endsWith01(): Bool = assert!(String.endsWith("Hello World!", ""))
 
 @test
-def endsWith02(): Bool = assert!(String.endsWith("Hello World!", "World!"))
+def endsWith01(): Bool = String.endsWith("Hello World!", "") == true
 
 @test
-def endsWith03(): Bool = assertNot!(String.endsWith("Hello World!", "WORLD!"))
+def endsWith02(): Bool = String.endsWith("Hello World!", "World!") == true
+
+@test
+def endsWith03(): Bool = String.endsWith("Hello World!", "WORLD!") == false
 
 /////////////////////////////////////////////////////////////////////////////
 // startsWith                                                              //
 /////////////////////////////////////////////////////////////////////////////
-@test
-def startsWith01(): Bool = assert!(String.startsWith("Hello World!", ""))
 
 @test
-def startsWith02(): Bool = assert!(String.startsWith("Hello World!", "Hello"))
+def startsWith01(): Bool = String.startsWith("Hello World!", "") == true
 
 @test
-def startsWith03(): Bool = assertNot!(String.startsWith("Hello World!", "HELLO"))
+def startsWith02(): Bool = String.startsWith("Hello World!", "Hello") == true
+
+@test
+def startsWith03(): Bool = String.startsWith("Hello World!", "HELLO") == false
 
 /////////////////////////////////////////////////////////////////////////////
 // isEmpty                                                                 //
 /////////////////////////////////////////////////////////////////////////////
-@test
-def isEmpty01(): Bool = assert!(String.isEmpty(""))
 
 @test
-def isEmpty02(): Bool = assertNot!(String.isEmpty("Hello"))
+def isEmpty01(): Bool = String.isEmpty("") == true
+
+@test
+def isEmpty02(): Bool = String.isEmpty("Hello") == false
 
 
 /////////////////////////////////////////////////////////////////////////////
 // length                                                                  //
 /////////////////////////////////////////////////////////////////////////////
-@test
-def length01(): Bool = assertEq!(String.length(""), 0)
 
 @test
-def length02(): Bool = assertEq!(String.length("0123456789"), 10)
+def length01(): Bool = String.length("") == 0
+
+@test
+def length02(): Bool = String.length("0123456789") == 10
 
 /////////////////////////////////////////////////////////////////////////////
 // split                                                                   //
 /////////////////////////////////////////////////////////////////////////////
+
 @test
 def split01(): Bool & Impure =
-    assertEq!(Array.toList(String.split("", "\s+")), "" :: Nil)
+    Array.toList(String.split("", "\s+")) == "" :: Nil
 
 @test
 def split02(): Bool & Impure =
-    assertEq!(Array.length(String.split("1 3", "\s+")), 2)
+    Array.length(String.split("1 3", "\s+")) == 2
 
 /////////////////////////////////////////////////////////////////////////////
 // toLowerCase                                                             //
 /////////////////////////////////////////////////////////////////////////////
-@test
-def toLowerCase01(): Bool = assertEq!(String.toLowerCase(""), "")
 
 @test
-def toLowerCase02(): Bool = assertEq!(String.toLowerCase("Hello World!"), "hello world!")
+def toLowerCase01(): Bool = String.toLowerCase("") == ""
 
 @test
-def toLowerCase03(): Bool = assertEq!(String.toLowerCase("â†’Hello Worldâˆ€!"), "â†’hello worldâˆ€!")
+def toLowerCase02(): Bool = String.toLowerCase("Hello World!") == "hello world!"
+
+@test
+def toLowerCase03(): Bool = String.toLowerCase("â†’Hello Worldâˆ€!") == "â†’hello worldâˆ€!"
 
 /////////////////////////////////////////////////////////////////////////////
 // toUpperCase                                                             //
 /////////////////////////////////////////////////////////////////////////////
-@test
-def toUpperCase01(): Bool = assertEq!(String.toUpperCase(""), "")
 
 @test
-def toUpperCase02(): Bool = assertEq!(String.toUpperCase("Hello World!"), "HELLO WORLD!")
+def toUpperCase01(): Bool = String.toUpperCase("") == ""
 
 @test
-def toUpperCase03(): Bool = assertEq!(String.toUpperCase("â†’Hello Worldâˆ€!"), "Â†’HELLO WORLDÂˆ€!")
+def toUpperCase02(): Bool = String.toUpperCase("Hello World!") == "HELLO WORLD!"
+
+@test
+def toUpperCase03(): Bool = String.toUpperCase("â†’Hello Worldâˆ€!") == "Â†’HELLO WORLDÂˆ€!"
 
 /////////////////////////////////////////////////////////////////////////////
 // toList                                                                  //
 /////////////////////////////////////////////////////////////////////////////
-@test
-def toList01(): Bool = assertEq!(String.toList(""), Nil)
 
 @test
-def toList02(): Bool = assertEq!(String.toList("ABC"), 'A' :: 'B' :: 'C' :: Nil)
+def toList01(): Bool = String.toList("") == Nil
 
 @test
-def toList03(): Bool = assertEq!(String.toList("1 2 3"), '1' :: ' ' :: '2' :: ' ' :: '3' :: Nil)
+def toList02(): Bool = String.toList("ABC") == 'A' :: 'B' :: 'C' :: Nil
+
+@test
+def toList03(): Bool = String.toList("1 2 3") == '1' :: ' ' :: '2' :: ' ' :: '3' :: Nil)
 
 /////////////////////////////////////////////////////////////////////////////
 // toArray                                                                 //

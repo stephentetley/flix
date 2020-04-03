@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+namespace TestStringBuilder {
 
 /////////////////////////////////////////////////////////////////////////////
 // new                                                                     //
@@ -605,3 +606,5 @@ def length05(): Bool & Impure =
     StringBuilder.appendString(sb, "World");
     StringBuilder.appendChar(sb, '!');
     StringBuilder.length(sb) == 12
+
+}
