@@ -284,7 +284,7 @@ namespace String {
     ///
     /// Helper function for `isSubmatch`.
     ///
-    pub def isSubmatchHelper(pattern: String, s: String): Bool & Impure =
+    def isSubmatchHelper(pattern: String, s: String): Bool & Impure =
         try {
             import java.util.regex.Pattern:compile(String);
             import java.util.regex.Pattern.matcher(##java.lang.CharSequence);

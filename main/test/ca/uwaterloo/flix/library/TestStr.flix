@@ -786,6 +786,56 @@ def sliceRight13(): Bool = String.sliceRight("abc", 3) == ""
 def sliceRight14(): Bool = String.sliceRight("abc", -1) == ""
 
 /////////////////////////////////////////////////////////////////////////////
+// findIndexOfLeft                                                         //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def findIndexOfLeft01(): Bool = String.findIndexOfLeft(Char.isUpperCase, "") == None
+
+@test
+def findIndexOfLeft02(): Bool = String.findIndexOfLeft(Char.isUpperCase, "a") == None
+
+@test
+def findIndexOfLeft03(): Bool = String.findIndexOfLeft(Char.isUpperCase, "A") == Some(0)
+
+@test
+def findIndexOfLeft04(): Bool = String.findIndexOfLeft(Char.isUpperCase, "ab") == None
+
+@test
+def findIndexOfLeft05(): Bool = String.findIndexOfLeft(Char.isUpperCase, "Ab") == Some(0)
+
+@test
+def findIndexOfLeft06(): Bool = String.findIndexOfLeft(Char.isUpperCase, "aB") == Some(1)
+
+@test
+def findIndexOfLeft07(): Bool = String.findIndexOfLeft(Char.isUpperCase, "AB") == Some(0)
+
+/////////////////////////////////////////////////////////////////////////////
+// findIndexOfRight                                                        //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def findIndexOfRight01(): Bool = String.findIndexOfRight(Char.isUpperCase, "") == None
+
+@test
+def findIndexOfRight02(): Bool = String.findIndexOfRight(Char.isUpperCase, "a") == None
+
+@test
+def findIndexOfRight03(): Bool = String.findIndexOfRight(Char.isUpperCase, "A") == Some(0)
+
+@test
+def findIndexOfRight04(): Bool = String.findIndexOfRight(Char.isUpperCase, "ab") == None
+
+@test
+def findIndexOfRight05(): Bool = String.findIndexOfRight(Char.isUpperCase, "Ab") == Some(0)
+
+@test
+def findIndexOfRight06(): Bool = String.findIndexOfRight(Char.isUpperCase, "aB") == Some(1)
+
+@test
+def findIndexOfRight07(): Bool = String.findIndexOfRight(Char.isUpperCase, "AB") == Some(1)
+
+/////////////////////////////////////////////////////////////////////////////
 // findIndices                                                             //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -877,38 +927,329 @@ def take02(): Bool = String.take(0, "") == ""
 def take03(): Bool = String.take(1, "") == ""
 
 @test
-def take04(): Bool = String.take(-1, "1") == ""
+def take04(): Bool = String.take(-1, "a") == ""
 
 @test
-def take05(): Bool = String.take(0, "1") == ""
+def take05(): Bool = String.take(0, "a") == ""
 
 @test
-def take06(): Bool = String.take(1, "1") == "1"
+def take06(): Bool = String.take(1, "a") == "a"
 
 @test
-def take07(): Bool = String.take(2, "1") == "1"
+def take07(): Bool = String.take(2, "a") == "a"
 
 @test
-def take08(): Bool = String.take(0, "12") == ""
+def take08(): Bool = String.take(0, "ab") == ""
 
 @test
-def take09(): Bool = String.take(1, "12") == "1"
+def take09(): Bool = String.take(1, "ab") == "a"
 
 @test
-def take10(): Bool = String.take(2, "12") == "12"
+def take10(): Bool = String.take(2, "ab") == "ab"
 
 @test
-def take11(): Bool = String.take(2, "123456") == "12"
+def take11(): Bool = String.take(2, "abcdef") == "ab"
 
 @test
-def take12(): Bool = String.take(4, "123456") == "1234"
+def take12(): Bool = String.take(4, "abcdef") == "abcd"
 
 @test
-def take13(): Bool = String.take(10, "123456") == "123456"
+def take13(): Bool = String.take(10, "abcdef") == "abcdef"
+
+/////////////////////////////////////////////////////////////////////////////
+// takeLeft                                                                //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def takeLeft01(): Bool = String.takeLeft(-1, "") == ""
+
+@test
+def takeLeft02(): Bool = String.takeLeft(0, "") == ""
+
+@test
+def takeLeft03(): Bool = String.takeLeft(1, "") == ""
+
+@test
+def takeLeft04(): Bool = String.takeLeft(-1, "a") == ""
+
+@test
+def takeLeft05(): Bool = String.takeLeft(0, "a") == ""
+
+@test
+def takeLeft06(): Bool = String.takeLeft(1, "a") == "a"
+
+@test
+def takeLeft07(): Bool = String.takeLeft(2, "a") == "a"
+
+@test
+def takeLeft08(): Bool = String.takeLeft(0, "ab") == ""
+
+@test
+def takeLeft09(): Bool = String.takeLeft(1, "ab") == "a"
+
+@test
+def takeLeft10(): Bool = String.takeLeft(2, "ab") == "ab"
+
+@test
+def takeLeft11(): Bool = String.takeLeft(2, "abcdef") == "ab"
+
+@test
+def takeLeft12(): Bool = String.takeLeft(4, "abcdef") == "abcd"
+
+@test
+def takeLeft13(): Bool = String.takeLeft(10, "abcdef") == "abcdef"
+
+/////////////////////////////////////////////////////////////////////////////
+// takeRight                                                               //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def takeRight01(): Bool = String.takeRight(-1, "") == ""
+
+@test
+def takeRight02(): Bool = String.takeRight(0, "") == ""
+
+@test
+def takeRight03(): Bool = String.takeRight(1, "") == ""
+
+@test
+def takeRight04(): Bool = String.takeRight(-1, "a") == ""
+
+@test
+def takeRight05(): Bool = String.takeRight(0, "a") == ""
+
+@test
+def takeRight06(): Bool = String.takeRight(1, "a") == "a"
+
+@test
+def takeRight07(): Bool = String.takeRight(2, "a") == "a"
+
+@test
+def takeRight08(): Bool = String.takeRight(0, "ab") == ""
+
+@test
+def takeRight09(): Bool = String.takeRight(1, "ab") == "b"
+
+@test
+def takeRight10(): Bool = String.takeRight(2, "ab") == "ab"
+
+@test
+def takeRight11(): Bool = String.takeRight(2, "abcdef") == "ef"
+
+@test
+def takeRight12(): Bool = String.takeRight(4, "abcdef") == "cdef"
+
+@test
+def takeRight13(): Bool = String.takeRight(10, "abcdef") == "abcdef"
+
+/////////////////////////////////////////////////////////////////////////////
+// drop                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def drop01(): Bool = String.drop(-1, "") == ""
+
+@test
+def drop02(): Bool = String.drop(0, "") == ""
+
+@test
+def drop03(): Bool = String.drop(1, "") == ""
+
+@test
+def drop04(): Bool = String.drop(-1, "a") == "a"
+
+@test
+def drop05(): Bool = String.drop(0, "a") == "a"
+
+@test
+def drop06(): Bool = String.drop(1, "a") == ""
+
+@test
+def drop07(): Bool = String.drop(2, "a") == ""
+
+@test
+def drop08(): Bool = String.drop(0, "ab") == "ab"
+
+@test
+def drop09(): Bool = String.drop(1, "ab") == "b"
+
+@test
+def drop10(): Bool = String.drop(2, "ab") == ""
+
+@test
+def drop11(): Bool = String.drop(2, "abcdef") == "cdef"
+
+@test
+def drop12(): Bool = String.drop(4, "abcdef") == "ef"
+
+/////////////////////////////////////////////////////////////////////////////
+// dropLeft                                                                //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def dropLeft01(): Bool = String.dropLeft(-1, "") == ""
+
+@test
+def dropLeft02(): Bool = String.dropLeft(0, "") == ""
+
+@test
+def dropLeft03(): Bool = String.dropLeft(1, "") == ""
+
+@test
+def dropLeft04(): Bool = String.dropLeft(-1, "a") == "a"
+
+@test
+def dropLeft05(): Bool = String.dropLeft(0, "a") == "a"
+
+@test
+def dropLeft06(): Bool = String.dropLeft(1, "a") == ""
+
+@test
+def dropLeft07(): Bool = String.dropLeft(2, "a") == ""
+
+@test
+def dropLeft08(): Bool = String.dropLeft(0, "ab") == "ab"
+
+@test
+def dropLeft09(): Bool = String.dropLeft(1, "ab") == "b"
+
+@test
+def dropLeft10(): Bool = String.dropLeft(2, "ab") == ""
+
+@test
+def dropLeft11(): Bool = String.dropLeft(2, "abcdef") == "cdef"
+
+@test
+def dropLeft12(): Bool = String.dropLeft(4, "abcdef") == "ef"
+
+/////////////////////////////////////////////////////////////////////////////
+// dropRight                                                               //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def dropRight01(): Bool = String.dropRight(-1, "") == ""
+
+@test
+def dropRight02(): Bool = String.dropRight(0, "") == ""
+
+@test
+def dropRight03(): Bool = String.dropRight(1, "") == ""
+
+@test
+def dropRight04(): Bool = String.dropRight(-1, "a") == "a"
+
+@test
+def dropRight05(): Bool = String.dropRight(0, "a") == "a"
+
+@test
+def dropRight06(): Bool = String.dropRight(1, "a") == ""
+
+@test
+def dropRight07(): Bool = String.dropRight(2, "a") == ""
+
+@test
+def dropRight08(): Bool = String.dropRight(0, "ab") == "ab"
+
+@test
+def dropRight09(): Bool = String.dropRight(1, "ab") == "a"
+
+@test
+def dropRight10(): Bool = String.dropRight(2, "ab") == ""
+
+@test
+def dropRight11(): Bool = String.dropRight(2, "abcdef") == "abcd"
+
+@test
+def dropRight12(): Bool = String.dropRight(4, "abcdef") == "ab"
+
+/////////////////////////////////////////////////////////////////////////////
+// takeWhile                                                               //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def takeWhile01(): Bool = String.takeWhile(Char.isUpperCase, "") == ""
+
+@test
+def takeWhile02(): Bool = String.takeWhile(Char.isUpperCase, "a") == ""
+
+@test
+def takeWhile03(): Bool = String.takeWhile(Char.isUpperCase, "A") == "A"
+
+@test
+def takeWhile04(): Bool = String.takeWhile(Char.isUpperCase, "ab") == ""
+
+@test
+def takeWhile05(): Bool = String.takeWhile(Char.isUpperCase, "aB") == ""
+
+@test
+def takeWhile06(): Bool = String.takeWhile(Char.isUpperCase, "Ab") == "A"
+
+@test
+def takeWhile07(): Bool = String.takeWhile(Char.isUpperCase, "AB") == "AB"
+
+@test
+def takeWhile08(): Bool = String.takeWhile(Char.isUpperCase, "ABcDefgHIjK") == "AB"
+
+/////////////////////////////////////////////////////////////////////////////
+// takeWhileLeft                                                           //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def takeWhileLeft01(): Bool = String.takeWhileLeft(Char.isUpperCase, "") == ""
+
+@test
+def takeWhileLeft02(): Bool = String.takeWhileLeft(Char.isUpperCase, "a") == ""
+
+@test
+def takeWhileLeft03(): Bool = String.takeWhileLeft(Char.isUpperCase, "A") == "A"
+
+@test
+def takeWhileLeft04(): Bool = String.takeWhileLeft(Char.isUpperCase, "ab") == ""
+
+@test
+def takeWhileLeft05(): Bool = String.takeWhileLeft(Char.isUpperCase, "aB") == ""
+
+@test
+def takeWhileLeft06(): Bool = String.takeWhileLeft(Char.isUpperCase, "Ab") == "A"
+
+@test
+def takeWhileLeft07(): Bool = String.takeWhileLeft(Char.isUpperCase, "AB") == "AB"
+
+@test
+def takeWhileLeft08(): Bool = String.takeWhileLeft(Char.isUpperCase, "ABcDefgHIjK") == "AB"
+
+/////////////////////////////////////////////////////////////////////////////
+// takeWhileRight                                                          //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def takeWhileRight01(): Bool = String.takeWhileRight(Char.isUpperCase, "") == ""
+
+@test
+def takeWhileRight02(): Bool = String.takeWhileRight(Char.isUpperCase, "a") == ""
+
+@test
+def takeWhileRight03(): Bool = String.takeWhileRight(Char.isUpperCase, "A") == "A"
+
+@test
+def takeWhileRight04(): Bool = String.takeWhileRight(Char.isUpperCase, "ab") == ""
+
+@test
+def takeWhileRight05(): Bool = String.takeWhileRight(Char.isUpperCase, "aB") == "B"
+
+@test
+def takeWhileRight06(): Bool = String.takeWhileRight(Char.isUpperCase, "Ab") == ""
+
+@test
+def takeWhileRight07(): Bool = String.takeWhileRight(Char.isUpperCase, "AB") == "AB"
+
+@test
+def takeWhileRight08(): Bool = String.takeWhileRight(Char.isUpperCase, "ABcDefgHIjK") == "K"
 
 /////////////////////////////////////////////////////////////////////////////
 // patch                                                                   //
 /////////////////////////////////////////////////////////////////////////////
+
 @test
 def patch01(): Bool = String.patch(0, 0, "", "") == ""
 
