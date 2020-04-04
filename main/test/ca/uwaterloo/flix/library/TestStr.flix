@@ -540,6 +540,80 @@ def rotateRight10(): Bool = String.rotateRight(1, "abc") == "cab"
 def rotateRight11(): Bool = String.rotateRight(2, "abc") == "bca"
 
 /////////////////////////////////////////////////////////////////////////////
+// isMatch                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def isMatch01(): Bool = String.isMatch(".*", "") == true
+
+@test
+def isMatch02(): Bool = String.isMatch(".+", "") == false
+
+@test
+def isMatch03(): Bool = String.isMatch("[a]*", "") == true
+
+@test
+def isMatch04(): Bool = String.isMatch("[a]+", "") == false
+
+@test
+def isMatch05(): Bool = String.isMatch("[a]*", "a") == true
+
+@test
+def isMatch06(): Bool = String.isMatch("[a]*", "aa") == true
+
+@test
+def isMatch07(): Bool = String.isMatch("[a]*", "aab") == false
+
+@test
+def isMatch08(): Bool = String.isMatch("[a]*b", "aab") == true
+
+@test
+def isSMatch09(): Bool = String.isMatch("[b]+", "aab") == false
+
+@test
+def isMatch10(): Bool = String.isMatch("[b]+", "bbbc") == false
+
+@test
+def isMatch11(): Bool = String.isMatch("[b]+", "aabbbc") == false
+
+/////////////////////////////////////////////////////////////////////////////
+// isSubmatch                                                              //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def isSubmatch01(): Bool = String.isSubmatch(".*", "") == true
+
+@test
+def isSubmatch02(): Bool = String.isSubmatch(".+", "") == false
+
+@test
+def isSubmatch03(): Bool = String.isSubmatch("[a]*", "") == true
+
+@test
+def isSubmatch04(): Bool = String.isSubmatch("[a]+", "") == false
+
+@test
+def isSubmatch05(): Bool = String.isSubmatch("[a]*", "a") == true
+
+@test
+def isSubmatch06(): Bool = String.isSubmatch("[a]*", "aa") == true
+
+@test
+def isSubmatch07(): Bool = String.isSubmatch("[a]*", "aab") == true
+
+@test
+def isSubmatch08(): Bool = String.isSubmatch("[a]*b", "aab") == true
+
+@test
+def isSubmatch09(): Bool = String.isSubmatch("[b]+", "aab") == true
+
+@test
+def isSubmatch10(): Bool = String.isSubmatch("[b]+", "bbbc") == true
+
+@test
+def isSubmatch11(): Bool = String.isSubmatch("[b]+", "aabbbc") == true
+
+/////////////////////////////////////////////////////////////////////////////
 // findIndices                                                             //
 /////////////////////////////////////////////////////////////////////////////
 

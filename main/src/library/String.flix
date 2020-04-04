@@ -263,12 +263,36 @@ namespace String {
         init(f, len)
 
     ///
-    /// Returns `true` if the string `s` matches the `regex`.
+    /// Returns `true` if the entire string `s` is matched by the pattern `regex`.
     ///
-    pub def matches(s: String, regex: String): Bool =
+    /// Note - use `isSubmatch` to search for a substring.
+    ///
+    pub def isMatch(regex: String, s: String): Bool =
         try {
             import java.lang.String.matches(String);
             s.matches(regex) as & Pure
+        } catch {
+            case _: ##java.util.regex.PatternSyntaxException => false
+        }
+
+    ///
+    /// Returns `true` if the string `s` is matched by the regular expression `pattern` at any point.
+    ///
+    pub def isSubmatch(pattern: String, s: String): Bool =
+        isSubmatchHelper(pattern, s) as & Pure
+
+    ///
+    /// Helper function for `isSubmatch`.
+    ///
+    pub def isSubmatchHelper(pattern: String, s: String): Bool & Impure =
+        try {
+            import java.util.regex.Pattern:compile(String);
+            import java.util.regex.Pattern.matcher(##java.lang.CharSequence);
+            import java.util.regex.Matcher.find(Int32);
+            let cs1 = s as ##java.lang.CharSequence;
+            let p1 = compile(pattern);
+            let m1 = p1.matcher(cs1);
+            m1.find(0)
         } catch {
             case _: ##java.util.regex.PatternSyntaxException => false
         }
