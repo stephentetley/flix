@@ -309,7 +309,7 @@ namespace String {
     ///
     /// If `b` or `e` are out-of-bounds, return the empty string.
     ///
-    pub def slice(b: Int32, e: Int32, s: String): String  = try {
+    pub def slice(s: String, b: Int32, e: Int32): String  = try {
         import java.lang.String.substring(Int32, Int32);
         s.substring(b, e) as & Pure
     } catch {
@@ -317,20 +317,27 @@ namespace String {
     }
 
     ///
-    /// Get the sequence of characters to the left of index 'i' from string `s`.
+    /// Get the substring of `s` to the left of index 'i' (exclusive).
     ///
-    pub def leftOfIndex(i: Int32, s: String): String  =
-        if (i > length(s)) s else slice(0, i, s)
+    /// If `i` is out-of-bounds, return the empty string.
+    ///
+    pub def sliceLeft(s: String, i: Int32): String = match length(s) {
+        case len if i > len => ""
+        case _   if i < 0   => ""
+        case _              => slice(s, 0, i)
+    }
 
 
     ///
-    /// Get the sequence of characters to the right of index 'i' from string `s`.
+    /// Get the substring of `s` to the right of index 'i' (exclusive).
     ///
-    pub def rightOfIndex(i: Int32, s: String): String  =
-        if (i < 0)
-            s
-        else
-            slice(i+1, length(s), s)
+    /// If `i` is out-of-bounds, return the empty string.
+    ///
+    pub def sliceRight(s: String, i: Int32): String = match length(s) {
+        case len if i >= len => ""
+        case _   if i < 0 => ""
+        case len => slice(s, i+1, len)
+    }
 
 
 
@@ -414,7 +421,7 @@ namespace String {
     /// of `s`.
     ///
     pub def takeLeft(n: Int32, s: String): String =
-        if (n >= length(s)) s else slice(0, n, s)
+        if (n >= length(s)) s else slice(s, 0, n)
 
     ///
     /// Take the last `n` characters of string `s` from the right.
@@ -424,7 +431,7 @@ namespace String {
     ///
     pub def takeRight(n: Int32, s: String): String =
         let len = length(s);
-        if (n >= len) s else slice(len - n, len, s)
+        if (n >= len) s else slice(s, len - n, len)
 
 
     ///
@@ -441,7 +448,7 @@ namespace String {
         if (n <= 0)
             s
         else
-            slice(n, length(s), s)
+            slice(s, n, length(s))
 
 
     ///
@@ -452,7 +459,7 @@ namespace String {
     pub def dropRight(n: Int32, s: String): String =
         if (n > 0) {
             let len = length(s);
-            slice(0, len - n, s)
+            slice(s, 0, len - n)
         } else s
 
     ///
@@ -477,7 +484,7 @@ namespace String {
     pub def takeWhileRight(f: Char -> Bool, s: String): String =
         match findIndexOfRight(x ->!(f(x)), s) {
             case None => s
-            case Some(i) => slice(i+1, length(s), s)
+            case Some(i) => slice(s, i+1, length(s))
         }
 
     ///
@@ -502,7 +509,7 @@ namespace String {
     pub def dropWhileRight(f: Char -> Bool, s: String): String =
         match findIndexOfRight(x -> !(f(x)), s) {
             case None => ""
-            case Some(i) => slice(0, i+1, s)
+            case Some(i) => slice(s, 0, i+1)
         }
 
     ///
@@ -878,7 +885,7 @@ namespace String {
             case _   if w < 3   => ""
             case len            => {
                 let start = len - w + 3;
-                "..." + slice(start, len, s)
+                "..." + slice(s, start, len)
             }
         }
 
@@ -894,7 +901,7 @@ namespace String {
         match length(s) {
             case len if len < w => s
             case _   if w < 3   => ""
-            case _              => slice(0, w - 3, s) + "..."
+            case _              => slice(s, 0, w - 3) + "..."
         }
 
     ///

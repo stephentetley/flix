@@ -614,6 +614,178 @@ def isSubmatch10(): Bool = String.isSubmatch("[b]+", "bbbc") == true
 def isSubmatch11(): Bool = String.isSubmatch("[b]+", "aabbbc") == true
 
 /////////////////////////////////////////////////////////////////////////////
+// hashCode                                                                //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def hashCode01(): Bool = String.hashCode("") == 0
+
+@test
+def hashCode02(): Bool = String.hashCode("a") == String.hashCode("a")
+
+@test
+def hashCode03(): Bool = String.hashCode("ab") == String.hashCode("ab")
+
+@test
+def hashCode04(): Bool = String.hashCode("a") < String.hashCode("ab")
+
+@test
+def hashCode05(): Bool = String.hashCode("abc") == String.hashCode("abc")
+
+@test
+def hashCode06(): Bool = String.hashCode("ab") < String.hashCode("abc")
+
+/////////////////////////////////////////////////////////////////////////////
+// slice                                                                   //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def slice01(): Bool = String.slice("", 0, 1) == ""
+
+@test
+def slice02(): Bool = String.slice("a", 0, 1) == "a"
+
+@test
+def slice03(): Bool = String.slice("a", 1, 2) == ""
+
+@test
+def slice04(): Bool = String.slice("a", 0, 2) == ""
+
+@test
+def slice05(): Bool = String.slice("a", -1, 0) == ""
+
+@test
+def slice06(): Bool = String.slice("ab", 0, 1) == "a"
+
+@test
+def slice07(): Bool = String.slice("ab", 1, 2) == "b"
+
+@test
+def slice08(): Bool = String.slice("ab", 0, 2) == "ab"
+
+@test
+def slice09(): Bool = String.slice("ab", 0, 3) == ""
+
+@test
+def slice10(): Bool = String.slice("ab", -1, 2) == ""
+
+@test
+def slice11(): Bool = String.slice("abc", 0, 1) == "a"
+
+@test
+def slice12(): Bool = String.slice("abc", 1, 2) == "b"
+
+@test
+def slice13(): Bool = String.slice("abc", 2, 3) == "c"
+
+@test
+def slice14(): Bool = String.slice("abc", 0, 2) == "ab"
+
+@test
+def slice15(): Bool = String.slice("abc", 1, 3) == "bc"
+
+@test
+def slice16(): Bool = String.slice("abc", 0, 3) == "abc"
+
+/////////////////////////////////////////////////////////////////////////////
+// sliceLeft                                                               //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def sliceLeft01(): Bool = String.sliceLeft("", 0) == ""
+
+@test
+def sliceLeft02(): Bool = String.sliceLeft("", 1) == ""
+
+@test
+def sliceLeft03(): Bool = String.sliceLeft("a", 1) == "a"
+
+@test
+def sliceLeft04(): Bool = String.sliceLeft("a", 0) == ""
+
+@test
+def sliceLeft05(): Bool = String.sliceLeft("a", 2) == ""
+
+@test
+def sliceLeft06(): Bool = String.sliceLeft("ab", 1) == "a"
+
+@test
+def sliceLeft07(): Bool = String.sliceLeft("ab", 2) == "ab"
+
+@test
+def sliceLeft08(): Bool = String.sliceLeft("ab", 0) == ""
+
+@test
+def sliceLeft09(): Bool = String.sliceLeft("ab", 3) == ""
+
+@test
+def sliceLeft10(): Bool = String.sliceLeft("ab", -1) == ""
+
+@test
+def sliceLeft11(): Bool = String.sliceLeft("abc", 1) == "a"
+
+@test
+def sliceLeft12(): Bool = String.sliceLeft("abc", 2) == "ab"
+
+@test
+def sliceLeft13(): Bool = String.sliceLeft("abc", 3) == "abc"
+
+@test
+def sliceLeft14(): Bool = String.sliceLeft("abc", 0) == ""
+
+@test
+def sliceLeft15(): Bool = String.sliceLeft("abc", 4) == ""
+
+@test
+def sliceLeft16(): Bool = String.sliceLeft("abc", -1) == ""
+
+/////////////////////////////////////////////////////////////////////////////
+// sliceRight                                                              //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def sliceRight01(): Bool = String.sliceRight("", 0) == ""
+
+@test
+def sliceRight02(): Bool = String.sliceRight("", 1) == ""
+
+@test
+def sliceRight03(): Bool = String.sliceRight("a", 1) == ""
+
+@test
+def sliceRight04(): Bool = String.sliceRight("a", 0) == ""
+
+@test
+def sliceRight05(): Bool = String.sliceRight("a", 1) == ""
+
+@test
+def sliceRight06(): Bool = String.sliceRight("ab", 0) == "b"
+
+@test
+def sliceRight07(): Bool = String.sliceRight("ab", 1) == ""
+
+@test
+def sliceRight08(): Bool = String.sliceRight("ab", -1) == ""
+
+@test
+def sliceRight09(): Bool = String.sliceRight("ab", 2) == ""
+
+@test
+def sliceRight10(): Bool = String.sliceRight("abc", 0) == "bc"
+
+@test
+def sliceRight11(): Bool = String.sliceRight("abc", 1) == "c"
+
+@test
+def sliceRight12(): Bool = String.sliceRight("abc", 2) == ""
+
+@test
+def sliceRight13(): Bool = String.sliceRight("abc", 3) == ""
+
+@test
+def sliceRight14(): Bool = String.sliceRight("abc", -1) == ""
+
+/////////////////////////////////////////////////////////////////////////////
 // findIndices                                                             //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -694,6 +866,7 @@ def indices07(): Bool & Impure =
 /////////////////////////////////////////////////////////////////////////////
 // take                                                                    //
 /////////////////////////////////////////////////////////////////////////////
+
 @test
 def take01(): Bool = String.take(-1, "") == ""
 
