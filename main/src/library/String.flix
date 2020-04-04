@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 namespace String {
 
     ///
@@ -352,6 +352,31 @@ namespace String {
                 i
             else
                 findIndexOfRightHelper(f, s, i-1)
+
+    ///
+    /// Returns the positions of the all the elements in `s` satisfying `f`.
+    ///
+    /// The function `f` must be pure.
+    ///
+    pub def findIndices(f: a -> Bool, s: String): Array[Int32] & Impure =
+        findIndicesHelper(f, s, length(s), 0) |> List.toArray
+
+    ///
+    /// Helper function for `findIndices`.
+    ///
+    def findIndicesHelper(f: a -> Bool, s: String, len: Int32, i: Int32): List[Int32] & Impure =
+        if (i >= len)
+            Nil
+        else {
+            let r = findIndicesHelper(f, s, len, i+1);
+            if (f(charAt(i, s))) i :: r else r
+        }
+
+    ///
+    /// Return the positions of the all the occurences of `x` in `s`.
+    ///
+    pub def indices(x: Char, s: String): Array[Int32] & Impure =
+        findIndices(y -> x == y, s)
 
     ///
     /// Alias for `takeLeft`.
@@ -773,9 +798,7 @@ namespace String {
     /// Return the common prefix of strings `s` and `s2`.
     ///
     pub def commonPrefix(s1: String, s2: String): String =
-        let len1 = length(s1);
-        let len2 = length(s2);
-        commonPrefixHelper(s1, s2, len1, len2, 0)
+        commonPrefixHelper(s1, s2, length(s1), length(s2), 0)
 
     ///
     /// Helper function for `commonPrefix`.
@@ -907,6 +930,26 @@ namespace String {
     pub def equalsCI(s1: String, s2: String): Bool =
          import java.lang.String.equalsIgnoreCase(String);
          s1.equalsIgnoreCase(s2) as & Pure
+
+    ///
+    /// Returns an array where the element at index `i` is `(x, y)` where
+    /// `x` is the element at index `i` in `a` and `y` is the element at index `i` in `b`.
+    ///
+    /// If either `a` or `b` becomes depleted, then no further elements are added to the resulting array.
+    ///
+    pub def zip(a: String, b: String): Array[(Char, Char)] & Impure =
+        let len = Int32.min(length(a), length(b));
+        Array.init(i -> (charAt(i, a), charAt(i, b)), len)
+
+    ///
+    /// Returns a string where the element at index `i` is `f(x, y)` where
+    /// `x` is the element at index `i` in `a` and `y` is the element at index `i` in `b`.
+    ///
+    /// If either `a` or `b` becomes depleted, then no further elements are added to the resulting array.
+    ///
+    pub def zipWith(f: (Char, Char) -> Char & e, a: String, b: String): String & e =
+        let len = Int32.min(length(a), length(b));
+        init(i -> f(charAt(i, a), charAt(i, b)), len)
 
     /////////////////////////////////////////////////////////////////////////////
     // Lints                                                                   //

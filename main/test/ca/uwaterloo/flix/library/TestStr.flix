@@ -495,6 +495,84 @@ def rotateRight10(): Bool = String.rotateRight(1, "abc") == "cab"
 def rotateRight11(): Bool = String.rotateRight(2, "abc") == "bca"
 
 /////////////////////////////////////////////////////////////////////////////
+// findIndices                                                             //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def findIndices01(): Bool & Impure =
+    let a = String.findIndices(Char.isDigit, "");
+    Array.sameElements(a, []: Array[Int32])
+
+@test
+def findIndices02(): Bool & Impure =
+    let a = String.findIndices(Char.isDigit, "a");
+    Array.sameElements(a, []: Array[Int32])
+
+@test
+def findIndices03(): Bool & Impure =
+    let a = String.findIndices(Char.isDigit, "1");
+    Array.sameElements(a, [0])
+
+@test
+def findIndices04(): Bool & Impure =
+    let a = String.findIndices(Char.isDigit, "ab");
+    Array.sameElements(a, [] : Array[Int32])
+
+@test
+def findIndices05(): Bool & Impure =
+    let a = String.findIndices(Char.isDigit, "1b");
+    Array.sameElements(a, [0])
+
+@test
+def findIndices06(): Bool & Impure =
+    let a = String.findIndices(Char.isDigit, "a2");
+    Array.sameElements(a, [1])
+
+@test
+def findIndices07(): Bool & Impure =
+    let a = String.findIndices(Char.isDigit, "12");
+    Array.sameElements(a, [0,1])
+
+/////////////////////////////////////////////////////////////////////////////
+// indices                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def indices01(): Bool & Impure =
+    let a = String.indices('a', "b");
+    Array.sameElements(a, []: Array[Int32])
+
+@test
+def indices02(): Bool & Impure =
+    let a = String.indices('a', "b");
+    Array.sameElements(a, []: Array[Int32])
+
+@test
+def indices03(): Bool & Impure =
+    let a = String.indices('a', "a");
+    Array.sameElements(a, [0])
+
+@test
+def indices04(): Bool & Impure =
+    let a = String.indices('a', "bc");
+    Array.sameElements(a, []: Array[Int32])
+
+@test
+def indices05(): Bool & Impure =
+    let a = String.indices('a', "ab");
+    Array.sameElements(a, [0])
+
+@test
+def indices06(): Bool & Impure =
+    let a = String.indices('b', "ab");
+    Array.sameElements(a, [1])
+
+@test
+def indices07(): Bool & Impure =
+    let a = String.indices('a', "aa");
+    Array.sameElements(a, [0,1])
+
+/////////////////////////////////////////////////////////////////////////////
 // take                                                                    //
 /////////////////////////////////////////////////////////////////////////////
 @test
@@ -920,5 +998,88 @@ def equalsCI08(): Bool =
 @test
 def equalsCI09(): Bool =
     String.equalsCI("hello world", "HELLO WORLD!") == false
+
+/////////////////////////////////////////////////////////////////////////////
+// zip                                                                     //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def zip01(): Bool & Impure =
+    let a = String.zip("", "");
+    Array.sameElements(a, []: Array[(Char,Char)])
+
+@test
+def zip02(): Bool & Impure =
+    let a = String.zip("a", "");
+    Array.sameElements(a, []: Array[(Char, Char)])
+
+@test
+def zip03(): Bool & Impure =
+    let a = String.zip("", "1");
+    Array.sameElements(a, []: Array[(Char, Char)])
+
+@test
+def zip04(): Bool & Impure =
+    let a = String.zip("a", "1");
+    Array.sameElements(a, [('a', '1')])
+
+@test
+def zip05(): Bool & Impure =
+    let a = String.zip("ab", "12");
+    Array.sameElements(a, [('a', '1'), ('b', '2')])
+
+@test
+def zip06(): Bool & Impure =
+    let a = String.zip("abc", "123");
+    Array.sameElements(a, [('a', '1'), ('b', '2'), ('c', '3')])
+
+@test
+def zip07(): Bool & Impure =
+    let a = String.zip("abcd", "1234");
+    Array.sameElements(a, [('a', '1'), ('b', '2'), ('c', '3'), ('d', '4')])
+
+/////////////////////////////////////////////////////////////////////////////
+// zipWith                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def zipWith01(): Bool =
+    let s = String.zipWith((a, b) -> if (Char.isLetter(a)) a else b, "", "");
+    s == ""
+
+@test
+def zipWith02(): Bool =
+    let s = String.zipWith((a, b) -> if (Char.isLetter(a)) a else b, "a", "");
+    s == ""
+
+@test
+def zipWith03(): Bool =
+    let s = String.zipWith((a, b) -> if (Char.isLetter(a)) a else b, "", "1");
+    s == ""
+
+@test
+def zipWith04(): Bool =
+    let s = String.zipWith((a, b) -> if (Char.isLetter(a)) a else b, "_", "1");
+    s == "1"
+
+@test
+def zipWith05(): Bool =
+    let s = String.zipWith((a, b) -> if (Char.isLetter(a)) a else b, "a", "1");
+    s == "a"
+
+@test
+def zipWith06(): Bool =
+    let s = String.zipWith((a, b) -> if (Char.isLetter(a)) a else b, "_bc__fgh", "12345678");
+    s == "1bc45fgh"
+
+@test
+def zipWith07(): Bool =
+    let s = String.zipWith((a, b) -> if (Char.isLetter(a)) a else b, "_bc__fghijkl", "12345678");
+    s == "1bc45fgh"
+
+@test
+def zipWith08(): Bool =
+    let s = String.zipWith((a, b) -> if (Char.isLetter(a)) a else b, "_bc__fgh", "1234567890");
+    s == "1bc45fgh"
 
 }
