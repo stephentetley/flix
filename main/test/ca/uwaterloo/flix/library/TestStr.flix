@@ -17,6 +17,28 @@
 namespace TestString {
 
 /////////////////////////////////////////////////////////////////////////////
+// charAt                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def charAt01(): Bool = String.charAt(0, "Hello World!") == 'H'
+
+@test
+def charAt02(): Bool = String.charAt(1, "Hello World!") == 'e'
+
+@test
+def charAt03(): Bool = String.charAt(2, "Hello World!") == 'l'
+
+@test
+def charAt04(): Bool = String.charAt(3, "Hello World!") == 'l'
+
+@test
+def charAt05(): Bool = String.charAt(4, "Hello World!") == 'o'
+
+@test
+def charAt06(): Bool = String.charAt(5, "Hello World!") == ' '
+
+/////////////////////////////////////////////////////////////////////////////
 // concat                                                                  //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -51,63 +73,24 @@ def concat08(): Bool =
     f(" World!", "Hello") == "Hello World!"
 
 /////////////////////////////////////////////////////////////////////////////
-// trim                                                                    //
+// isEmpty                                                                 //
 /////////////////////////////////////////////////////////////////////////////
 
 @test
-def trim01(): Bool = "Hello World" == String.trim("Hello World")
+def isEmpty01(): Bool = String.isEmpty("") == true
 
 @test
-def trim02(): Bool = "abc" == String.trim(" abc")
-
-@test
-def trim03(): Bool = "abc" == String.trim("abc ")
-
-@test
-def trim04(): Bool = "abc" == String.trim(" abc ")
-
-@test
-def trim05(): Bool = "abc" == String.trim("  abc")
-
-@test
-def trim06(): Bool = "" == String.trim("  ")
+def isEmpty02(): Bool = String.isEmpty("Hello") == false
 
 /////////////////////////////////////////////////////////////////////////////
-// lineSeparator                                                           //
+// length                                                                  //
 /////////////////////////////////////////////////////////////////////////////
 
 @test
-def lineSeparator01(): Bool =
-    let newline = String.lineSeparator();
-    Char.isWhiteSpace(String.charAt(0, newline)) == true
+def length01(): Bool = String.length("") == 0
 
 @test
-def lineSeparator02(): Bool =
-    let newline = String.lineSeparator();
-    String.length(newline) == 1 || String.length(newline) == 2
-
-/////////////////////////////////////////////////////////////////////////////
-// charAt                                                                  //
-/////////////////////////////////////////////////////////////////////////////
-
-@test
-def charAt01(): Bool = String.charAt(0, "Hello World!") == 'H'
-
-@test
-def charAt02(): Bool = String.charAt(5, "Hello World!") == ' '
-
-/////////////////////////////////////////////////////////////////////////////
-// endsWith                                                                //
-/////////////////////////////////////////////////////////////////////////////
-
-@test
-def endsWith01(): Bool = String.endsWith("Hello World!", "") == true
-
-@test
-def endsWith02(): Bool = String.endsWith("Hello World!", "World!") == true
-
-@test
-def endsWith03(): Bool = String.endsWith("Hello World!", "WORLD!") == false
+def length02(): Bool = String.length("0123456789") == 10
 
 /////////////////////////////////////////////////////////////////////////////
 // startsWith                                                              //
@@ -123,25 +106,17 @@ def startsWith02(): Bool = String.startsWith("Hello World!", "Hello") == true
 def startsWith03(): Bool = String.startsWith("Hello World!", "HELLO") == false
 
 /////////////////////////////////////////////////////////////////////////////
-// isEmpty                                                                 //
+// endsWith                                                                //
 /////////////////////////////////////////////////////////////////////////////
 
 @test
-def isEmpty01(): Bool = String.isEmpty("") == true
+def endsWith01(): Bool = String.endsWith("Hello World!", "") == true
 
 @test
-def isEmpty02(): Bool = String.isEmpty("Hello") == false
-
-
-/////////////////////////////////////////////////////////////////////////////
-// length                                                                  //
-/////////////////////////////////////////////////////////////////////////////
+def endsWith02(): Bool = String.endsWith("Hello World!", "World!") == true
 
 @test
-def length01(): Bool = String.length("") == 0
-
-@test
-def length02(): Bool = String.length("0123456789") == 10
+def endsWith03(): Bool = String.endsWith("Hello World!", "WORLD!") == false
 
 /////////////////////////////////////////////////////////////////////////////
 // split                                                                   //
@@ -193,6 +168,42 @@ def toList02(): Bool = String.toList("ABC") == 'A' :: 'B' :: 'C' :: Nil
 
 @test
 def toList03(): Bool = String.toList("1 2 3") == '1' :: ' ' :: '2' :: ' ' :: '3' :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// trim                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def trim01(): Bool = "Hello World" == String.trim("Hello World")
+
+@test
+def trim02(): Bool = "abc" == String.trim(" abc")
+
+@test
+def trim03(): Bool = "abc" == String.trim("abc ")
+
+@test
+def trim04(): Bool = "abc" == String.trim(" abc ")
+
+@test
+def trim05(): Bool = "abc" == String.trim("  abc")
+
+@test
+def trim06(): Bool = "" == String.trim("  ")
+
+/////////////////////////////////////////////////////////////////////////////
+// lineSeparator                                                           //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def lineSeparator01(): Bool =
+    let newline = String.lineSeparator();
+    Char.isWhiteSpace(String.charAt(0, newline)) == true
+
+@test
+def lineSeparator02(): Bool =
+    let newline = String.lineSeparator();
+    String.length(newline) == 1 || String.length(newline) == 2
 
 /////////////////////////////////////////////////////////////////////////////
 // toArray                                                                 //
@@ -398,6 +409,40 @@ def mapWithIndex06(): Bool =
 def mapWithIndex07(): Bool =
     let test = (c,i) -> if (i < 1) { if (Char.isUpperCase(c)) 't' else 'f' } else { if (Char.isUpperCase(c)) 'T' else 'F' };
     String.mapWithIndex(test, "Ab") == "tF"
+
+/////////////////////////////////////////////////////////////////////////////
+// map2                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def map201(): Bool =
+    let s = String.map2((a, b) -> if (Char.isLowerCase(a)) a else b, "", "");
+    s == ""
+
+@test
+def map202(): Bool =
+    let s = String.map2((a, b) -> if (Char.isLowerCase(a)) a else b, "a", "");
+    s == ""
+
+@test
+def map203(): Bool =
+    let s = String.map2((a, b) -> if (Char.isLowerCase(a)) a else b, "", "1");
+    s == ""
+
+@test
+def map204(): Bool =
+    let s = String.map2((a, b) -> if (Char.isLowerCase(a)) a else b, "A", "1");
+    s == "1"
+
+@test
+def map205(): Bool =
+    let s = String.map2((a, b) -> if (Char.isLowerCase(a)) a else b, "a", "1");
+    s == "a"
+
+@test
+def map206(): Bool =
+    let s = String.map2((a, b) -> if (Char.isLowerCase(a)) a else b, "_bc__fgh", "12345678");
+    s == "1bc45fgh"
 
 /////////////////////////////////////////////////////////////////////////////
 // reverse                                                                 //

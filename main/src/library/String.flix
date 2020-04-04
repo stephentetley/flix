@@ -31,13 +31,6 @@ namespace String {
         s1.concat(s2) as & Pure
 
     ///
-    /// Returns `true` if the string `s1` ends with the string `s2`.
-    ///
-    pub def endsWith(s1: String, s2: String): Bool =
-        import java.lang.String.endsWith(String);
-        s1.endsWith(s2) as & Pure
-
-    ///
     /// Returns `true` if the string `s` is the empty string.
     ///
     pub def isEmpty(s: String): Bool =
@@ -57,6 +50,13 @@ namespace String {
     pub def startsWith(s1: String, s2: String): Bool =
         import java.lang.String.startsWith(String);
         s1.startsWith(s2) as & Pure
+
+    ///
+    /// Returns `true` if the string `s1` ends with the string `s2`.
+    ///
+    pub def endsWith(s1: String, s2: String): Bool =
+        import java.lang.String.endsWith(String);
+        s1.endsWith(s2) as & Pure
 
     ///
     /// Splits the string `s` around matches of the regular expression `r`.
