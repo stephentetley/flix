@@ -116,16 +116,77 @@ def isDigit06(): Bool = Char.isDigit('9') == true
 def isDigit07(): Bool = Char.isDigit('†') == false
 
 @test
-def isDigit08(): Bool = Char.isDigit('\u00FE') == false        // lower-case thorn
+def isDigit08(): Bool = Char.isDigit('\u00FE') == false         // lower-case thorn
 
 @test
-def isDigit09(): Bool = Char.isDigit('\u00B1') == false       // plus-minus sign
+def isDigit09(): Bool = Char.isDigit('\u00B1') == false         // plus-minus sign
 
 @test
 def isDigit10(): Bool = Char.isDigit('â') == false
 
 @test
 def isDigit11(): Bool = Char.isDigit('Â') == false
+
+@test
+def isDigit12(): Bool = Char.isDigit('\u0660') == true          // Arabic-Indic digit zero
+
+@test
+def isDigit13(): Bool = Char.isDigit('\u0669') == true          // Arabic-Indic digit nine
+
+@test
+def isDigit14(): Bool = Char.isDigit('\u0966') == true          // Devanagari digit zero
+
+@test
+def isDigit15(): Bool = Char.isDigit('\u096F') == true          // Devanagari digit nine
+
+/////////////////////////////////////////////////////////////////////////////
+// isAsciiDigit                                                            //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def isAsciiDigit01(): Bool = Char.isAsciiDigit('a') == false
+
+@test
+def isAsciiDigit02(): Bool = Char.isAsciiDigit('A') == false
+
+@test
+def isAsciiDigit03(): Bool = Char.isAsciiDigit(' ') == false
+
+@test
+def isAsciiDigit04(): Bool = Char.isAsciiDigit('+') == false
+
+@test
+def isAsciiDigit05(): Bool = Char.isAsciiDigit('0') == true
+
+@test
+def isAsciiDigit06(): Bool = Char.isAsciiDigit('9') == true
+
+@test
+def isAsciiDigit07(): Bool = Char.isAsciiDigit('†') == false
+
+@test
+def isAsciiDigit08(): Bool = Char.isAsciiDigit('\u00FE') == false        // lower-case thorn
+
+@test
+def isAsciiDigit09(): Bool = Char.isAsciiDigit('\u00B1') == false       // plus-minus sign
+
+@test
+def isAsciiDigit10(): Bool = Char.isAsciiDigit('â') == false
+
+@test
+def isAsciiDigit11(): Bool = Char.isAsciiDigit('Â') == false
+
+@test
+def isAsciiDigit12(): Bool = Char.isAsciiDigit('\u0660') == false       // Arabic-Indic digit zero
+
+@test
+def isAsciiDigit13(): Bool = Char.isAsciiDigit('\u0669') == false       // Arabic-Indic digit nine
+
+@test
+def isAsciiDigit14(): Bool = Char.isAsciiDigit('\u0966') == false       // Devanagari digit zero
+
+@test
+def isAsciiDigit15(): Bool = Char.isAsciiDigit('\u096F') == false       // Devanagari digit nine
 
 /////////////////////////////////////////////////////////////////////////////
 // isOctDigit                                                              //
