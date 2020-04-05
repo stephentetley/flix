@@ -1368,6 +1368,238 @@ def splitAt10(): Bool = String.splitAt(-1, "ab") == ("", "ab")
 def splitAt11(): Bool = String.splitAt(3, "ab") == ("ab", "")
 
 /////////////////////////////////////////////////////////////////////////////
+// foldLeft                                                                //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def foldLeft01(): Bool = String.foldLeft((ac, c) -> ac + Char.toString(c), "", "")  == ""
+
+@test
+def foldLeft02(): Bool = String.foldLeft((ac, c) -> ac + Char.toString(c), "",  "a") == "a"
+
+@test
+def foldLeft03(): Bool = String.foldLeft((ac, c) -> ac + Char.toString(c), "",  "ab") == "ab"
+
+@test
+def foldLeft04(): Bool = String.foldLeft((ac, c) -> ac + Char.toString(c), "",  "abc") == "abc"
+
+@test
+def foldLeft05(): Bool = String.foldLeft((ac, c) -> ac + Char.toString(c), "",  "abcd") == "abcd"
+
+@test
+def foldLeft06(): Bool = String.foldLeft((ac, c) -> ac + Char.toString(c), "",  "abcde") == "abcde"
+
+/////////////////////////////////////////////////////////////////////////////
+// foldRight                                                                //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def foldRight01(): Bool = String.foldRight((c, ac) -> Char.toString(c) + ac, "", "")  == ""
+
+@test
+def foldRight02(): Bool = String.foldRight((c, ac) -> Char.toString(c) + ac, "", "a") == "a"
+
+@test
+def foldRight03(): Bool = String.foldRight((c, ac) -> Char.toString(c) + ac, "", "ab") == "ab"
+
+@test
+def foldRight04(): Bool = String.foldRight((c, ac) -> Char.toString(c) + ac, "",  "abc") == "abc"
+
+@test
+def foldRight05(): Bool = String.foldRight((c, ac) -> Char.toString(c) + ac, "",  "abcd") == "abcd"
+
+@test
+def foldRight06(): Bool = String.foldRight((c, ac) -> Char.toString(c) + ac, "",  "abcde") == "abcde"
+
+/////////////////////////////////////////////////////////////////////////////
+// foldLeft2                                                               //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def foldLeft201(): Bool =
+    String.foldLeft2((ac, a, b) -> if (Char.isUpperCase(b)) ac + Char.toString(b) else ac + Char.toString(a), "", "", "") == ""
+
+@test
+def foldLeft202(): Bool =
+    String.foldLeft2((ac, a, b) -> if (Char.isUpperCase(b)) ac + Char.toString(b) else ac + Char.toString(a), "", "a", "_") == "a"
+
+@test
+def foldLeft203(): Bool =
+    String.foldLeft2((ac, a, b) -> if (Char.isUpperCase(b)) ac + Char.toString(b) else ac + Char.toString(a), "", "a", "A") == "A"
+
+@test
+def foldLeft204(): Bool =
+    String.foldLeft2((ac, a, b) -> if (Char.isUpperCase(b)) ac + Char.toString(b) else ac + Char.toString(a), "", "ab", "__") == "ab"
+
+@test
+def foldLeft205(): Bool =
+    String.foldLeft2((ac, a, b) -> if (Char.isUpperCase(b)) ac + Char.toString(b) else ac + Char.toString(a), "", "ab", "A_") == "Ab"
+
+@test
+def foldLeft206(): Bool =
+    String.foldLeft2((ac, a, b) -> if (Char.isUpperCase(b)) ac + Char.toString(b) else ac + Char.toString(a), "", "ab", "AB") == "AB"
+
+@test
+def foldLeft207(): Bool =
+    String.foldLeft2((ac, a, b) -> if (Char.isUpperCase(b)) ac + Char.toString(b) else ac + Char.toString(a), "", "ab", "") == ""
+
+@test
+def foldLeft208(): Bool =
+    String.foldLeft2((ac, a, b) -> if (Char.isUpperCase(b)) ac + Char.toString(b) else ac + Char.toString(a), "", "ab", "_") == "a"
+
+@test
+def foldLeft209(): Bool =
+    String.foldLeft2((ac, a, b) -> if (Char.isUpperCase(b)) ac + Char.toString(b) else ac + Char.toString(a), "", "ab", "A") == "A"
+
+/////////////////////////////////////////////////////////////////////////////
+// foldRight2                                                              //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def foldRight201(): Bool =
+    String.foldRight2((a, b, ac) -> if (Char.isUpperCase(b)) Char.toString(b) + ac else Char.toString(a) + ac, "", "", "") == ""
+
+@test
+def foldRight202(): Bool =
+    String.foldRight2((a, b, ac) -> if (Char.isUpperCase(b)) Char.toString(b) + ac else Char.toString(a) + ac, "", "a", "_") == "a"
+
+@test
+def foldRight203(): Bool =
+    String.foldRight2((a, b, ac) -> if (Char.isUpperCase(b)) Char.toString(b) + ac else Char.toString(a) + ac, "", "a", "A") == "A"
+
+@test
+def foldRight204(): Bool =
+    String.foldRight2((a, b, ac) -> if (Char.isUpperCase(b)) Char.toString(b) + ac else Char.toString(a) + ac, "", "ab", "__") == "ab"
+
+@test
+def foldRight205(): Bool =
+    String.foldRight2((a, b, ac) -> if (Char.isUpperCase(b)) Char.toString(b) + ac else Char.toString(a) + ac, "", "ab", "A_") == "Ab"
+
+@test
+def foldRight206(): Bool =
+    String.foldRight2((a, b, ac) -> if (Char.isUpperCase(b)) Char.toString(b) + ac else Char.toString(a) + ac, "", "ab", "AB") == "AB"
+
+@test
+def foldRight207(): Bool =
+    String.foldRight2((a, b, ac) -> if (Char.isUpperCase(b)) Char.toString(b) + ac else Char.toString(a) + ac, "", "ab", "") == ""
+
+@test
+def foldRight208(): Bool =
+    String.foldRight2((a, b, ac) -> if (Char.isUpperCase(b)) Char.toString(b) + ac else Char.toString(a) + ac, "", "ab", "_") == "b"
+
+@test
+def foldRight209(): Bool =
+    String.foldRight2((a, b, ac) -> if (Char.isUpperCase(b)) Char.toString(b) + ac else Char.toString(a) + ac, "", "ab", "B") == "B"
+
+/////////////////////////////////////////////////////////////////////////////
+// unfold                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def unfold01(): Bool =
+    String.unfold(x -> if (x < 5) Some('a', x+1) else None, 0) == "aaaaa"
+
+@test
+def unfold02(): Bool =
+    String.unfold(x -> if (x < 5) Some('a', x+1) else None, 1) == "aaaa"
+
+@test
+def unfold03(): Bool =
+    String.unfold(x -> if (x < 5) Some('a', x+1) else None, 2) == "aaa"
+
+@test
+def unfold04(): Bool =
+    String.unfold(x -> if (x < 5) Some('a', x+1) else None, 3) == "aa"
+
+@test
+def unfold05(): Bool =
+    String.unfold(x -> if (x < 5) Some('a', x+1) else None, 4) == "a"
+
+@test
+def unfold06(): Bool =
+    String.unfold(x -> if (x < 5) Some('a', x+1) else None, 5) == ""
+
+@test
+def unfold07(): Bool =
+    String.unfold(x -> if (x < 5) Some('a', x+1) else None, 6) == ""
+
+@test
+def unfold08(): Bool =
+    String.unfold(x -> if (x < 5) Some('a', x+1) else None, -1) == "aaaaaa"
+
+/////////////////////////////////////////////////////////////////////////////
+// exists                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def exists01(): Bool = String.exists(Char.isUpperCase, "") == false
+
+@test
+def exists02(): Bool = String.exists(Char.isUpperCase, "a") == false
+
+@test
+def exists03(): Bool = String.exists(Char.isUpperCase, "A") == true
+
+@test
+def exists04(): Bool = String.exists(Char.isUpperCase, "ab") == false
+
+@test
+def exists05(): Bool = String.exists(Char.isUpperCase, "aB") == true
+
+@test
+def exists06(): Bool = String.exists(Char.isUpperCase, "Ab") == true
+
+@test
+def exists07(): Bool = String.exists(Char.isUpperCase, "AB") == true
+
+@test
+def exists08(): Bool = String.exists(Char.isUpperCase, "a*c") == false
+
+@test
+def exists09(): Bool = String.exists(Char.isUpperCase, "aBc") == true
+
+/////////////////////////////////////////////////////////////////////////////
+// forall                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def forall01(): Bool = String.forall(Char.isUpperCase, "") == true
+
+@test
+def forall02(): Bool = String.forall(Char.isUpperCase, "a") == false
+
+@test
+def forall03(): Bool = String.forall(Char.isUpperCase, "A") == true
+
+@test
+def forall04(): Bool = String.forall(Char.isUpperCase, "a") == false
+
+@test
+def forall05(): Bool = String.forall(Char.isUpperCase, "aB") == false
+
+@test
+def forall06(): Bool = String.forall(Char.isUpperCase, "Ab") == false
+
+@test
+def forall07(): Bool = String.forall(Char.isUpperCase, "AB") == true
+
+@test
+def forall08(): Bool = String.forall(Char.isUpperCase, "a*b") == false
+
+@test
+def forall09(): Bool = String.forall(Char.isUpperCase, "aBc") == false
+
+@test
+def forall10(): Bool = String.forall(Char.isUpperCase, "ABC") == true
+
+/////////////////////////////////////////////////////////////////////////////
+// isAscii                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def isAscii01(): Bool = String.isAscii("") == true
+
+/////////////////////////////////////////////////////////////////////////////
 // patch                                                                   //
 /////////////////////////////////////////////////////////////////////////////
 

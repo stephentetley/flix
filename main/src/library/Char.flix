@@ -97,4 +97,16 @@ namespace Char {
         import java.lang.Character:toString(Char);
         c.toString() as & Pure
 
+    ///
+    /// Returns the character `c` as an Int32.
+    ///
+    pub def toInt32(c: Char): Int32 =
+        c as Int32
+
+    ///
+    /// Returns the respective character for the int `i`.
+    ///
+    pub def fromInt32(i: Int32): Char =
+        i as Char
+
 }
