@@ -753,16 +753,16 @@ def sliceRight02(): Bool = String.sliceRight("", 1) == ""
 def sliceRight03(): Bool = String.sliceRight("a", 1) == ""
 
 @test
-def sliceRight04(): Bool = String.sliceRight("a", 0) == ""
+def sliceRight04(): Bool = String.sliceRight("a", 0) == "a"
 
 @test
 def sliceRight05(): Bool = String.sliceRight("a", 1) == ""
 
 @test
-def sliceRight06(): Bool = String.sliceRight("ab", 0) == "b"
+def sliceRight06(): Bool = String.sliceRight("ab", 0) == "ab"
 
 @test
-def sliceRight07(): Bool = String.sliceRight("ab", 1) == ""
+def sliceRight07(): Bool = String.sliceRight("ab", 1) == "b"
 
 @test
 def sliceRight08(): Bool = String.sliceRight("ab", -1) == ""
@@ -771,13 +771,13 @@ def sliceRight08(): Bool = String.sliceRight("ab", -1) == ""
 def sliceRight09(): Bool = String.sliceRight("ab", 2) == ""
 
 @test
-def sliceRight10(): Bool = String.sliceRight("abc", 0) == "bc"
+def sliceRight10(): Bool = String.sliceRight("abc", 0) == "abc"
 
 @test
-def sliceRight11(): Bool = String.sliceRight("abc", 1) == "c"
+def sliceRight11(): Bool = String.sliceRight("abc", 1) == "bc"
 
 @test
-def sliceRight12(): Bool = String.sliceRight("abc", 2) == ""
+def sliceRight12(): Bool = String.sliceRight("abc", 2) == "c"
 
 @test
 def sliceRight13(): Bool = String.sliceRight("abc", 3) == ""
@@ -1245,6 +1245,127 @@ def takeWhileRight07(): Bool = String.takeWhileRight(Char.isUpperCase, "AB") == 
 
 @test
 def takeWhileRight08(): Bool = String.takeWhileRight(Char.isUpperCase, "ABcDefgHIjK") == "K"
+
+/////////////////////////////////////////////////////////////////////////////
+// dropWhile                                                               //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def dropWhile01(): Bool = String.dropWhile(Char.isUpperCase, "") == ""
+
+@test
+def dropWhile02(): Bool = String.dropWhile(Char.isUpperCase, "a") == "a"
+
+@test
+def dropWhile03(): Bool = String.dropWhile(Char.isUpperCase, "A") == ""
+
+@test
+def dropWhile04(): Bool = String.dropWhile(Char.isUpperCase, "ab") == "ab"
+
+@test
+def dropWhile05(): Bool = String.dropWhile(Char.isUpperCase, "aB") == "aB"
+
+@test
+def dropWhile06(): Bool = String.dropWhile(Char.isUpperCase, "Ab") == "b"
+
+@test
+def dropWhile07(): Bool = String.dropWhile(Char.isUpperCase, "AB") == ""
+
+@test
+def dropWhile08(): Bool = String.dropWhile(Char.isUpperCase, "ABcDefgHIjK") == "cDefgHIjK"
+
+/////////////////////////////////////////////////////////////////////////////
+// dropWhileLeft                                                           //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def dropWhileLeft01(): Bool = String.dropWhileLeft(Char.isUpperCase, "") == ""
+
+@test
+def dropWhileLeft02(): Bool = String.dropWhileLeft(Char.isUpperCase, "a") == "a"
+
+@test
+def dropWhileLeft03(): Bool = String.dropWhileLeft(Char.isUpperCase, "A") == ""
+
+@test
+def dropWhileLeft04(): Bool = String.dropWhileLeft(Char.isUpperCase, "ab") == "ab"
+
+@test
+def dropWhileLeft05(): Bool = String.dropWhileLeft(Char.isUpperCase, "aB") == "aB"
+
+@test
+def dropWhileLeft06(): Bool = String.dropWhileLeft(Char.isUpperCase, "Ab") == "b"
+
+@test
+def dropWhileLeft07(): Bool = String.dropWhileLeft(Char.isUpperCase, "AB") == ""
+
+@test
+def dropWhileLeft08(): Bool = String.dropWhileLeft(Char.isUpperCase, "ABcDefgHIjK") == "cDefgHIjK"
+
+/////////////////////////////////////////////////////////////////////////////
+// dropWhileRight                                                          //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def dropWhileRight01(): Bool = String.dropWhileRight(Char.isUpperCase, "") == ""
+
+@test
+def dropWhileRight02(): Bool = String.dropWhileRight(Char.isUpperCase, "a") == "a"
+
+@test
+def dropWhileRight03(): Bool = String.dropWhileRight(Char.isUpperCase, "A") == ""
+
+@test
+def dropWhileRight04(): Bool = String.dropWhileRight(Char.isUpperCase, "ab") == "ab"
+
+@test
+def dropWhileRight05(): Bool = String.dropWhileRight(Char.isUpperCase, "aB") == "a"
+
+@test
+def dropWhileRight06(): Bool = String.dropWhileRight(Char.isUpperCase, "Ab") == "Ab"
+
+@test
+def dropWhileRight07(): Bool = String.dropWhileRight(Char.isUpperCase, "AB") == ""
+
+@test
+def dropWhileRight08(): Bool = String.dropWhileRight(Char.isUpperCase, "ABcDefgHIjK") == "ABcDefgHIj"
+
+/////////////////////////////////////////////////////////////////////////////
+// splitAt                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def splitAt01(): Bool = String.splitAt(0, "") == ("", "")
+
+@test
+def splitAt02(): Bool = String.splitAt(1, "") == ("", "")
+
+@test
+def splitAt03(): Bool = String.splitAt(-1, "") == ("", "")
+
+@test
+def splitAt04(): Bool = String.splitAt(0, "a") == ("", "a")
+
+@test
+def splitAt05(): Bool = String.splitAt(1, "a") == ("a", "")
+
+@test
+def splitAt06(): Bool = String.splitAt(-1, "a") == ("", "a")
+
+@test
+def splitAt07(): Bool = String.splitAt(0, "ab") == ("", "ab")
+
+@test
+def splitAt08(): Bool = String.splitAt(1, "ab") == ("a", "b")
+
+@test
+def splitAt09(): Bool = String.splitAt(2, "ab") == ("ab", "")
+
+@test
+def splitAt10(): Bool = String.splitAt(-1, "ab") == ("", "ab")
+
+@test
+def splitAt11(): Bool = String.splitAt(3, "ab") == ("ab", "")
 
 /////////////////////////////////////////////////////////////////////////////
 // patch                                                                   //

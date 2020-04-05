@@ -319,7 +319,7 @@ namespace String {
     ///
     /// Get the substring of `s` to the left of index 'i' (exclusive).
     ///
-    /// If `i` is out-of-bounds, return the empty string.
+    /// `sliceLeft == slice(s, 0 , i)`
     ///
     pub def sliceLeft(s: String, i: Int32): String = match length(s) {
         case len if i > len => ""
@@ -327,16 +327,15 @@ namespace String {
         case _              => slice(s, 0, i)
     }
 
-
     ///
-    /// Get the substring of `s` to the right of index 'i' (exclusive).
+    /// Get the substring of `s` to the right starting at index 'i' (inclusive).
     ///
-    /// If `i` is out-of-bounds, return the empty string.
+    /// `sliceRight == slice(s, i , length(s))`
     ///
     pub def sliceRight(s: String, i: Int32): String = match length(s) {
         case len if i >= len => ""
         case _   if i < 0 => ""
-        case len => slice(s, i+1, len)
+        case len => slice(s, i, len)
     }
 
 
@@ -520,7 +519,12 @@ namespace String {
     /// paired with the empty string.
     ///
     pub def splitAt(n: Int32, s: String): (String, String) =
-        (take(n,s), drop(n,s))
+        match length(s) {
+            case _   if n <= 0  => ("", s)
+            case len if n > len => (s, "")
+            case _              => (sliceLeft(s, n), sliceRight(s, n))
+        }
+
 
     ///
     /// Applies `f` to a start value `x` and all elements in `s` going from left to right.
