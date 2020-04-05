@@ -1390,7 +1390,7 @@ def foldLeft05(): Bool = String.foldLeft((ac, c) -> ac + Char.toString(c), "",  
 def foldLeft06(): Bool = String.foldLeft((ac, c) -> ac + Char.toString(c), "",  "abcde") == "abcde"
 
 /////////////////////////////////////////////////////////////////////////////
-// foldRight                                                                //
+// foldRight                                                               //
 /////////////////////////////////////////////////////////////////////////////
 
 @test
@@ -1598,6 +1598,268 @@ def forall10(): Bool = String.forall(Char.isUpperCase, "ABC") == true
 
 @test
 def isAscii01(): Bool = String.isAscii("") == true
+
+@test
+def isAscii02(): Bool = String.isAscii("a") == true
+
+@test
+def isAscii03(): Bool = String.isAscii("A") == true
+
+@test
+def isAscii04(): Bool = String.isAscii("0") == true
+
+@test
+def isAscii05(): Bool = String.isAscii("~") == true
+
+@test
+def isAscii06(): Bool = String.isAscii("Â") == false
+
+@test
+def isAscii07(): Bool = String.isAscii("†") == false
+
+@test
+def isAscii08(): Bool = String.isAscii("ab") == true
+
+@test
+def isAscii09(): Bool = String.isAscii("a†") == false
+
+@test
+def isAscii10(): Bool = String.isAscii("†b") == false
+
+/////////////////////////////////////////////////////////////////////////////
+// isWhiteSpace                                                            //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def isWhiteSpace01(): Bool = String.isWhiteSpace("") == true
+
+@test
+def isWhiteSpace02(): Bool = String.isWhiteSpace(" ") == true
+
+@test
+def isWhiteSpace03(): Bool = String.isWhiteSpace("A") == false
+
+@test
+def isWhiteSpace04(): Bool = String.isWhiteSpace("0") == false
+
+@test
+def isWhiteSpace05(): Bool = String.isWhiteSpace("~") == false
+
+@test
+def isWhiteSpace06(): Bool = String.isWhiteSpace(String.lineSeparator()) == true
+
+@test
+def isWhiteSpace07(): Bool = String.isWhiteSpace("  ") == true
+
+/////////////////////////////////////////////////////////////////////////////
+// trimLeft                                                                //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def trimLeft01(): Bool = String.trimLeft("") == ""
+
+@test
+def trimLeft02(): Bool = String.trimLeft(" ") == ""
+
+@test
+def trimLeft03(): Bool = String.trimLeft("a") == "a"
+
+@test
+def trimLeft04(): Bool = String.trimLeft(" a") == "a"
+
+@test
+def trimLeft05(): Bool = String.trimLeft("a ") == "a "
+
+@test
+def trimLeft06(): Bool = String.trimLeft("aa") == "aa"
+
+@test
+def trimLeft07(): Bool = String.trimLeft("  aa") == "aa"
+
+@test
+def trimLeft08(): Bool = String.trimLeft("aa  ") == "aa  "
+
+@test
+def trimLeft09(): Bool = String.trimLeft(" aa ") == "aa "
+
+@test
+def trimLeft10(): Bool = String.trimLeft("  aa  ") == "aa  "
+
+@test
+def trimLeft11(): Bool = String.trimLeft(" a a ") == "a a "
+
+@test
+def trimLeft12(): Bool = String.trimLeft(String.lineSeparator() + "aa") == "aa"
+
+
+/////////////////////////////////////////////////////////////////////////////
+// trimRight                                                               //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def trimRight01(): Bool = String.trimRight("") == ""
+
+@test
+def trimRight02(): Bool = String.trimRight(" ") == ""
+
+@test
+def trimRight03(): Bool = String.trimRight("a") == "a"
+
+@test
+def trimRight04(): Bool = String.trimRight(" a") == " a"
+
+@test
+def trimRight05(): Bool = String.trimRight("a ") == "a"
+
+@test
+def trimRight06(): Bool = String.trimRight("aa") == "aa"
+
+@test
+def trimRight07(): Bool = String.trimRight("  aa") == "  aa"
+
+@test
+def trimRight08(): Bool = String.trimRight("aa  ") == "aa"
+
+@test
+def trimRight09(): Bool = String.trimRight(" aa ") == " aa"
+
+@test
+def trimRight10(): Bool = String.trimRight("  aa  ") == "  aa"
+
+@test
+def trimRight11(): Bool = String.trimRight(" a a ") == " a a"
+
+@test
+def trimRight12(): Bool = String.trimRight("aa" + String.lineSeparator()) == "aa"
+
+/////////////////////////////////////////////////////////////////////////////
+// repeat                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def repeat01(): Bool = String.repeat("a", -1) == ""
+
+@test
+def repeat02(): Bool = String.repeat("a", 0) == ""
+
+@test
+def repeat03(): Bool = String.repeat("a", 1) == "a"
+
+@test
+def repeat04(): Bool = String.repeat("a", 2) == "aa"
+
+@test
+def repeat05(): Bool = String.repeat("a", 3) == "aaa"
+
+@test
+def repeat06(): Bool = String.repeat("ab", 0) == ""
+
+@test
+def repeat07(): Bool = String.repeat("ab", 1) == "ab"
+
+@test
+def repeat08(): Bool = String.repeat("ab", 2) == "abab"
+
+@test
+def repeat09(): Bool = String.repeat("ab", 3) == "ababab"
+
+/////////////////////////////////////////////////////////////////////////////
+// padLeft                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def padLeft01(): Bool = String.padLeft(0, ' ', "") == ""
+
+@test
+def padLeft02(): Bool = String.padLeft(1, ' ', "") == " "
+
+@test
+def padLeft03(): Bool = String.padLeft(2, ' ', "") == "  "
+
+@test
+def padLeft04(): Bool = String.padLeft(3, ' ', "") == "   "
+
+@test
+def padLeft05(): Bool = String.padLeft(0, ' ', "a") == "a"
+
+@test
+def padLeft06(): Bool = String.padLeft(1, ' ', "a") == "a"
+
+@test
+def padLeft07(): Bool = String.padLeft(2, ' ', "a") == " a"
+
+@test
+def padLeft08(): Bool = String.padLeft(3, ' ', "a") == "  a"
+
+@test
+def padLeft09(): Bool = String.padLeft(0, ' ', "ab") == "ab"
+
+@test
+def padLeft10(): Bool = String.padLeft(1, ' ', "ab") == "ab"
+
+@test
+def padLeft11(): Bool = String.padLeft(2, ' ', "ab") == "ab"
+
+@test
+def padLeft12(): Bool = String.padLeft(3, ' ', "ab") == " ab"
+
+@test
+def padLeft13(): Bool = String.padLeft(3, '_', "a") == "__a"
+
+@test
+def padLeft14(): Bool = String.padLeft(3, '_', "ab") == "_ab"
+
+@test
+def padLeft15(): Bool = String.padLeft(3, '_', "abc") == "abc"
+
+/////////////////////////////////////////////////////////////////////////////
+// padRight                                                                //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def padRight01(): Bool = String.padRight(0, ' ', "") == ""
+
+@test
+def padRight02(): Bool = String.padRight(1, ' ', "") == " "
+
+@test
+def padRight03(): Bool = String.padRight(2, ' ', "") == "  "
+
+@test
+def padRight04(): Bool = String.padRight(3, ' ', "") == "   "
+
+@test
+def padRight05(): Bool = String.padRight(0, ' ', "a") == "a"
+
+@test
+def padRight06(): Bool = String.padRight(1, ' ', "a") == "a"
+
+@test
+def padRight07(): Bool = String.padRight(2, ' ', "a") == "a "
+
+@test
+def padRight08(): Bool = String.padRight(3, ' ', "a") == "a  "
+
+@test
+def padRight09(): Bool = String.padRight(0, ' ', "ab") == "ab"
+
+@test
+def padRight10(): Bool = String.padRight(1, ' ', "ab") == "ab"
+
+@test
+def padRight11(): Bool = String.padRight(2, ' ', "ab") == "ab"
+
+@test
+def padRight12(): Bool = String.padRight(3, ' ', "ab") == "ab "
+
+@test
+def padRight13(): Bool = String.padRight(3, '_', "a") == "a__"
+
+@test
+def padRight14(): Bool = String.padRight(3, '_', "ab") == "ab_"
+
+@test
+def padRight15(): Bool = String.padRight(3, '_', "abc") == "abc"
 
 /////////////////////////////////////////////////////////////////////////////
 // patch                                                                   //
