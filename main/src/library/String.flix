@@ -760,7 +760,7 @@ namespace String {
     ///
     pub def indent(n: Int32, s: String): String =
         if (n <= 0 || length(s) == 0)
-            ""
+            s
         else
             indentHelper(n, s)
 
@@ -792,7 +792,7 @@ namespace String {
     ///
     pub def stripIndent(n: Int32, s: String): String =
         if (n <= 0 || length(s) == 0)
-            ""
+            s
         else
             indentHelper(-n, s)
 
@@ -803,15 +803,15 @@ namespace String {
         split(s, "\r?\n")
 
     ///
-    /// Join the array of strings `a` with the system dependent line
-    /// separator.
+    /// Join the array of strings `a` separating each pair of strings and
+    /// ending the result string with the system dependent line separator.
     ///
-    pub def unlines(a: Array[String]): String = unlinesImpure(a) as & Pure
+    pub def unlines(a: Array[String]): String = unlinesHelper(a) as & Pure
 
     ///
     /// Helper function for `unlines`.
     ///
-    def unlinesImpure(a: Array[String]): String & Impure =
+    def unlinesHelper(a: Array[String]): String & Impure =
         let sb = StringBuilder.new();
         Array.foreach(StringBuilder.appendLine(sb), a);
         StringBuilder.toString(sb)
@@ -823,7 +823,8 @@ namespace String {
         split(s, "\s+")
 
     ///
-    /// Join the array of strings `a` with a single space character.
+    /// Join the array of strings `a` separating each pair of strings with a
+    /// single space character.
     ///
     pub def unwords(a: Array[String]): String = unwordsImpure(a) as & Pure
 

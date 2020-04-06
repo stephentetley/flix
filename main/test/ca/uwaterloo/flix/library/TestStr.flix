@@ -2091,11 +2091,89 @@ def patch28(): Bool = String.patch(-1, 10, "ABCDEFGH", "abcdefg") == "BCDEFGH"
 /////////////////////////////////////////////////////////////////////////////
 
 @test
-def indent01(): Bool = String.indent(3, "") == ""
+def indent01(): Bool =
+    String.indent(3, "") == ""
 
 @test
-def indent02(): Bool = String.indent(3, "abc") == "   abc" + String.lineSeparator()
+def indent02(): Bool & Impure =
+    String.indent(3, String.unlines(["abc"])) == String.unlines(["   abc"])
 
+@test
+def indent03(): Bool & Impure =
+    String.indent(3, String.unlines(["abc", "def"])) == String.unlines(["   abc", "   def"])
+
+@test
+def indent04(): Bool & Impure =
+    String.indent(3, String.unlines(["ab", "cd", "ef"])) == String.unlines(["   ab", "   cd", "   ef"])
+
+@test
+def indent05(): Bool & Impure =
+    String.indent(1, String.unlines(["abc"])) == String.unlines([" abc"])
+
+@test
+def indent06(): Bool & Impure =
+    String.indent(1, String.unlines(["abc", "def"])) == String.unlines([" abc", " def"])
+
+@test
+def indent07(): Bool & Impure =
+    String.indent(1, String.unlines(["ab", "cd", "ef"])) == String.unlines([" ab", " cd", " ef"])
+
+@test
+def indent08(): Bool & Impure =
+    String.indent(0, String.unlines(["abc"])) == String.unlines(["abc"])
+
+@test
+def indent09(): Bool & Impure =
+    String.indent(0, String.unlines(["abc", "def"])) == String.unlines(["abc", "def"])
+
+@test
+def indent10(): Bool & Impure =
+    String.indent(0, String.unlines(["ab", "cd", "ef"])) == String.unlines(["ab", "cd", "ef"])
+
+
+/////////////////////////////////////////////////////////////////////////////
+// stripIndent                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def stripIndent01(): Bool =
+    String.stripIndent(3, "") == ""
+
+@test
+def stripIndent02(): Bool & Impure =
+    String.stripIndent(3, String.unlines(["   abc"])) == String.unlines(["abc"])
+
+@test
+def stripIndent03(): Bool & Impure =
+    String.stripIndent(3, String.unlines(["   abc", "   def"])) == String.unlines(["abc", "def"])
+
+@test
+def stripIndent04(): Bool & Impure =
+    String.stripIndent(3, String.unlines(["   ab", "   cd", "   ef"])) == String.unlines(["ab", "cd", "ef"])
+
+@test
+def stripIndent05(): Bool & Impure =
+    String.stripIndent(1, String.unlines(["   abc"])) == String.unlines(["  abc"])
+
+@test
+def stripIndent06(): Bool & Impure =
+    String.stripIndent(1, String.unlines(["   abc", "   def"])) == String.unlines(["  abc", "  def"])
+
+@test
+def stripIndent07(): Bool & Impure =
+    String.stripIndent(1, String.unlines(["   ab", "   cd", "   ef"])) == String.unlines(["  ab", "  cd", "  ef"])
+
+@test
+def stripIndent08(): Bool & Impure =
+    String.stripIndent(0, String.unlines(["   abc"])) == String.unlines(["   abc"])
+
+@test
+def stripIndent09(): Bool & Impure =
+    String.stripIndent(0, String.unlines(["   abc", "   def"])) == String.unlines(["   abc", "   def"])
+
+@test
+def stripIndent10(): Bool & Impure =
+    String.stripIndent(0, String.unlines(["   ab", "   cd", "   ef"])) == String.unlines(["   ab", "   cd", "   ef"])
 
 /////////////////////////////////////////////////////////////////////////////
 // commonPrefix                                                            //
