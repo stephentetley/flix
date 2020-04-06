@@ -1862,6 +1862,143 @@ def padRight14(): Bool = String.padRight(3, '_', "ab") == "ab_"
 def padRight15(): Bool = String.padRight(3, '_', "abc") == "abc"
 
 /////////////////////////////////////////////////////////////////////////////
+// replace                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def replace01(): Bool = String.replace("c", "d", "") == ""
+
+@test
+def replace02(): Bool = String.replace("c", "d", "a") == "a"
+
+@test
+def replace03(): Bool = String.replace("c", "d", "c") == "d"
+
+@test
+def replace04(): Bool = String.replace("c", "d", "d") == "d"
+
+@test
+def replace05(): Bool = String.replace("c", "d", "ab") == "ab"
+
+@test
+def replace06(): Bool = String.replace("c", "d", "abc") == "abd"
+
+@test
+def replace07(): Bool = String.replace("c", "d", "cd") == "dd"
+
+@test
+def replace08(): Bool = String.replace("c", "d", "cc") == "dd"
+
+/////////////////////////////////////////////////////////////////////////////
+// replaceChar                                                             //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def replaceChar01(): Bool = String.replaceChar('c', 'd', "") == ""
+
+@test
+def replaceChar02(): Bool = String.replaceChar('c', 'd', "a") == "a"
+
+@test
+def replaceChar03(): Bool = String.replaceChar('c', 'd', "c") == "d"
+
+@test
+def replaceChar04(): Bool = String.replaceChar('c', 'd', "d") == "d"
+
+@test
+def replaceChar05(): Bool = String.replaceChar('c', 'd', "ab") == "ab"
+
+@test
+def replaceChar06(): Bool = String.replaceChar('c', 'd', "abc") == "abd"
+
+@test
+def replaceChar07(): Bool = String.replaceChar('c', 'd', "cd") == "dd"
+
+@test
+def replaceChar08(): Bool = String.replaceChar('c', 'd', "cc") == "dd"
+
+/////////////////////////////////////////////////////////////////////////////
+// replaceMatches                                                          //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def replaceMatches01(): Bool = String.replaceMatches("[c]{1}", "d", "") == ""
+
+@test
+def replaceMatches02(): Bool = String.replaceMatches("[c]{1}", "d", "a") == "a"
+
+@test
+def replaceMatches03(): Bool = String.replaceMatches("[c]{1}", "d", "c") == "d"
+
+@test
+def replaceMatches04(): Bool = String.replaceMatches("[c]{1}", "d", "d") == "d"
+
+@test
+def replaceMatches05(): Bool = String.replaceMatches("[c]{1}", "d", "ab") == "ab"
+
+@test
+def replaceMatches06(): Bool = String.replaceMatches("[c]{1}", "d", "abc") == "abd"
+
+@test
+def replaceMatches07(): Bool = String.replaceMatches("[c]{1}", "d", "cd") == "dd"
+
+@test
+def replaceMatches08(): Bool = String.replaceMatches("[c]{1}", "d", "cc") == "dd"
+
+/////////////////////////////////////////////////////////////////////////////
+// replaceFirstMatch                                                       //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def replaceFirstMatch01(): Bool = String.replaceFirstMatch("[c]{1}", "d", "") == ""
+
+@test
+def replaceFirstMatch02(): Bool = String.replaceFirstMatch("[c]{1}", "d", "a") == "a"
+
+@test
+def replaceFirstMatch03(): Bool = String.replaceFirstMatch("[c]{1}", "d", "c") == "d"
+
+@test
+def replaceFirstMatch04(): Bool = String.replaceFirstMatch("[c]{1}", "d", "d") == "d"
+
+@test
+def replaceFirstMatch05(): Bool = String.replaceFirstMatch("[c]{1}", "d", "ab") == "ab"
+
+@test
+def replaceFirstMatch06(): Bool = String.replaceFirstMatch("[c]{1}", "d", "abc") == "abd"
+
+@test
+def replaceFirstMatch07(): Bool = String.replaceFirstMatch("[c]{1}", "d", "cd") == "dd"
+
+@test
+def replaceFirstMatch08(): Bool = String.replaceFirstMatch("[c]{1}", "d", "cc") == "dc"
+
+/////////////////////////////////////////////////////////////////////////////
+// update                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def update01(): Bool = String.update(0, 'b', "") == ""
+
+@test
+def update02(): Bool = String.update(-1, 'b', "a") == "a"
+
+@test
+def update03(): Bool = String.update(0, 'b', "a") == "b"
+
+@test
+def update04(): Bool = String.update(1, 'b', "a") == "a"
+
+@test
+def update05(): Bool = String.update(0, 'e', "ab") == "eb"
+
+@test
+def update06(): Bool = String.update(1, 'e', "ab") == "ae"
+
+@test
+def update07(): Bool = String.update(2, 'e', "ab") == "ab"
+
+/////////////////////////////////////////////////////////////////////////////
 // patch                                                                   //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -1948,6 +2085,17 @@ def patch27(): Bool = String.patch(4, 2, "nopq", "abcdefg") == "abcdnog"
 
 @test
 def patch28(): Bool = String.patch(-1, 10, "ABCDEFGH", "abcdefg") == "BCDEFGH"
+
+/////////////////////////////////////////////////////////////////////////////
+// indent                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def indent01(): Bool = String.indent(3, "") == ""
+
+@test
+def indent02(): Bool = String.indent(3, "abc") == "   abc" + String.lineSeparator()
+
 
 /////////////////////////////////////////////////////////////////////////////
 // commonPrefix                                                            //

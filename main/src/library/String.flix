@@ -712,14 +712,14 @@ namespace String {
     ///
     /// Returns `s` with every match of the regular expression `patt` replaced by the string `rep`.
     ///
-    pub def replaceAll(patt: String, rep: String, s: String): String =
+    pub def replaceMatches(patt: String, rep: String, s: String): String =
         import java.lang.String.replaceAll(String, String);
         s.replaceAll(patt, rep) as & Pure
 
     ///
     /// Returns `s` with the first match of the regular expression `patt` replaced by the string `rep`.
     ///
-    pub def replaceFirst(patt: String, rep: String, s: String): String =
+    pub def replaceFirstMatch(patt: String, rep: String, s: String): String =
         import java.lang.String.replaceFirst(String, String);
         s.replaceFirst(patt, rep) as & Pure
 
@@ -750,19 +750,57 @@ namespace String {
 
 
     ///
-    /// Indent every line in string `s` by `n` spaces.
+    /// Indent every line in string `s` by `n` spaces. `n` must be greater than `0`.
     ///
-    /// The returned string normalizes line termination characters.
+    /// If the string `s` in nonempty, the returned string normalizes line
+    /// termination characters and adds a line terminator to the last line
+    /// of the string if it does not already end with a newline.
+    ///
+    /// If the string `s` is empty, then the empty string is returned.
     ///
     pub def indent(n: Int32, s: String): String =
+        if (n <= 0 || length(s) == 0)
+            ""
+        else
+            indentHelper(n, s)
+
+
+    ///
+    /// Helper function for `indent` and `stripIndent`.
+    ///
+    /// if n > 0 the Java function `indent` indents with spaces.
+    /// if n < 0 the Java function `indent` strips spaces.
+    ///
+    /// Note, Java indent appears to use only line feed (0x000A) as a terminator.
+    /// `indentHelper` calls replaceMatches to change the result to use the System
+    /// lineSeparator.
+    ///
+    def indentHelper(n: Int32, s: String): String =
         import java.lang.String.indent(Int32);
-        s.indent(n) as & Pure
+        let s1 = s.indent(n) as & Pure;
+        replaceMatches("\r?\n", lineSeparator(), s1)
+
+    ///
+    /// Strip every indented line in string `s` by `n` spaces. `n` must be greater than `0`.
+    /// Note, tabs are counted as a single space.
+    ///
+    /// If the string `s` in nonempty, the returned string normalizes line
+    /// termination characters and adds a line terminator to the last line
+    /// of the string if it does not already end with a newline.
+    ///
+    /// If the string `s` is empty, then the empty string is returned.
+    ///
+    pub def stripIndent(n: Int32, s: String): String =
+        if (n <= 0 || length(s) == 0)
+            ""
+        else
+            indentHelper(-n, s)
 
     ///
     /// Split the string `s` into an array of lines on the system dependent line separator.
     ///
     pub def lines(s: String): Array[String] & Impure =
-        split(s, lineSeparator())
+        split(s, "\r?\n")
 
     ///
     /// Join the array of strings `a` with the system dependent line
@@ -823,10 +861,10 @@ namespace String {
         if (i < 0) None else Some(i)
 
     ///
-    /// Test if the string `s` contains `substring`.
+    /// Test if the string `s` contains the substring `sub`.
     ///
-    pub def contains(s: String, substring: String): Bool =
-        let a = indexOfLeft(s, substring);
+    pub def isSubstringOf(sub: String, s: String): Bool =
+        let a = indexOfLeft(s, sub);
         !Option.isEmpty(a)
 
     ///
