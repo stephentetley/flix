@@ -823,9 +823,12 @@ namespace String {
 
     ///
     /// Split the string `s` into an array of words, dividing on one or more white space characters.
+    /// Leading and trailing spaces are trimmed.
     ///
-    pub def words(s: String): Array[String] & Impure =
-        split(s, "\s+")
+    pub def words(s: String): Array[String] & Impure = match trim(s) {
+        case s1 if isEmpty(s1) => []
+        case s1 => split(s1, "\s+")
+    }
 
     ///
     /// Join the array of strings `a` separating each pair of strings with a
@@ -844,14 +847,14 @@ namespace String {
     ///
     /// Alias for `indexOfLeft`.
     ///
-    pub def indexOf(s: String, sub: String): Option[Int32] = indexOfLeft(s, sub)
+    pub def indexOf(sub: String, s: String): Option[Int32] = indexOfLeft(sub, s)
 
     ///
     /// Return the index of the first occurence of `sub` in `s` from the left.
     ///
     /// If `substring` is not present in `s` return None.
     ///
-    pub def indexOfLeft(s: String, sub: String): Option[Int32] =
+    pub def indexOfLeft(sub: String, s: String): Option[Int32] =
         import java.lang.String.indexOf(String);
         let i = s.indexOf(sub) as & Pure;
         if (i < 0) None else Some(i)
@@ -861,7 +864,7 @@ namespace String {
     ///
     /// If `substring` is not present in `s` return None.
     ///
-    pub def indexOfRight(s: String, sub: String): Option[Int32] =
+    pub def indexOfRight(sub: String, s: String): Option[Int32] =
         import java.lang.String.lastIndexOf(String);
         let i = s.lastIndexOf(sub) as & Pure;
         if (i < 0) None else Some(i)
@@ -870,8 +873,12 @@ namespace String {
     /// Test if the string `s` contains the substring `sub`.
     ///
     pub def isSubstringOf(sub: String, s: String): Bool =
-        let a = indexOfLeft(s, sub);
-        !Option.isEmpty(a)
+        if (isEmpty(sub))
+            true
+        else {
+            let a = indexOfLeft(sub, s);
+            !Option.isEmpty(a)
+        }
 
     ///
     /// Return the common prefix of strings `s` and `s2`.

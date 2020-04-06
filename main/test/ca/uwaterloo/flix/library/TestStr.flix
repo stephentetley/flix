@@ -2214,7 +2214,7 @@ def lines07(): Bool & Impure =
     Array.sameElements(a, ["a", "b"])
 
 /////////////////////////////////////////////////////////////////////////////
-// unlines                                                                   //
+// unlines                                                                 //
 /////////////////////////////////////////////////////////////////////////////
 
 @test
@@ -2247,6 +2247,197 @@ def unlines07(): Bool & Impure =
 @test
 def unlines08(): Bool & Impure =
     String.unlines([String.lineSeparator(), "b"]) ==  String.lineSeparator() + String.lineSeparator() + "b" + String.lineSeparator()
+
+/////////////////////////////////////////////////////////////////////////////
+// words                                                                   //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def words01(): Bool & Impure =
+    let a = String.words("");
+    Array.sameElements(a, []: Array[String])
+
+@test
+def words02(): Bool & Impure =
+    let a = String.words("a");
+    Array.sameElements(a, ["a"])
+
+@test
+def words03(): Bool & Impure =
+    let a = String.words("a ");
+    Array.sameElements(a, ["a"])
+
+@test
+def words04(): Bool & Impure =
+    let a = String.words(" a");
+    Array.sameElements(a, ["a"])
+
+@test
+def words05(): Bool & Impure =
+    let a = String.words("a b");
+    Array.sameElements(a, ["a", "b"])
+
+@test
+def words06(): Bool & Impure =
+    let a = String.words("a  b");
+    Array.sameElements(a, ["a", "b"])
+
+@test
+def words07(): Bool & Impure =
+    let a = String.words("a" + Char.toString('\t') + "b");
+    Array.sameElements(a, ["a", "b"])
+
+/////////////////////////////////////////////////////////////////////////////
+// unwords                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def unwords01(): Bool & Impure = String.unwords([]) == ""
+
+@test
+def unwords02(): Bool & Impure = String.unwords([""]) == ""
+
+@test
+def unwords03(): Bool & Impure = String.unwords(["a"]) == "a"
+
+@test
+def unwords04(): Bool & Impure = String.unwords(["a", ""]) == "a "
+
+@test
+def unwords05(): Bool & Impure = String.unwords(["", "b"]) == " b"
+
+@test
+def unwords06(): Bool & Impure = String.unwords(["a", "b"]) == "a b"
+
+@test
+def unwords07(): Bool & Impure = String.unwords(["a", String.lineSeparator()]) == "a " + String.lineSeparator()
+
+@test
+def unwords08(): Bool & Impure = String.unwords([String.lineSeparator(), "b"]) ==  String.lineSeparator() + " b"
+
+/////////////////////////////////////////////////////////////////////////////
+// indexOf                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def indexOf01(): Bool = String.indexOf("a", "") == None
+
+@test
+def indexOf02(): Bool = String.indexOf("a", "A") == None
+
+@test
+def indexOf03(): Bool = String.indexOf("a", "a") == Some(0)
+
+@test
+def indexOf04(): Bool = String.indexOf("a", "AB") == None
+
+@test
+def indexOf05(): Bool = String.indexOf("a", "ab") == Some(0)
+
+@test
+def indexOf06(): Bool = String.indexOf("b", "ab") == Some(1)
+
+@test
+def indexOf07(): Bool = String.indexOf("a", "aa") == Some(0)
+
+@test
+def indexOf08(): Bool = String.indexOf("ab", "ab") == Some(0)
+
+@test
+def indexOf09(): Bool = String.indexOf("bc", "abc") == Some(1)
+
+/////////////////////////////////////////////////////////////////////////////
+// indexOfLeft                                                             //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def indexOfLeft01(): Bool = String.indexOfLeft("a", "") == None
+
+@test
+def indexOfLeft02(): Bool = String.indexOfLeft("a", "A") == None
+
+@test
+def indexOfLeft03(): Bool = String.indexOfLeft("a", "a") == Some(0)
+
+@test
+def indexOfLeft04(): Bool = String.indexOfLeft("a", "AB") == None
+
+@test
+def indexOfLeft05(): Bool = String.indexOfLeft("a", "ab") == Some(0)
+
+@test
+def indexOfLeft06(): Bool = String.indexOfLeft("b", "ab") == Some(1)
+
+@test
+def indexOfLeft07(): Bool = String.indexOfLeft("a", "aa") == Some(0)
+
+@test
+def indexOfLeft08(): Bool = String.indexOfLeft("ab", "ab") == Some(0)
+
+@test
+def indexOfLeft09(): Bool = String.indexOfLeft("bc", "abc") == Some(1)
+
+/////////////////////////////////////////////////////////////////////////////
+// indexOfRight                                                            //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def indexOfRight01(): Bool = String.indexOfRight("a", "") == None
+
+@test
+def indexOfRight02(): Bool = String.indexOfRight("a", "A") == None
+
+@test
+def indexOfRight03(): Bool = String.indexOfRight("a", "a") == Some(0)
+
+@test
+def indexOfRight04(): Bool = String.indexOfRight("a", "AB") == None
+
+@test
+def indexOfRight05(): Bool = String.indexOfRight("a", "ab") == Some(0)
+
+@test
+def indexOfRight06(): Bool = String.indexOfRight("b", "ab") == Some(1)
+
+@test
+def indexOfRight07(): Bool = String.indexOfRight("a", "aa") == Some(1)
+
+@test
+def indexOfRight08(): Bool = String.indexOfRight("ab", "ab") == Some(0)
+
+@test
+def indexOfRight09(): Bool = String.indexOfRight("bc", "abc") == Some(1)
+
+/////////////////////////////////////////////////////////////////////////////
+// isSubstringOf                                                           //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def isSubstringOf01(): Bool = String.isSubstringOf("", "") == true
+
+@test
+def isSubstringOf02(): Bool = String.isSubstringOf("", "a") == true
+
+@test
+def isSubstringOf03(): Bool = String.isSubstringOf("", "abc") == true
+
+@test
+def isSubstringOf04(): Bool = String.isSubstringOf("a", "") == false
+
+@test
+def isSubstringOf05(): Bool = String.isSubstringOf("a", "a") == true
+
+@test
+def isSubstringOf06(): Bool = String.isSubstringOf("a", "b") == false
+
+@test
+def isSubstringOf07(): Bool = String.isSubstringOf("a", "aa") == true
+
+@test
+def isSubstringOf08(): Bool = String.isSubstringOf("ab", "ab") == true
+
+@test
+def isSubstringOf09(): Bool = String.isSubstringOf("bc", "abc") == true
 
 /////////////////////////////////////////////////////////////////////////////
 // commonPrefix                                                            //
