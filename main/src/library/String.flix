@@ -797,10 +797,15 @@ namespace String {
             indentHelper(-n, s)
 
     ///
-    /// Split the string `s` into an array of lines on the system dependent line separator.
+    /// Split the string `s` into an array of lines, breaking on newline.
+    ///
+    /// Newline is recognized as either Windows (carriage return, line feed) or Unix (line feed).
     ///
     pub def lines(s: String): Array[String] & Impure =
-        split(s, "\r?\n")
+        if (isEmpty(s))
+            []
+        else
+            split(s, "\r?\n")
 
     ///
     /// Join the array of strings `a` separating each pair of strings and

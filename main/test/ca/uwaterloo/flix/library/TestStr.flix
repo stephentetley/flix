@@ -2130,9 +2130,8 @@ def indent09(): Bool & Impure =
 def indent10(): Bool & Impure =
     String.indent(0, String.unlines(["ab", "cd", "ef"])) == String.unlines(["ab", "cd", "ef"])
 
-
 /////////////////////////////////////////////////////////////////////////////
-// stripIndent                                                                  //
+// stripIndent                                                             //
 /////////////////////////////////////////////////////////////////////////////
 
 @test
@@ -2174,6 +2173,80 @@ def stripIndent09(): Bool & Impure =
 @test
 def stripIndent10(): Bool & Impure =
     String.stripIndent(0, String.unlines(["   ab", "   cd", "   ef"])) == String.unlines(["   ab", "   cd", "   ef"])
+
+/////////////////////////////////////////////////////////////////////////////
+// lines                                                                   //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def lines01(): Bool & Impure =
+    let a = String.lines("");
+    Array.sameElements(a, []: Array[String])
+
+@test
+def lines02(): Bool & Impure =
+    let a = String.lines("a");
+    Array.sameElements(a, ["a"])
+
+@test
+def lines03(): Bool & Impure =
+    let a = String.lines("a" + String.lineSeparator());
+    Array.sameElements(a, ["a"])
+
+@test
+def lines04(): Bool & Impure =
+    let a = String.lines(String.lineSeparator() + "a");
+    Array.sameElements(a, ["", "a"])
+
+@test
+def lines05(): Bool & Impure =
+    let a = String.lines("a" + String.lineSeparator() + "b");
+    Array.sameElements(a, ["a", "b"])
+
+@test
+def lines06(): Bool & Impure =
+    let a = String.lines("a" + Char.toString('\n') + "b");
+    Array.sameElements(a, ["a", "b"])
+
+@test
+def lines07(): Bool & Impure =
+    let a = String.lines("a" + Char.toString('\r') + Char.toString('\n') + "b");
+    Array.sameElements(a, ["a", "b"])
+
+/////////////////////////////////////////////////////////////////////////////
+// unlines                                                                   //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def unlines01(): Bool & Impure = String.unlines([]) == ""
+
+@test
+def unlines02(): Bool & Impure =
+    String.unlines([""]) == String.lineSeparator()
+
+@test
+def unlines03(): Bool & Impure =
+    String.unlines(["a"]) == "a" + String.lineSeparator()
+
+@test
+def unlines04(): Bool & Impure =
+    String.unlines(["a", ""]) == "a" + String.lineSeparator() + String.lineSeparator()
+
+@test
+def unlines05(): Bool & Impure =
+    String.unlines(["", "b"]) == String.lineSeparator() + "b" + String.lineSeparator()
+
+@test
+def unlines06(): Bool & Impure =
+    String.unlines(["a", "b"]) == "a" + String.lineSeparator() + "b" + String.lineSeparator()
+
+@test
+def unlines07(): Bool & Impure =
+    String.unlines(["a", String.lineSeparator()]) == "a" + String.lineSeparator() + String.lineSeparator() + String.lineSeparator()
+
+@test
+def unlines08(): Bool & Impure =
+    String.unlines([String.lineSeparator(), "b"]) ==  String.lineSeparator() + String.lineSeparator() + "b" + String.lineSeparator()
 
 /////////////////////////////////////////////////////////////////////////////
 // commonPrefix                                                            //
