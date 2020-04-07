@@ -106,6 +106,10 @@ class Flix {
 
     "RedBlackTree.flix" -> LocalResource.get("/library/RedBlackTree.flix"),
 
+    "flix/regex/Pattern.flix" -> LocalResource.get("/library/flix/regex/Pattern.flix"),
+    "flix/regex/Matcher.flix" -> LocalResource.get("/library/flix/regex/Matcher.flix"),
+    "flix/regex/MatchResult.flix" -> LocalResource.get("/library/flix/regex/MatchResult.flix"),
+
     //"CodePatterns.flix" -> LocalResource.get("/library/CodePatterns.flix"),
     // "Vec.flix" -> LocalResource.get("/library/Vec.flix"),
 
