@@ -38,4 +38,28 @@ namespace Regex {
         let m1 = new(patt, input);
         m1.isSubmatch()
 
+    ///
+    /// Returns `input` with every match of the pattern `patt` replaced by the string `rep`.
+    ///
+    pub def replace(patt: Pattern, rep: String, input: String): String & Impure =
+        use Regex/Internal/Matcher.{new, replaceAll};
+        let m1 = new(patt, input);
+        m1.replaceAll(rep)
+
+    ///
+    /// Returns `input` with the first match of the regular expression `patt` replaced by the string `rep`.
+    ///
+    pub def replaceFirstMatch(patt: Pattern, rep: String, input: String): String & Impure =
+        use Regex/Internal/Matcher.{new, replaceFirst};
+        let m1 = new(patt, input);
+        m1.replaceFirst(rep)
+
+    ///
+    /// Rewrite the string `input` by apply the function `f` to the substring produced by each match of the pattern `patt`.
+    ///
+    pub def replaceWith(patt: Pattern, f: String -> String, input: String): String & Impure =
+        use Regex/Internal/Matcher.{new, replaceAllWith};
+        let m1 = new(patt, input);
+        m1.replaceAllWith(f)
+
 }
