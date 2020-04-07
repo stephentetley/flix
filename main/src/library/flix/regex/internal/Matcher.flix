@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-use Regex.Matcher;
-use Regex.Matcher.{Matcher};
-use Regex.MatchResult;
-use Regex.MatchResult.{MatchResult};
+use Regex/Internal.Matcher;
+use Regex/Internal.Matcher.{Matcher};
+use Regex/Internal.MatchResult;
+use Regex/Internal.MatchResult.{MatchResult};
 use Regex.Pattern;
 use Regex.Pattern.{Pattern};
 
 
-namespace Regex {
+namespace Regex/Internal {
 
     ///
     /// Represents a mutable, matching engine for a Pattern.
     ///
-    opaque type Matcher = ##java.util.regex.Matcher
+    pub opaque type Matcher = ##java.util.regex.Matcher
 
 }
 
-namespace Regex/Matcher {
+namespace Regex/Internal/Matcher {
 
     ///
     /// Create a matcher for Pattern `patt` on the source String `input`.
@@ -42,9 +42,19 @@ namespace Regex/Matcher {
         let cs1 = input as ##java.lang.CharSequence;
         Matcher(p1.matcher(cs1))
 
-    pub def getMatch(a: Matcher): Option[MatchResult] & Impure =
+    pub def isMatch(x: Matcher): Bool & Impure =
+        import java.util.regex.Matcher.matches();
+        let Matcher(m1) = x;
+        m1.matches()
+
+    pub def isSubmatch(x: Matcher): Bool & Impure =
         import java.util.regex.Matcher.find();
-        let Matcher(m1) = a;
+        let Matcher(m1) = x;
+        m1.find()
+
+    pub def getMatch(x: Matcher): Option[MatchResult] & Impure =
+        import java.util.regex.Matcher.find();
+        let Matcher(m1) = x;
         if (m1.find() == false)
             None
         else

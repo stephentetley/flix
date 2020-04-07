@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-use Regex.MatchResult;
-use Regex.MatchResult.{MatchResult};
+use Regex/Internal.MatchResult;
+use Regex/Internal.MatchResult.{MatchResult};
 
-namespace Regex {
+namespace Regex/Internal {
 
     ///
     /// The result of a match operation.
     ///
-    opaque type MatchResult = ##java.util.regex.Matcher
+    pub opaque type MatchResult = ##java.util.regex.Matcher
 
 }
 
-namespace Regex/MatchResult {
+/// Probably MatchResult is not worthwhile.
+/// Currently MatchResult is a wrapper over Matcher but without
+/// access to the `iterator` to move to the next result.
+/// However when the Matcher itself is moved forward, all bound
+/// MatchResults get moved forward. This will be very confusing,
+/// at best MatchResult should not be a part of the public API.
+
+namespace Regex/Internal/MatchResult {
 
     ///
     /// Get the start index in the input of this MatchResult.
