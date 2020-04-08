@@ -104,6 +104,21 @@ namespace Regex/Internal/Matcher {
             replaceAllWithHelper(x, f, sb)
         }
 
+    pub def replaceAllWithIndex(x: Matcher, f: (String, Int32) -> String): String & Impure =
+        let sb = StringBuilder.new();
+        replaceAllWithIndexHelper(x, f, sb, 0);
+        StringBuilder.toString(sb)
+
+    pub def replaceAllWithIndexHelper(x: Matcher, f: (String, Int32) -> String, sb: StringBuilder, ix: Int32): Unit & Impure =
+        if (x.find() == false)
+            x.appendTail(sb)
+        else {
+            let sub = x.group();
+            let rep = f(sub, ix);
+            x.appendReplacement(sb, rep);
+            replaceAllWithIndexHelper(x, f, sb, ix+1)
+        }
+
     pub def getMatch(x: Matcher): Option[MatchResult] & Impure =
         import java.util.regex.Matcher.find();
         let Matcher(m1) = x;

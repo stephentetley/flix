@@ -62,4 +62,13 @@ namespace Regex {
         let m1 = new(patt, input);
         m1.replaceAllWith(f)
 
+    ///
+    /// Rewrite the string `input` by apply the function `f` to the substring produced by each match of the pattern `patt`.
+    ///
+    pub def replaceWithIndex(patt: Pattern, f: (String, Int32) -> String, input: String): String & Impure =
+        use Regex/Internal/Matcher.{new, replaceAllWithIndex};
+        let m1 = new(patt, input);
+        m1.replaceAllWithIndex(f)
+
+    // pub def foldMatchResults
 }

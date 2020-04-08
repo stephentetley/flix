@@ -83,4 +83,6 @@ namespace Regex/Internal/MatchResult {
         } catch {
             case _: ##java.lang.IllegalStateException => Err("getMatchedSubstring - match error")
         }
+
+
 }
