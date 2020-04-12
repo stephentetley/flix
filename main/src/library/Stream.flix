@@ -156,7 +156,8 @@ namespace Stream {
             let next = () -> 
                 match sf() {
                     case Yield(a) => Yield(f(a))
-                    case x        => x                    
+                    case Skip     => Skip
+                    case Done     => Done
                 };
             next 
         )
@@ -192,9 +193,6 @@ namespace Stream {
             next 
         )
 
-
-
-    
     pub def cons(x: a, s: Stream[a, e]) : Stream[a, Impure] = 
         Stream(() -> 
             let Stream(body) = s;
@@ -292,7 +290,8 @@ namespace Stream {
                             x := deref x + 1;
                             Yield(a)
                         }
-                        case ans => ans
+                        case Skip => Skip
+                        case Done => Done
                     }
                 };
             next 
@@ -311,7 +310,8 @@ namespace Stream {
                         x := deref x - 1;
                         Skip
                     }
-                case ans => ans
+                case Skip => Skip
+                case Done => Done
                 };
             next 
         )
