@@ -19,66 +19,194 @@ namespace TestStream {
 /////////////////////////////////////////////////////////////////////////////
 // empty                                                                   //
 /////////////////////////////////////////////////////////////////////////////
+
 @test
 def empty01(): Bool & Impure =
     let s = Stream.empty();
     Stream.toList(s) == Nil
 
+/////////////////////////////////////////////////////////////////////////////
+// range                                                                   //
+/////////////////////////////////////////////////////////////////////////////
 
 @test
-def test01(): Unit & Impure = 
-    let s: Stream[Int32, Impure] = Stream.range(1, 10);
-    let xs = Stream.toList(s) as & Impure;
-    List.foreach(x -> Console.printLine(Int32.toString(x)), xs)
-
-@test
-def test02(): Unit & Impure = 
-    let isEven = x -> x % 2 == 0;
-    let s = Stream.range(1, 10) |> Stream.filter(isEven);
-    Stream.foreach(x -> Console.printLine(Int32.toString(x)), s)
-
-@test
-def test03(): Unit & Impure = 
-    let isOdd = x -> x % 2 != 0;
-    let s = Stream.ofArray([1,2,3,4,5,6,7]) |> Stream.filter(isOdd);
-    Stream.foreach(x -> Console.printLine(Int32.toString(x)), s)
-
-@test
-def test04(): Unit & Impure = 
-    let s = Stream.ofArray([1,2,3,4,5,6,7]) |> Stream.take(3);
-    Stream.foreach(x -> Console.printLine(Int32.toString(x)), s)
-
-@test
-def test05(): Unit & Impure = 
-    let s = Stream.ofArray([1,2,3,4,5,6,7,8,9,10]) |> Stream.drop(3);
-    Stream.foreach(x -> Console.printLine(Int32.toString(x)), s)
-
-@test
-def test06(): Unit & Impure = 
-    let s = Stream.ofArray([1,2,3,4,5,6,7,8,9,10]) |> Stream.cons(-1000);
-    Stream.foreach(x -> Console.printLine(Int32.toString(x)), s)
-
-@test
-def test07(): Unit & Impure = 
-    let s1 = Stream.ofArray([1,2,3,4,5,6,7,8,9,10]);
-    let s2 = Stream.ofArray(['a', 'b', 'c']);
-    Stream.zip(s1, s2) |> Stream.foreach(match (x,y) -> Console.printLine(Int32.toString(x) + " " + Char.toString(y)))
-
-@test
-def test08(): Int32 & Impure = 
-    let s1 = Stream.ofArray([1,2,3,4,5,6,7,8,9,10]);
-    Stream.fold((x,y) -> x + y, 0, s1)
-
-@test
-def test09(): Unit & Impure = 
-    let s1 = Stream.ofArray([1,2,3,4,5,6,7,8,9,10]);
-    let s2 = Stream.ofList(100 :: 101 :: Nil);
-    Stream.append(s1, s2) |> Stream.foreach(x -> Console.printLine(Int32.toString(x)))
+def range01(): Bool & Impure =
+    let s = Stream.range(1, 0);
+    Stream.toList(s) == Nil
 
 
 @test
-def test10(): Unit & Impure = 
-    let s1 = Stream.unfold(x -> if (x > 6) None else Some(x, x+1), -3);
-    Stream.foreach(x -> Console.printLine(Int32.toString(x)), s1)
+def range02(): Bool & Impure =
+    let s = Stream.range(1, 1);
+    Stream.toList(s) == Nil
+
+@test
+def range03(): Bool & Impure =
+    let s = Stream.range(1, 2);
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def range04(): Bool & Impure =
+    let s = Stream.range(1, 3);
+    Stream.toList(s) == 1 :: 2 :: Nil
+
+@test
+def range05(): Bool & Impure =
+    let s =  Stream.range(1, 4);
+     Stream.toList(s) ==  1 :: 2 :: 3 :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// toList                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def toList01(): Bool & Impure =
+    let s = Stream.fromList(Nil);
+    Stream.toList(s) == Nil
+
+@test
+def toList02(): Bool & Impure =
+    let s = Stream.fromList(0 :: 1 :: Nil);
+    Stream.toList(s) == 0 :: 1 :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// foreach                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def foreach01(): Bool & Impure =
+    let r = ref 21;
+    let s = Stream.fromList(Nil);
+    Stream.foreach(x -> r := x, s);
+    21 == deref r
+
+@test
+def foreach02(): Bool & Impure =
+    let r = ref 21;
+    let s = Stream.fromList(1 :: 2 :: 3 :: Nil);
+    Stream.foreach(x -> r := x, s);
+    3 == deref r
+
+/////////////////////////////////////////////////////////////////////////////
+// unfold                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def unfold01(): Bool & Impure =
+    let s = Stream.unfold(st -> if (true) None else Some(Char.fromInt32(st + 48), st + 1), 0);
+    Stream.toList(s) == Nil
+
+@test
+def unfold02(): Bool & Impure =
+    let s = Stream.unfold(st -> if (st > 0) None else Some(Char.fromInt32(st + 48), st + 1), 0);
+    Stream.toList(s) == '0' :: Nil
+
+@test
+def unfold03(): Bool & Impure =
+    let s = Stream.unfold(st -> if (st > 1) None else Some(Char.fromInt32(st + 48), st + 1), 0);
+    Stream.toList(s) == '0' :: '1' :: Nil
+
+@test
+def unfold04(): Bool & Impure =
+    let s = Stream.unfold(st -> if (st >= 10) None else Some(Char.fromInt32(st + 48), st + 1), 0);
+    Stream.toList(s) == '0' :: '1' :: '2' :: '3' :: '4' :: '5' :: '6' :: '7' :: '8' :: '9' :: Nil
+
+@test
+def unfold05(): Bool & Impure =
+    let s = Stream.unfold(st -> if (st >= 10) None else Some(Char.fromInt32(st + 48), st + 1), 5);
+    Stream.toList(s) == '5' :: '6' :: '7' :: '8' :: '9' :: Nil
+
+@test
+def unfold06(): Bool & Impure =
+    let s = Stream.unfold(st -> if (st >= 10) None else Some(Char.fromInt32(st + 48), st + 2), 0);
+    Stream.toList(s) == '0' :: '2' :: '4' :: '6' :: '8' :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// unfoldWithIterator                                                      //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def unfoldWithIterator01(): Bool & Impure =
+    let x = ref 0;
+    let step = () ->
+        if (true)
+            None
+        else {
+            let c = Char.fromInt32(deref x + 48);
+            x := deref x + 1;
+            Some(c)
+        };
+    let s = Stream.unfoldWithIterator(step);
+    Stream.toList(s) == Nil
+
+@test
+def unfoldWithIterator02(): Bool & Impure =
+    let x = ref 0;
+    let step = () ->
+        if (deref x > 0)
+            None
+        else {
+            let c = Char.fromInt32(deref x + 48);
+            x := deref x + 1;
+            Some(c)
+        };
+    let s = Stream.unfoldWithIterator(step);
+    Stream.toList(s) == '0' :: Nil
+
+@test
+def unfoldWithIterator03(): Bool & Impure =
+    let x = ref 0;
+    let step = () ->
+        if (deref x > 1)
+            None
+        else {
+            let c = Char.fromInt32(deref x + 48);
+            x := deref x + 1;
+            Some(c)
+        };
+    let s = Stream.unfoldWithIterator(step);
+    Stream.toList(s) == '0' :: '1' :: Nil
+
+@test
+def unfoldWithIterator04(): Bool & Impure =
+    let x = ref 0;
+    let step = () ->
+        if (deref x >= 10)
+            None
+        else {
+            let c = Char.fromInt32(deref x + 48);
+            x := deref x + 1;
+            Some(c)
+        };
+    let s = Stream.unfoldWithIterator(step);
+    Stream.toList(s) == '0' :: '1' :: '2' :: '3' :: '4' :: '5' :: '6' :: '7' :: '8' :: '9' :: Nil
+
+@test
+def unfoldWithIterator05(): Bool & Impure =
+    let x = ref 5;
+    let step = () ->
+        if (deref x >= 10)
+            None
+        else {
+            let c = Char.fromInt32(deref x + 48);
+            x := deref x + 1;
+            Some(c)
+        };
+    let s = Stream.unfoldWithIterator(step);
+    Stream.toList(s) == '5' :: '6' :: '7' :: '8' :: '9' :: Nil
+
+@test
+def unfoldWithIterator06(): Bool & Impure =
+    let x = ref 0;
+    let step = () ->
+        if (deref x >= 10)
+            None
+        else {
+            let c = Char.fromInt32(deref x + 48);
+            x := deref x + 2;
+            Some(c)
+        };
+    let s = Stream.unfoldWithIterator(step);
+    Stream.toList(s) == '0' :: '2' :: '4' :: '6' :: '8' :: Nil
 
 }

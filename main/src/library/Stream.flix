@@ -47,28 +47,37 @@ namespace Stream {
             rangeHelper(b, e)
 
     ///
-    /// Helper function for `range`
+    /// Helper function for `range`.
     ///
     /// Precodition: b < e
     ///
     def rangeHelper(b: Int32, e: Int32): Stream[Int32, Impure] =
         Stream(() -> 
-            let x = ref b;
-            let next = () -> 
-                if (deref x > e)
+            let rx = ref b;
+            let next = () -> {
+                let x = deref rx;
+                if (x >= e)
                     Done
                 else {
-                    let p = deref x;
-                    x := deref x + 1;
-                    Yield(p)
-                };
+                    rx := x + 1;
+                    Yield(x)
+                }
+            };
             next 
             )
 
+    ///
+    /// Returns the stream `s` as a list.
+    ///
     pub def toList(s: Stream[a, f]): List[a] & f = 
         let Stream(body) = s;
         toListHelper(body(), Nil) 
 
+    ///
+    /// Helper function for `toList`.
+    ///
+    /// Precodition: b < e
+    ///
     def toListHelper(sf : Unit -> Step[a] & f, ac: List[a]) : List[a] & f = 
         match sf() {
             case Done     => List.reverse(ac)
@@ -76,11 +85,19 @@ namespace Stream {
             case Yield(a) => toListHelper(sf, a :: ac)
         }
 
-    pub def foreach(f: a -> Unit & Impure, s: Stream[a, f]): Unit & Impure = 
+    ///
+    /// Applies `f` to every element of `s`.
+    ///
+    /// The function `f` must be impure.
+    ///
+    pub def foreach(f: a ~> Unit, s: Stream[a, f]): Unit & Impure =
         let Stream(body) = s;
         foreachHelper(f, body()) 
 
-    def foreachHelper(f: a -> Unit & Impure, sf : Unit -> Step[a] & f): Unit & Impure = 
+    ///
+    /// Helper function for `foreach`.
+    ///
+    def foreachHelper(f: a ~> Unit, sf : Unit -> Step[a] & f): Unit & Impure =
         match sf() {
             case Done => ()
             case Skip => foreachHelper(f, sf)
@@ -90,7 +107,13 @@ namespace Stream {
             }
         }
 
-
+    ///
+    /// Build a stream by applying `f` to the seed value `st`.
+    ///
+    /// `f` should return `Some(a,st1)` to signal a new element `a` and a new seed value `st1`.
+    ///
+    /// `f` should return `None` to signal the end of building the stream.
+    ///
     pub def unfold(f: b -> Option[(a,b)], st: b): Stream[a, Impure] =
         Stream(() -> 
             let state = ref st;
@@ -105,6 +128,14 @@ namespace Stream {
             next
         )
 
+    ///
+    /// Build a stream by applying the function `next` to `()`. `next` is expected to encapsulate
+    /// a stateful resource such as a file handle that can be iterated.
+    ///
+    /// `next` should return `Some(a)` to signal a new element `a`.
+    ///
+    /// `next` should return `None` to signal the end of building the stream.
+    ///
     pub def unfoldWithIterator(f: () -> Option[a] & f): Stream[a, f] =
         Stream(() ->
             let next = () ->
@@ -131,7 +162,7 @@ namespace Stream {
         )
 
 
-    pub def ofList(xs: List[a]): Stream[a, Impure] = 
+    pub def fromList(xs: List[a]): Stream[a, Impure] =
         Stream(() -> 
             let rxs = ref xs;
             let next = () -> 
@@ -145,7 +176,7 @@ namespace Stream {
             next 
         )
 
-    pub def ofArray(arr: Array[a]): Stream[a, Impure] = 
+    pub def fromArray(arr: Array[a]): Stream[a, Impure] =
         Stream(() -> 
             let x = ref 0;
             let next = () -> {
