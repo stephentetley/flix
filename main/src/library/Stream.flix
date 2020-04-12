@@ -25,8 +25,33 @@ enum Step[a] {
 
 namespace Stream { 
 
+    ///
+    /// Returns the empty stream.
+    ///
+    pub def empty(): Stream[a, Impure] =
+        Stream(() ->
+            let x = ref true;
+            let next = () -> if (deref x) Done else Done;
+            next
+        )
 
-    pub def range(b: Int32, e: Int32): Stream[Int32, Impure] = 
+    ///
+    /// Returns a Stream of all integers between `b` (inclusive) and `e` (exclusive).
+    ///
+    /// Returns an empty Stream if `b >= e`.
+    ///
+    pub def range(b: Int32, e: Int32): Stream[Int32, Impure] =
+        if (b >= e)
+            empty()
+        else
+            rangeHelper(b, e)
+
+    ///
+    /// Helper function for `range`
+    ///
+    /// Precodition: b < e
+    ///
+    def rangeHelper(b: Int32, e: Int32): Stream[Int32, Impure] =
         Stream(() -> 
             let x = ref b;
             let next = () -> 
@@ -80,7 +105,20 @@ namespace Stream {
             next
         )
 
-    pub def map(f: a -> b, s: Stream[a, f]): Stream[b, f] = 
+    pub def unfoldWithIterator(f: () -> Option[a] & f): Stream[a, f] =
+        Stream(() ->
+            let next = () ->
+                match f() {
+                    case None => Done
+                    case Some(x) => Yield(x)
+                };
+            next as & f
+        )
+
+    ///
+    /// Returns the result of applying `f` to every element in Stream `s`.
+    ///
+    pub def map(f: a -> b, s: Stream[a, f]): Stream[b, f] =
         Stream(() -> 
             let Stream(body) = s;
             let sf = body();
