@@ -36,7 +36,7 @@ namespace Stream {
         )
 
     ///
-    /// Returns a Stream of all integers between `b` (inclusive) and `e` (exclusive).
+    /// Returns a stream of all integers between `b` (inclusive) and `e` (exclusive).
     ///
     /// Returns an empty Stream if `b >= e`.
     ///
@@ -162,7 +162,9 @@ namespace Stream {
             next 
         )
 
-
+    ///
+    /// Returns a stream built from the elements of list `xs`.
+    ///
     pub def fromList(xs: List[a]): Stream[a, Impure] =
         Stream(() -> 
             let rxs = ref xs;
@@ -177,6 +179,9 @@ namespace Stream {
             next 
         )
 
+    ///
+    /// Returns a stream built from the elements of array `arr`.
+    ///
     pub def fromArray(arr: Array[a]): Stream[a, Impure] =
         Stream(() -> 
             let x = ref 0;
@@ -192,7 +197,9 @@ namespace Stream {
             };
             next 
         )
-
+    ///
+    /// Add element `x` to the front of stream `s`.
+    ///
     pub def cons(x: a, s: Stream[a, e]) : Stream[a, Impure] = 
         Stream(() -> 
             let Stream(body) = s;
@@ -208,8 +215,20 @@ namespace Stream {
             next
         )
 
+    ///
+    /// Returns a stream where the element at index `i` is `(a, b)` where
+    /// `a` is the element at index `i` in `s1` and `b` is the element at index `i` in `s2`.
+    ///
+    /// If either `s1` or `s2` becomes depleted, then no further elements are added to the resulting stream.
+    ///
     pub def zip(s1: Stream[a, f], s2: Stream[b, f]): Stream[(a,b), f] = zipWith((a,b) -> (a,b), s1, s2)
-        
+
+    ///
+    /// Returns a stream where the element at index `i` is `f(a, b)` where
+    /// `a` is the element at index `i` in `s1` and `b` is the element at index `i` in `s2`.
+    ///
+    /// If either `s1` or `s2` becomes depleted, then no further elements are added to the resulting stream.
+    ///
     pub def zipWith(f: (a,b) -> c, s1: Stream[a, f], s2: Stream[b, f]): Stream[c, f] = 
         Stream(() -> 
             let Stream(body1) = s1;
@@ -220,33 +239,55 @@ namespace Stream {
             next 
         )
 
-
+    ///
+    /// Helper function for `zipWith`.
+    ///
     def zipWithHelper(f: (a,b) -> c, sf1: Unit -> Step[a] & f, sf2: Unit -> Step[b] & f) : Step[c] & f= 
         match (sf1(), sf2()) {
             case (Yield(a), Yield(b)) => Yield(f(a,b))
-            case (Yield(a), Skip)     => zipWithHelperLeft(f, a, sf2)
-            case (Skip, Yield(b))     => zipWithHelperRight(f, sf1, b)
+            case (Yield(a), Skip)     => zipWithHelperGoRight(f, a, sf2)
+            case (Skip, Yield(b))     => zipWithHelperGoLeft(f, sf1, b)
             case (_,_)                => Done
         }
 
-    def zipWithHelperLeft(f: (a,b) -> c, x: a, sf: Unit -> Step[b] & f) : Step[(a,b)] & f = 
+    ///
+    /// Helper function for `zipWith`.
+    ///
+    /// Precondition: stream `s1` (left) has yielded the value `x` but `s2` (right) yielded a `Skip`.
+    /// Go along s2 (right) to produce a value.
+    ///
+    def zipWithHelperGoRight(f: (a,b) -> c, x: a, sf: Unit -> Step[b] & f) : Step[(a,b)] & f =
         match sf() {
             case Yield(y)   => Yield(f(x,y))
             case Done       => Done
-            case Skip       => zipWithHelperLeft(f, x, sf)
+            case Skip       => zipWithHelperGoRight(f, x, sf)
         }
 
-    def zipWithHelperRight(f: (a,b) -> c,sf: Unit -> Step[a] & f, y: b) : Step[(a,b)] & f = 
+    ///
+    /// Helper function for `zipWith`.
+    ///
+    /// Precondition: stream `s2` (right) has yielded the value `x` but `s1` (left) yielded a `Skip`.
+    /// Go along s2 (left) to produce a value.
+    ///
+    def zipWithHelperGoLeft(f: (a,b) -> c,sf: Unit -> Step[a] & f, y: b) : Step[(a,b)] & f =
         match sf() {
             case Yield(x)   => Yield(f(x,y))
             case Done       => Done
-            case Skip       => zipWithHelperRight(f, sf, y)
+            case Skip       => zipWithHelperGoLeft(f, sf, y)
         }
 
+    ///
+    /// Applies `f` to a start value `ac` and all elements in `s` going from left to right.
+    ///
+    /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
+    ///
     pub def fold(f: (b, a) -> b, ac: b, s: Stream[a, f]): b & f = 
         let Stream(body) = s;
         foldHelper(f, ac, body()) 
 
+    ///
+    /// Helper function for `fold`.
+    ///
     def foldHelper(f: (b,a) -> b, ac: b, sf : Unit -> Step[a] & f): b & f = 
         match sf() {
             case Done => ac
@@ -254,6 +295,9 @@ namespace Stream {
             case Yield(a) => foldHelper(f, f(ac,a), sf)
         }
 
+    ///
+    /// Returns `s2` appended to `s1`.
+    ///
     pub def append(s1: Stream[a, f], s2: Stream[a, f]): Stream[a, f] = 
         Stream(() -> 
             let Stream(body1) = s1;
@@ -276,7 +320,24 @@ namespace Stream {
             next 
         )
 
-    pub def take(n: Int32, s: Stream[a, f]): Stream[b, f] = 
+    ///
+    /// Returns the first `n` elements of stream `s`.
+    ///
+    /// Returns `s` if `n > length(s)`.
+    /// Returns the empty stream if `n < 0`.
+    ///
+    pub def take(n: Int32, s: Stream[a, f]): Stream[b, f] =
+        if (n <= 0)
+            empty()
+        else
+            takeHelper(n, s)
+
+    ///
+    /// Helper function for `take`.
+    ///
+    /// Precondition: n > 0 .
+    ///
+    pub def takeHelper(n: Int32, s: Stream[a, f]): Stream[b, f] =
         Stream(() -> 
             let x = ref 0;
             let Stream(body) = s;
@@ -297,7 +358,24 @@ namespace Stream {
             next 
         )
 
-    pub def drop(n: Int32, s: Stream[a, f]): Stream[b, f] = 
+    ///
+    /// Returns `s` without the first `n` elements.
+    ///
+    /// Returns the empty stream if `n > length(xs)`.
+    /// Returns `xs` if `n < 0`.
+    ///
+    pub def drop(n: Int32, s: Stream[a, f]): Stream[b, f] =
+        if (n < 0)
+            s
+        else
+            dropHelper(n, s)
+
+    ///
+    /// Helper function for `drop`.
+    ///
+    /// Precondition: n >= 0 .
+    ///
+    pub def dropHelper(n: Int32, s: Stream[a, f]): Stream[b, f] =
         Stream(() -> 
             let x = ref n;
             let Stream(body) = s;
@@ -316,6 +394,11 @@ namespace Stream {
             next 
         )
 
+    ///
+    /// Returns a stream of every element in `s` that satisfies the predicate `f`.
+    ///
+    /// The function `f` must be pure.
+    ///
     pub def filter(f: a -> Bool, s: Stream[a, f]): Stream[a, f] = 
         Stream(() -> 
             let Stream(body) = s;
