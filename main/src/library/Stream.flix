@@ -268,7 +268,7 @@ namespace Stream {
     /// Precondition: stream `s1` (left) has yielded the value `x` but `s2` (right) yielded a `Skip`.
     /// Go along s2 (right) to produce a value.
     ///
-    def zipWithHelperGoRight(f: (a,b) -> c, x: a, sf: Unit -> Step[b] & f) : Step[(a,b)] & f =
+    def zipWithHelperGoRight(f: (a,b) -> c, x: a, sf: Unit -> Step[b] & f) : Step[c] & f =
         match sf() {
             case Yield(y)   => Yield(f(x,y))
             case Done       => Done
@@ -281,7 +281,7 @@ namespace Stream {
     /// Precondition: stream `s2` (right) has yielded the value `x` but `s1` (left) yielded a `Skip`.
     /// Go along s2 (left) to produce a value.
     ///
-    def zipWithHelperGoLeft(f: (a,b) -> c,sf: Unit -> Step[a] & f, y: b) : Step[(a,b)] & f =
+    def zipWithHelperGoLeft(f: (a,b) -> c, sf: Unit -> Step[a] & f, y: b) : Step[c] & f =
         match sf() {
             case Yield(x)   => Yield(f(x,y))
             case Done       => Done

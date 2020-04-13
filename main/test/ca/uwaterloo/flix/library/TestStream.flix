@@ -375,6 +375,16 @@ def zip07(): Bool & Impure =
     let s = Stream.zip(Stream.fromList(1 :: 3 :: 5 :: 7 :: Nil), Stream.fromList(2 :: 4 :: 6 :: 8 :: Nil));
     Stream.toList(s) == (1, 2) :: (3, 4) :: (5, 6) :: (7, 8) :: Nil
 
+@test
+def zip08(): Bool & Impure =
+    let s = Stream.zip(Stream.fromList(1 :: 3 :: 5 :: 7 :: Nil), Stream.fromList('2' :: '4' :: '6' :: '8' :: Nil));
+    Stream.toList(s) == (1, '2') :: (3, '4') :: (5, '6') :: (7, '8') :: Nil
+
+@test
+def zip09(): Bool & Impure =
+    let s = Stream.zip(Stream.fromList(1 :: 3 :: 5 :: 7 :: Nil), Stream.fromList("two" :: "four" :: "six" :: "eight" :: Nil));
+    Stream.toList(s) == (1, "two") :: (3, "four") :: (5, "six") :: (7, "eight") :: Nil
+
 /////////////////////////////////////////////////////////////////////////////
 // zipWith                                                                 //
 /////////////////////////////////////////////////////////////////////////////
@@ -385,5 +395,37 @@ def zipWith01(): Bool & Impure =
     let s2 = Stream.fromList(Nil): Stream[Bool, Impure];
     let s3 = Stream.zipWith((a, b) -> if (b) a+1 else a, s1, s2): Stream[Int32, Impure];
     Stream.toList(s3) == Nil
+
+@test
+def zipWith02(): Bool & Impure =
+    let s = Stream.zipWith((a, b) -> if (b) a+1 else a, Stream.fromList(1 :: Nil), Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def zipWith03(): Bool & Impure =
+    let s = Stream.zipWith((a, b) -> if (b) a+1 else a, Stream.fromList(Nil), Stream.fromList(true :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def zipWith04(): Bool & Impure =
+    let s = Stream.zipWith((a, b) -> if (b) a+1 else a, Stream.fromList(1 :: Nil), Stream.fromList(true :: Nil));
+    Stream.toList(s) == 2 :: Nil
+
+@test
+def zipWith05(): Bool & Impure =
+    let s = Stream.zipWith((a, b) -> if (b) a+1 else a, Stream.fromList(1 :: Nil), Stream.fromList(false :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def zipWith06(): Bool & Impure =
+    let s = Stream.zipWith((a, b) -> if (b) a+1 else a, Stream.fromList(1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: Nil),
+                      Stream.fromList(false :: true :: true :: false :: false :: true :: true :: true ::Nil));
+    Stream.toList(s) == 1 :: 3 :: 4 :: 4 :: 5 :: 7 :: 8 :: 9 :: Nil
+
+@test
+def zipWith07(): Bool & Impure =
+    let s = Stream.zipWith((a,b) -> a + b, Stream.fromList(1 :: 3 :: 5 :: 7 :: Nil), Stream.fromList(2 :: 4 :: 6 :: 8 :: Nil));
+    Stream.toList(s) == 3 :: 7 :: 11 :: 15 :: Nil
+
 
 }
