@@ -377,7 +377,7 @@ namespace Stream {
     /// Returns `xs` if `n < 0`.
     ///
     pub def drop(n: Int32, s: Stream[a, f]): Stream[a, f] =
-        if (n < 0)
+        if (n <= 0)
             s
         else
             dropHelper(n, s)
@@ -394,7 +394,7 @@ namespace Stream {
             let sf = body();
             let next = () -> match sf() {
                 case Yield(a) =>
-                    if (deref x < 0)
+                    if (deref x == 0)
                         Yield(a)
                     else {                
                         x := deref x - 1;

@@ -554,6 +554,159 @@ def take12(): Bool & Impure =
     let s = Stream.take(4, Stream.fromList(1 :: 2 :: 3 :: 4 :: 5 :: 6 :: Nil));
     Stream.toList(s) == 1 :: 2 :: 3 :: 4 :: Nil
 
+/////////////////////////////////////////////////////////////////////////////
+// drop                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def drop01(): Bool & Impure =
+    let s = Stream.drop(-1, Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def drop02(): Bool & Impure =
+    let s = Stream.drop(0, Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def drop03(): Bool & Impure =
+    let s = Stream.drop(1, Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def drop04(): Bool & Impure =
+    let s = Stream.drop(-1, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def drop05(): Bool & Impure =
+    let s = Stream.drop(0, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def drop06(): Bool & Impure =
+    let s = Stream.drop(1, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def drop07(): Bool & Impure =
+    let s = Stream.drop(2, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def drop08(): Bool & Impure =
+    let s = Stream.drop(0, Stream.fromList(1 :: 2 :: Nil));
+    Stream.toList(s) == 1 :: 2 :: Nil
+
+@test
+def drop09(): Bool & Impure =
+    let s = Stream.drop(1, Stream.fromList(1 :: 2 :: Nil));
+    Stream.toList(s) == 2 :: Nil
+
+@test
+def drop10(): Bool & Impure =
+    let s = Stream.drop(2, Stream.fromList(1 :: 2 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def drop11(): Bool & Impure =
+    let s = Stream.drop(2, Stream.fromList(1 :: 2 :: 3 :: 4 :: 5 :: 6 :: Nil));
+    Stream.toList(s) == 3 :: 4 :: 5 :: 6 :: Nil
+
+@test
+def drop12(): Bool & Impure =
+    let s = Stream.drop(4, Stream.fromList(1 :: 2 :: 3 :: 4 :: 5 :: 6 :: Nil));
+    Stream.toList(s) == 5 :: 6 :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// filter                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def filter01(): Bool & Impure =
+    let s = Stream.filter(i -> i > 3, Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def filter02(): Bool & Impure =
+    let s = Stream.filter(i -> i > 3, Stream.fromList(2 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def filter03(): Bool & Impure =
+    let s = Stream.filter(i -> i > 3, Stream.fromList(4 :: Nil));
+    Stream.toList(s) == 4 :: Nil
+
+@test
+def filter04(): Bool & Impure =
+    let s = Stream.filter(i -> i > 3, Stream.fromList(1 :: 3 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def filter05(): Bool & Impure =
+    let s = Stream.filter(i -> i > 3, Stream.fromList(1 :: 8 :: Nil));
+    Stream.toList(s) == 8 :: Nil
+
+@test
+def filter06(): Bool & Impure =
+    let s = Stream.filter(i -> i > 3, Stream.fromList(8 :: 1 :: Nil));
+    Stream.toList(s) == 8 :: Nil
+
+@test
+def filter07(): Bool & Impure =
+    let s = Stream.filter(i -> i > 3, Stream.fromList(8 :: 9 :: Nil));
+    Stream.toList(s) == 8 :: 9 :: Nil
+
+@test
+def filter08(): Bool & Impure =
+    let s = Stream.filter(i -> i > 3, Stream.fromList(1 :: 4 :: 11 :: 2 :: -22 :: 17 :: Nil));
+    Stream.toList(s) == 4 :: 11 :: 17 :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// sameElements                                                            //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def sameElements01(): Bool & Impure =
+    let s1 = Stream.fromList(Nil): Stream[Int32, Impure];
+    let s2 = Stream.fromList(Nil): Stream[Int32, Impure];
+    Stream.sameElements(s1, s2) == true
+
+@test
+def sameElements02(): Bool & Impure =
+    let s1 = Stream.fromList(1 :: Nil);
+    let s2 = Stream.fromList(Nil): Stream[Int32, Impure];
+    Stream.sameElements(s1, s2) == false
+
+@test
+def sameElements03(): Bool & Impure =
+    let s1 = Stream.fromList(Nil);
+    let s2 = Stream.fromList(1 :: Nil);
+    Stream.sameElements(s1, s2) == false
+
+@test
+def sameElements04(): Bool & Impure =
+    let s1 = Stream.fromList(1 :: Nil);
+    let s2 = Stream.fromList(1 :: Nil);
+    Stream.sameElements(s1, s2) == true
+
+@test
+def sameElements05(): Bool & Impure =
+    let s1 = Stream.fromList(1 :: Nil);
+    let s2 = Stream.fromList(0 :: Nil);
+    Stream.sameElements(s1, s2) == false
+
+@test
+def sameElements06(): Bool & Impure =
+    let s1 = Stream.fromList(1 :: 2 :: Nil);
+    let s2 = Stream.fromList(1 :: 2 :: Nil);
+    Stream.sameElements(s1, s2) == true
+
+@test
+def sameElements07(): Bool & Impure =
+    let s1 = Stream.fromList(1 :: 2 :: Nil);
+    let s2 = Stream.fromList(2 :: 1 :: Nil);
+    Stream.sameElements(s1, s2) == false
 
 
 }
