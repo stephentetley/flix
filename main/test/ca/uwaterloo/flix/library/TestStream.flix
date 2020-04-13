@@ -337,6 +337,46 @@ def cons05(): Bool & Impure =
     Stream.toList(s) == "abc" :: "def" :: "ghi" :: Nil
 
 /////////////////////////////////////////////////////////////////////////////
+// view                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def view01(): Bool & Impure =
+    let s = Stream.fromList(Nil);
+    Stream.view(s) == None
+
+@test
+def view02(): Bool & Impure =
+    let s = Stream.fromList(1 :: Nil);
+    match Stream.view(s) {
+        case Some(1, s2) => Stream.toList(s2) == Nil
+        case _ => false
+    }
+
+@test
+def view03(): Bool & Impure =
+    let s = Stream.fromList(1 :: 2 :: Nil);
+    match Stream.view(s) {
+        case Some(1, s2) => Stream.toList(s2) == 2 :: Nil
+        case _ => false
+    }
+
+@test
+def view04(): Bool & Impure =
+    let s = Stream.fromList(1 :: 2 :: 3 :: Nil);
+    match Stream.view(s) {
+        case Some(1, s2) => Stream.toList(s2) == 2 :: 3 :: Nil
+        case _ => false
+    }
+
+@test
+def view05(): Bool & Impure =
+    let s = Stream.fromList("abc" :: "def" :: "ghi" :: Nil);
+    match Stream.view(s) {
+        case Some("abc", s2) => Stream.toList(s2) == "def" :: "ghi" :: Nil
+        case _ => false
+    }
+/////////////////////////////////////////////////////////////////////////////
 // zip                                                                     //
 /////////////////////////////////////////////////////////////////////////////
 

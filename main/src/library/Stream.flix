@@ -225,6 +225,36 @@ namespace Stream {
         )
 
     ///
+    /// Deconstruct the stream `s`.
+    ///
+    /// If the stream is productive return `Some(a,rest)` where `a` is the first element
+    /// and `rest` is the rest of the stream.
+    ///
+    /// If the stream is exhausted return `None`.
+    ///
+    pub def view(s: Stream[a, f]): Option[(a, Stream[a, f])] & f =
+        let Stream(body) = s;
+        let sf = body();
+        viewHelper(sf)
+
+    ///
+    /// Helper function for `view`.
+    ///
+    pub def viewHelper(sf: () -> Step[a] & f): Option[(a, Stream[a, f])] & f =
+        match sf() {
+            case Yield(a) => {
+                let tail =
+                    Stream(() ->
+                        let next = () -> sf();
+                        next as & f
+                     );
+                Some(a, tail)
+            }
+            case Done => None
+            case Skip => viewHelper(sf)
+        }
+
+    ///
     /// Returns a stream where the element at index `i` is `(a, b)` where
     /// `a` is the element at index `i` in `s1` and `b` is the element at index `i` in `s2`.
     ///
