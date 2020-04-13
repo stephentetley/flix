@@ -435,15 +435,21 @@ namespace Stream {
     ///
     pub def dropWhile(f: a -> Bool, s: Stream[a, f]): Stream[a, f] =
         Stream(() ->
+            let afterPrefix = ref false;
             let Stream(body) = s;
             let sf = body();
             let next = () ->
                 match sf() {
                     case Yield(a) =>
-                        if (f(a) == true)
-                            Skip
-                        else
+                        if (deref afterPrefix == true)
                             Yield(a)
+                        else
+                            if (f(a) == true)
+                                Skip
+                            else {
+                                afterPrefix := true;
+                                Yield(a)
+                            }
                     case Skip => Skip
                     case Done => Done
                 };
