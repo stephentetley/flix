@@ -371,6 +371,28 @@ namespace Stream {
         )
 
     ///
+    /// Returns the longest prefix of `s` that satisfies the predicate `f`.
+    ///
+    /// The function `f` must be pure.
+    ///
+    pub def takeWhile(f: a -> Bool, s: Stream[a, f]): Stream[a, f] =
+        Stream(() ->
+            let Stream(body) = s;
+            let sf = body();
+            let next = () ->
+                match sf() {
+                    case Yield(a) =>
+                        if (f(a) == false)
+                            Done
+                        else
+                            Yield(a)
+                    case Skip => Skip
+                    case Done => Done
+                };
+            next
+        )
+
+    ///
     /// Returns `s` without the first `n` elements.
     ///
     /// Returns the empty stream if `n > length(xs)`.
@@ -404,6 +426,28 @@ namespace Stream {
                 case Done => Done
                 };
             next 
+        )
+
+    ///
+    /// Returns `s` without the longest prefix that satisfies the predicate `f`.
+    ///
+    /// The function `f` must be pure.
+    ///
+    pub def dropWhile(f: a -> Bool, s: Stream[a, f]): Stream[a, f] =
+        Stream(() ->
+            let Stream(body) = s;
+            let sf = body();
+            let next = () ->
+                match sf() {
+                    case Yield(a) =>
+                        if (f(a) == true)
+                            Skip
+                        else
+                            Yield(a)
+                    case Skip => Skip
+                    case Done => Done
+                };
+            next
         )
 
     ///

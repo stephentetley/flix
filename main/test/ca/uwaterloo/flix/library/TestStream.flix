@@ -555,6 +555,50 @@ def take12(): Bool & Impure =
     Stream.toList(s) == 1 :: 2 :: 3 :: 4 :: Nil
 
 /////////////////////////////////////////////////////////////////////////////
+// takeWhile                                                               //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def takeWhile01(): Bool & Impure =
+    let s = Stream.takeWhile(i -> i > 3, Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def takeWhile02(): Bool & Impure =
+    let s = Stream.takeWhile(i -> i > 3, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def takeWhile03(): Bool & Impure =
+    let s = Stream.takeWhile(i -> i > 3, Stream.fromList(4 :: Nil));
+    Stream.toList(s) == 4 :: Nil
+
+@test
+def takeWhile04(): Bool & Impure =
+    let s = Stream.takeWhile(i -> i > 3, Stream.fromList(1 :: 2 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def takeWhile05(): Bool & Impure =
+    let s = Stream.takeWhile(i -> i > 3, Stream.fromList(1 :: 5 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def takeWhile06(): Bool & Impure =
+    let s = Stream.takeWhile(i -> i > 3, Stream.fromList(5 :: 1 :: Nil));
+    Stream.toList(s) == 5 :: Nil
+
+@test
+def takeWhile07(): Bool & Impure =
+    let s = Stream.takeWhile(i -> i > 3, Stream.fromList(5 :: 8 :: Nil));
+    Stream.toList(s) == 5 :: 8 :: Nil
+
+@test
+def takeWhile08(): Bool & Impure =
+    let s = Stream.takeWhile(i -> i > 3, Stream.fromList(4 :: 6 :: -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil));
+    Stream.toList(s) == 4 :: 6 :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
 // drop                                                                    //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -617,6 +661,50 @@ def drop11(): Bool & Impure =
 def drop12(): Bool & Impure =
     let s = Stream.drop(4, Stream.fromList(1 :: 2 :: 3 :: 4 :: 5 :: 6 :: Nil));
     Stream.toList(s) == 5 :: 6 :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// dropWhile                                                               //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def dropWhile01(): Bool & Impure =
+    let s = Stream.dropWhile(i -> i > 3, Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def dropWhile02(): Bool & Impure =
+    let s = Stream.dropWhile(i -> i > 3, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def dropWhile03(): Bool & Impure =
+    let s = Stream.dropWhile(i -> i > 3, Stream.fromList(4 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def dropWhile04(): Bool & Impure =
+    let s = Stream.dropWhile(i -> i > 3, Stream.fromList(1 :: 2 :: Nil));
+    Stream.toList(s) == 1 :: 2 :: Nil
+
+@test
+def dropWhile05(): Bool & Impure =
+    let s = Stream.dropWhile(i -> i > 3, Stream.fromList(1 :: 5 :: Nil));
+    Stream.toList(s) == 1 :: 5 :: Nil
+
+@test
+def dropWhile06(): Bool & Impure =
+    let s = Stream.dropWhile(i -> i > 3, Stream.fromList(5 :: 1 :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def dropWhile07(): Bool & Impure =
+    let s = Stream.dropWhile(i -> i > 3, Stream.fromList(5 :: 8 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def dropWhile08(): Bool & Impure =
+    let s = Stream.dropWhile(i -> i > 3, Stream.fromList(4 :: 6 :: -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil));
+    Stream.toList(s) == -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil
 
 /////////////////////////////////////////////////////////////////////////////
 // filter                                                                  //
