@@ -249,4 +249,141 @@ def map07(): Bool & Impure =
     let s = Stream.fromList(7 :: 8 :: Nil) |>  Stream.map(i -> i > 2);
     Stream.toList(s) == true :: true :: Nil
 
+/////////////////////////////////////////////////////////////////////////////
+// fromList                                                                //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def fromList01(): Bool & Impure =
+    let s = Stream.fromList(Nil);
+    Stream.toList(s) == Nil
+
+@test
+def fromList02(): Bool & Impure =
+    let s = Stream.fromList(0 :: 1 :: Nil);
+    Stream.toList(s) == 0 :: 1 :: Nil
+
+@test
+def fromList03(): Bool & Impure =
+    let s = Stream.fromList(1 :: 0 :: Nil);
+    Stream.toList(s) == 1 :: 0 :: Nil
+
+@test
+def fromList04(): Bool & Impure =
+    let s = Stream.fromList('a' :: 'b' :: Nil);
+    Stream.toList(s) == 'a' :: 'b' :: Nil
+
+@test
+def fromList05(): Bool & Impure =
+    let s = Stream.fromList("abc" :: "def" :: "ghi" :: Nil);
+    Stream.toList(s) == "abc" :: "def" :: "ghi" :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// fromArray                                                               //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def fromArray01(): Bool & Impure =
+    let s = Stream.fromArray([]);
+    Stream.toList(s) == Nil
+
+@test
+def fromArray02(): Bool & Impure =
+    let s = Stream.fromArray([0, 1]);
+    Stream.toList(s) == 0 :: 1 :: Nil
+
+@test
+def fromArray03(): Bool & Impure =
+    let s = Stream.fromArray([1, 0]);
+    Stream.toList(s) == 1 :: 0 :: Nil
+
+@test
+def fromArray04(): Bool & Impure =
+    let s = Stream.fromArray(['a', 'b']);
+    Stream.toList(s) == 'a' :: 'b' :: Nil
+
+@test
+def fromArray05(): Bool & Impure =
+    let s = Stream.fromArray(["abc", "def", "ghi"]);
+    Stream.toList(s) == "abc" :: "def" :: "ghi" :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// cons                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def cons01(): Bool & Impure =
+    let s = Stream.cons(1, Stream.fromArray([]));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def cons02(): Bool & Impure =
+    let s = Stream.cons(1, Stream.fromArray([2]));
+    Stream.toList(s) == 1 :: 2 :: Nil
+
+@test
+def cons03(): Bool & Impure =
+    let s = Stream.cons(1, Stream.fromArray([2, 3]));
+    Stream.toList(s) == 1 :: 2 :: 3 :: Nil
+
+@test
+def cons04(): Bool & Impure =
+    let s = Stream.cons('a', Stream.fromArray(['b']));
+    Stream.toList(s) == 'a' :: 'b' :: Nil
+
+@test
+def cons05(): Bool & Impure =
+    let s = Stream.cons("abc", Stream.fromArray(["def", "ghi"]));
+    Stream.toList(s) == "abc" :: "def" :: "ghi" :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// zip                                                                     //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def zip01(): Bool & Impure =
+    let s = Stream.zip(Stream.empty(), Stream.empty());
+    Stream.toList(s) == Nil
+
+@test
+def zip02(): Bool & Impure =
+    let s = Stream.zip(Stream.fromList(1 :: Nil), Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def zip03(): Bool & Impure =
+    let s = Stream.zip(Stream.fromList(Nil), Stream.fromList(2 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def zip04(): Bool & Impure =
+    let s = Stream.zip(Stream.fromList(1 :: Nil), Stream.fromList(2 :: Nil));
+    Stream.toList(s) == (1, 2) :: Nil
+
+@test
+def zip05(): Bool & Impure =
+    let s = Stream.zip(Stream.fromList(1 :: 3 :: Nil), Stream.fromList(2 :: 4 :: Nil));
+    Stream.toList(s) == (1, 2) :: (3, 4) :: Nil
+
+@test
+def zip06(): Bool & Impure =
+    let s = Stream.zip(Stream.fromList(1 :: 3 :: 5 :: Nil), Stream.fromList(2 :: 4 :: 6 :: Nil));
+    Stream.toList(s) ==(1, 2) :: (3, 4) :: (5, 6) :: Nil
+
+@test
+def zip07(): Bool & Impure =
+    let s = Stream.zip(Stream.fromList(1 :: 3 :: 5 :: 7 :: Nil), Stream.fromList(2 :: 4 :: 6 :: 8 :: Nil));
+    Stream.toList(s) == (1, 2) :: (3, 4) :: (5, 6) :: (7, 8) :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// zipWith                                                                 //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def zipWith01(): Bool & Impure =
+    let s1 = Stream.fromList(Nil): Stream[Int32, Impure];
+    let s2 = Stream.fromList(Nil): Stream[Bool, Impure];
+    let s3 = Stream.zipWith((a, b) -> if (b) a+1 else a, s1, s2): Stream[Int32, Impure];
+    Stream.toList(s3) == Nil
+
 }

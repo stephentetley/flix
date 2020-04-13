@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-
+///
+/// The Stream type.
+///
+/// A stream provides "demand driven" access to its elements - successive
+/// elements are only produced when needed. Internally the stream is
+/// represnted as a "pull stream".
+///
+/// Note - a stream is not "replayable".
+///
 pub opaque type Stream[a, e] = Unit -> (Unit -> Step[a] & e) & Impure
 
 enum Step[a] {
@@ -197,6 +205,7 @@ namespace Stream {
             };
             next 
         )
+
     ///
     /// Add element `x` to the front of stream `s`.
     ///
@@ -242,12 +251,15 @@ namespace Stream {
     ///
     /// Helper function for `zipWith`.
     ///
+    /// Any case with `Done` is `Done`.
+    ///
     def zipWithHelper(f: (a,b) -> c, sf1: Unit -> Step[a] & f, sf2: Unit -> Step[b] & f) : Step[c] & f= 
         match (sf1(), sf2()) {
-            case (Yield(a), Yield(b)) => Yield(f(a,b))
-            case (Yield(a), Skip)     => zipWithHelperGoRight(f, a, sf2)
-            case (Skip, Yield(b))     => zipWithHelperGoLeft(f, sf1, b)
-            case (_,_)                => Done
+            case (Yield(a), Yield(b))   => Yield(f(a,b))
+            case (Yield(a), Skip)       => zipWithHelperGoRight(f, a, sf2)
+            case (Skip, Yield(b))       => zipWithHelperGoLeft(f, sf1, b)
+            case (Skip, Skip)           => Skip
+            case (_,_)                  => Done
         }
 
     ///
@@ -414,6 +426,61 @@ namespace Stream {
                             Yield(a)    
                 };
             next 
-        )    
+        )
+
+    ///
+    /// Returns `true` if streams `s1` and `s1` have the same elements, i.e. are equivalent.
+    ///
+    /// Note - `sameElements` forces both streams, it is a so-called "terminal operation" and
+    /// you will not be able to do anything else with the streams afterwards.
+    ///
+    pub def sameElements(s1: Stream[a, f], s2: Stream[a, f]): Bool & Impure =
+        let Stream(body1) = s1;
+        let Stream(body2) = s2;
+        let sf1 = body1();
+        let sf2 = body2();
+        sameElementsHelper(sf1, sf2)
+
+    ///
+    /// Helper function for `sameElements`.
+    ///
+    def sameElementsHelper(sf1: Unit -> Step[a] & f, sf2: Unit -> Step[b] & f) : Bool & f =
+        match (sf1(), sf2()) {
+            case (Yield(a), Yield(b))   => if (a != b) false else sameElementsHelper(sf1, sf2)
+            case (Yield(a), Skip)       => sameElementsHelperGoRight(a, sf1, sf2)
+            case (Skip, Yield(b))       => sameElementsHelperGoLeft(sf1, b, sf2)
+            case (Yield(_), Done)       => false
+            case (Done, Yield(_))       => false
+            case (Skip, Skip)           => sameElementsHelper(sf1, sf2)
+            case (Skip, Done)           => sameElementsHelper(sf1, sf2)
+            case (Done, Skip)           => sameElementsHelper(sf1, sf2)
+            case (Done, Done)           => true
+        }
+
+    ///
+    /// Helper function for `sameElements`.
+    ///
+    /// Precondition: stream `sf1` (left) has yielded the value `x` but `sf2` (right) yielded a `Skip`.
+    /// Go along sf2 (right) to produce a value, if same continue along both.
+    ///
+    def sameElementsHelperGoRight(x: a, sf1: Unit -> Step[a] & f, sf2: Unit -> Step[a] & f) : Bool & f =
+        match sf2() {
+            case Yield(y)   => if (x != y) false else sameElementsHelper(sf1, sf2)
+            case Done       => false
+            case Skip       => sameElementsHelperGoRight(x, sf1, sf2)
+        }
+
+    ///
+    /// Helper function for `sameElements`.
+    ///
+    /// Precondition: stream `sf2` (right) has yielded the value `x` but `sf1` (left) yielded a `Skip`.
+    /// Go along sf2 (left) to produce a value, if same continue along both.
+    ///
+    def sameElementsHelperGoLeft(sf1: Unit -> Step[a] & f, y: a, sf2: Unit -> Step[a] & f) : Bool & f =
+        match sf1() {
+            case Yield(x)   => if (x != y) false else sameElementsHelper(sf1, sf2)
+            case Done       => true
+            case Skip       => sameElementsHelperGoLeft(sf1, y, sf2)
+        }
 
 }
