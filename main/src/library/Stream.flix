@@ -25,6 +25,11 @@
 ///
 pub opaque type Stream[a, e] = Unit -> (Unit -> Step[a] & e) & Impure
 
+///
+/// The internal type of stream answers.
+/// `Skip` allows us to write `filter` and other functions that do not
+/// necessarily produce a value at each step.
+///
 enum Step[a] {
     case Done,
     case Skip,
@@ -562,5 +567,45 @@ namespace Stream {
             case Done       => true
             case Skip       => sameElementsHelperGoLeft(sf1, y, sf2)
         }
+
+    ///
+    /// Returns the substream of `xs` from index `b` (inclusive) to index `e` (exclusive).
+    ///
+    /// That is, an element at index `i` in `xs` is part of the returned sublist if and only if `i >= b` and `i < e`.
+    /// Note: Indices that are out of bounds in `xs` are not considered (i.e. slice(b, e, xs) = slice(max(0,b), min(length(xs),e), xs)).
+    ///
+    pub def slice(b: Int32, e: Int32, s: Stream[a, f]): Stream[a, Impure] =
+        if (b >= e)
+            empty()
+        else
+            sliceHelper(b, e, s)
+
+    ///
+    /// Helper function for `slice`.
+    ///
+    /// Preconditions: b >= 0 && b < e
+    ///
+    pub def sliceHelper(b: Int32, e: Int32, s: Stream[a, f]): Stream[a, Impure] =
+        Stream(() ->
+            let Stream(body) = s;
+            let sf = body();
+            let ix = ref 0;
+            let next = () ->
+                match sf() {
+                    case Done => Done
+                    case Skip => Skip
+                    case Yield(a) => {
+                        let i = deref ix;
+                        if (i < b || i >= e) {
+                            ix := i + 1;
+                            Skip
+                        } else {
+                            ix := i + 1;
+                            Yield(a)
+                        }
+                    }
+                };
+            next
+        )
 
 }

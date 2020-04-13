@@ -836,5 +836,79 @@ def sameElements07(): Bool & Impure =
     let s2 = Stream.fromList(2 :: 1 :: Nil);
     Stream.sameElements(s1, s2) == false
 
+/////////////////////////////////////////////////////////////////////////////
+// slice                                                                   //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def slice01(): Bool & Impure =
+    let s = Stream.slice(0, 0, Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def slice02(): Bool & Impure =
+    let s = Stream.slice(-1, 1, Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def slice03(): Bool & Impure =
+    let s = Stream.slice(0, 0, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def slice04(): Bool & Impure =
+    let s = Stream.slice(0, 1, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def slice05(): Bool & Impure =
+    let s = Stream.slice(0, 2, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def slice06(): Bool & Impure =
+    let s = Stream.slice(2, 5, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def slice07(): Bool & Impure =
+    let s = Stream.slice(-1, 1, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def slice08(): Bool & Impure =
+    let s = Stream.slice(0, 1, Stream.fromList(1 :: 2 :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def slice09(): Bool & Impure =
+    let s = Stream.slice(0, 2, Stream.fromList(1 :: 2 :: Nil));
+    Stream.toList(s) == 1 :: 2 :: Nil
+
+@test
+def slice10(): Bool & Impure =
+    let s = Stream.slice(1, 2, Stream.fromList(1 :: 2 :: Nil));
+    Stream.toList(s) == 2 :: Nil
+
+@test
+def slice11(): Bool & Impure =
+    let s = Stream.slice(0, 3, Stream.fromList(1 :: 2 :: 3 :: Nil));
+    Stream.toList(s) == 1 :: 2 :: 3 :: Nil
+
+@test
+def slice12(): Bool & Impure =
+    let s = Stream.slice(0, 2, Stream.fromList(1 :: 2 :: 3 :: Nil));
+    Stream.toList(s) == 1 :: 2 :: Nil
+
+@test
+def slice13(): Bool & Impure =
+    let s = Stream.slice(1, 3, Stream.fromList(1 :: 2 :: 3 :: Nil));
+    Stream.toList(s) == 2 :: 3 :: Nil
+
+@test
+def slice14(): Bool & Impure =
+    let s = Stream.slice(1, 2, Stream.fromList(1 :: 2 :: 3 :: Nil));
+    Stream.toList(s) == 2 :: Nil
+
 
 }
