@@ -338,7 +338,7 @@ namespace Stream {
     /// Returns `s` if `n > length(s)`.
     /// Returns the empty stream if `n < 0`.
     ///
-    pub def take(n: Int32, s: Stream[a, f]): Stream[b, f] =
+    pub def take(n: Int32, s: Stream[a, f]): Stream[a, f] =
         if (n <= 0)
             empty()
         else
@@ -349,7 +349,7 @@ namespace Stream {
     ///
     /// Precondition: n > 0 .
     ///
-    pub def takeHelper(n: Int32, s: Stream[a, f]): Stream[b, f] =
+    pub def takeHelper(n: Int32, s: Stream[a, f]): Stream[a, f] =
         Stream(() -> 
             let x = ref 0;
             let Stream(body) = s;
@@ -376,7 +376,7 @@ namespace Stream {
     /// Returns the empty stream if `n > length(xs)`.
     /// Returns `xs` if `n < 0`.
     ///
-    pub def drop(n: Int32, s: Stream[a, f]): Stream[b, f] =
+    pub def drop(n: Int32, s: Stream[a, f]): Stream[a, f] =
         if (n < 0)
             s
         else
@@ -387,7 +387,7 @@ namespace Stream {
     ///
     /// Precondition: n >= 0 .
     ///
-    pub def dropHelper(n: Int32, s: Stream[a, f]): Stream[b, f] =
+    pub def dropHelper(n: Int32, s: Stream[a, f]): Stream[a, f] =
         Stream(() -> 
             let x = ref n;
             let Stream(body) = s;

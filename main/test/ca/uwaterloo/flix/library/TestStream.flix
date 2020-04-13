@@ -427,5 +427,133 @@ def zipWith07(): Bool & Impure =
     let s = Stream.zipWith((a,b) -> a + b, Stream.fromList(1 :: 3 :: 5 :: 7 :: Nil), Stream.fromList(2 :: 4 :: 6 :: 8 :: Nil));
     Stream.toList(s) == 3 :: 7 :: 11 :: 15 :: Nil
 
+/////////////////////////////////////////////////////////////////////////////
+// fold                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def foldLeft01(): Bool & Impure =
+    Stream.fold((i, e) -> (i - e)*(e % 2 + 1), 100, Stream.fromList(Nil)) == 100
+
+@test
+def foldLeft02(): Bool & Impure =
+    Stream.fold((i, e) -> (i - e)*(e % 2 + 1), 100, Stream.fromList(1 :: Nil)) == 198
+
+@test
+def foldLeft03(): Bool & Impure =
+    Stream.fold((i, e) -> (i - e)*(e % 2 + 1), 100, Stream.fromList(1 :: 2 :: Nil)) == 196
+
+@test
+def foldLeft04(): Bool & Impure =
+    Stream.fold((i, e) -> (i - e)*(e % 2 + 1), 100, Stream.fromList(1 :: 2 :: 3 :: Nil)) == 386
+
+/////////////////////////////////////////////////////////////////////////////
+// append                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def append01(): Bool & Impure =
+    let s = Stream.append(Stream.fromList(Nil), Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def append02(): Bool & Impure =
+    let s = Stream.append(Stream.fromList(Nil), Stream.fromList(1 :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def append03(): Bool & Impure =
+    let s = Stream.append(Stream.fromList(Nil), Stream.fromList(1 :: 2 :: Nil));
+    Stream.toList(s) == 1 :: 2 :: Nil
+
+@test
+def append04(): Bool & Impure =
+    let s = Stream.append(Stream.fromList(1 :: Nil), Stream.fromList(Nil));
+    Stream.toList(s) ==  1 :: Nil
+
+@test
+def append05(): Bool & Impure =
+    let s = Stream.append(Stream.fromList(1 :: 2 :: Nil), Stream.fromList(Nil));
+    Stream.toList(s) == 1 :: 2 :: Nil
+
+@test
+def append06(): Bool & Impure =
+    let s = Stream.append(Stream.fromList(1 :: Nil), Stream.fromList(2 :: Nil));
+    Stream.toList(s) == 1 :: 2 :: Nil
+
+@test
+def append07(): Bool & Impure =
+    let s = Stream.append(Stream.fromList(1 :: 2 :: Nil), Stream.fromList(3 :: Nil));
+    Stream.toList(s) == 1 :: 2 :: 3 :: Nil
+
+@test
+def append08(): Bool & Impure =
+    let s = Stream.append(Stream.fromList(1 :: Nil), Stream.fromList(2 :: 3 :: Nil));
+    Stream.toList(s) == 1 :: 2 :: 3 :: Nil
+
+/////////////////////////////////////////////////////////////////////////////
+// take                                                                    //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def take01(): Bool & Impure =
+    let s = Stream.take(-1, Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def take02(): Bool & Impure =
+    let s = Stream.take(0, Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+
+@test
+def take03(): Bool & Impure =
+    let s = Stream.take(1, Stream.fromList(Nil));
+    Stream.toList(s) == Nil
+@test
+
+def take04(): Bool & Impure =
+    let s = Stream.take(-1, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def take05(): Bool & Impure =
+    let s = Stream.take(0, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def take06(): Bool & Impure =
+    let s = Stream.take(1, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def take07(): Bool & Impure =
+    let s = Stream.take(2, Stream.fromList(1 :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def take08(): Bool & Impure =
+    let s = Stream.take(0, Stream.fromList(1 :: 2 :: Nil));
+    Stream.toList(s) == Nil
+
+@test
+def take09(): Bool & Impure =
+    let s = Stream.take(1, Stream.fromList(1 :: 2 :: Nil));
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def take10(): Bool & Impure =
+    let s = Stream.take(2, Stream.fromList(1 :: 2 :: Nil));
+    Stream.toList(s) == 1 :: 2 :: Nil
+
+@test
+def take11(): Bool & Impure =
+let s = Stream.take(2, Stream.fromList(1 :: 2 :: 3 :: 4 :: 5 :: 6 :: Nil));
+    Stream.toList(s) == 1 :: 2 :: Nil
+
+@test
+def take12(): Bool & Impure =
+    let s = Stream.take(4, Stream.fromList(1 :: 2 :: 3 :: 4 :: 5 :: 6 :: Nil));
+    Stream.toList(s) == 1 :: 2 :: 3 :: 4 :: Nil
+
+
 
 }
