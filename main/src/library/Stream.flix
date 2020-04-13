@@ -19,7 +19,7 @@
 ///
 /// A stream provides "demand driven" access to its elements - successive
 /// elements are only produced when needed. Internally the stream is
-/// represnted as a "pull stream".
+/// represented as a "pull stream".
 ///
 /// Note - a stream is not "replayable".
 ///
@@ -43,8 +43,14 @@ namespace Stream {
     ///
     pub def empty(): Stream[a, Impure] =
         Stream(() ->
-            let x = ref true;
-            let next = () -> if (deref x) Done else Done;
+            let dummy = ref true;
+            let next = () ->
+                if (deref dummy)
+                    Done
+                else {
+                    dummy := true;
+                    Done
+                };
             next
         )
 
@@ -245,7 +251,7 @@ namespace Stream {
     ///
     /// Helper function for `view`.
     ///
-    pub def viewHelper(sf: () -> Step[a] & f): Option[(a, Stream[a, f])] & f =
+    def viewHelper(sf: () -> Step[a] & f): Option[(a, Stream[a, f])] & f =
         match sf() {
             case Yield(a) => {
                 let tail =
@@ -345,7 +351,7 @@ namespace Stream {
     ///
     /// Returns `s2` appended to `s1`.
     ///
-    pub def append(s1: Stream[a, f], s2: Stream[a, f]): Stream[a, f] = 
+    pub def append(s1: Stream[a, f], s2: Stream[a, f]): Stream[a, f] =
         Stream(() -> 
             let Stream(body1) = s1;
             let Stream(body2) = s2;
@@ -384,7 +390,7 @@ namespace Stream {
     ///
     /// Precondition: n > 0 .
     ///
-    pub def takeHelper(n: Int32, s: Stream[a, f]): Stream[a, f] =
+    def takeHelper(n: Int32, s: Stream[a, f]): Stream[a, f] =
         Stream(() -> 
             let x = ref 0;
             let Stream(body) = s;
@@ -444,7 +450,7 @@ namespace Stream {
     ///
     /// Precondition: n >= 0 .
     ///
-    pub def dropHelper(n: Int32, s: Stream[a, f]): Stream[a, f] =
+    def dropHelper(n: Int32, s: Stream[a, f]): Stream[a, f] =
         Stream(() -> 
             let x = ref n;
             let Stream(body) = s;
@@ -604,6 +610,32 @@ namespace Stream {
                             Yield(a)
                         }
                     }
+                };
+            next
+        )
+
+    ///
+    /// Returns a stream with the element `a` repeated `n` times.
+    ///
+    /// Returns the empty stream if `n < 0`.
+    ///
+    pub def repeat(a: a, n: Int32): Stream[a, Impure] =
+        if (n <= 0)
+            empty()
+        else repeatHelper(a, n)
+
+    ///
+    /// Helper function for `repeat`.
+    ///
+    def repeatHelper(a: a, n: Int32): Stream[a, Impure] =
+        Stream(() ->
+            let ix = ref 0;
+            let next = () ->
+                if (deref ix >= n)
+                    Done
+                else {
+                    ix := deref ix + 1;
+                    Yield(a)
                 };
             next
         )

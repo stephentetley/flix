@@ -910,5 +910,33 @@ def slice14(): Bool & Impure =
     let s = Stream.slice(1, 2, Stream.fromList(1 :: 2 :: 3 :: Nil));
     Stream.toList(s) == 2 :: Nil
 
+/////////////////////////////////////////////////////////////////////////////
+// repeat                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def repeat01(): Bool & Impure =
+    let s = Stream.repeat(1, -1);
+    Stream.toList(s) == Nil
+
+@test
+def repeat02(): Bool & Impure =
+    let s = Stream.repeat(1, 0);
+    Stream.toList(s) == Nil
+
+@test
+def repeat03(): Bool & Impure =
+    let s = Stream.repeat(1, 1);
+    Stream.toList(s) == 1 :: Nil
+
+@test
+def repeat04(): Bool & Impure =
+    let s = Stream.repeat(1, 2);
+    Stream.toList(s) == 1 :: 1 :: Nil
+
+@test
+def repeat05(): Bool & Impure =
+    let s = Stream.repeat(1, 3);
+    Stream.toList(s) == 1 :: 1 :: 1 :: Nil
 
 }
