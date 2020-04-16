@@ -43,14 +43,11 @@ namespace Stream {
     ///
     pub def empty(): Stream[a] =
         Stream(() ->
-            let dummy = ref true;
-            let next = () ->
-                if (deref dummy)
-                    Done
-                else {
-                    dummy := true;
-                    Done
-                };
+            let dummy = ref 0;
+            let next = () -> {
+                dummy := 1;
+                Done
+            };
             next
         )
 
