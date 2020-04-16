@@ -23,7 +23,7 @@
 ///
 /// Note - a stream is not "replayable".
 ///
-pub opaque type Stream[a, e] = Unit -> (Unit -> Step[a] & e) & Impure
+pub opaque type Stream[a] = Unit -> (Unit ~> Step[a]) & Impure
 
 ///
 /// The internal type of stream answers.
@@ -41,7 +41,7 @@ namespace Stream {
     ///
     /// Returns the empty stream.
     ///
-    pub def empty(): Stream[a, Impure] =
+    pub def empty(): Stream[a] =
         Stream(() ->
             let dummy = ref true;
             let next = () ->
@@ -59,7 +59,7 @@ namespace Stream {
     ///
     /// Returns an empty Stream if `b >= e`.
     ///
-    pub def range(b: Int32, e: Int32): Stream[Int32, Impure] =
+    pub def range(b: Int32, e: Int32): Stream[Int32] =
         if (b >= e)
             empty()
         else
@@ -70,7 +70,7 @@ namespace Stream {
     ///
     /// Precodition: b < e
     ///
-    def rangeHelper(b: Int32, e: Int32): Stream[Int32, Impure] =
+    def rangeHelper(b: Int32, e: Int32): Stream[Int32] =
         Stream(() -> 
             let rx = ref b;
             let next = () -> {
@@ -88,7 +88,7 @@ namespace Stream {
     ///
     /// Returns the stream `s` as a list.
     ///
-    pub def toList(s: Stream[a, f]): List[a] & f = 
+    pub def toList(s: Stream[a]): List[a] & Impure =
         let Stream(body) = s;
         toListHelper(body(), Nil) 
 
@@ -97,7 +97,7 @@ namespace Stream {
     ///
     /// Precodition: b < e
     ///
-    def toListHelper(sf : Unit -> Step[a] & f, ac: List[a]) : List[a] & f = 
+    def toListHelper(sf : Unit ~> Step[a], ac: List[a]) : List[a] & Impure =
         match sf() {
             case Done     => List.reverse(ac)
             case Skip     => toListHelper(sf, ac)
@@ -109,14 +109,14 @@ namespace Stream {
     ///
     /// The function `f` must be impure.
     ///
-    pub def foreach(f: a ~> Unit, s: Stream[a, f]): Unit & Impure =
+    pub def foreach(f: a ~> Unit, s: Stream[a]): Unit & Impure =
         let Stream(body) = s;
         foreachHelper(f, body()) 
 
     ///
     /// Helper function for `foreach`.
     ///
-    def foreachHelper(f: a ~> Unit, sf : Unit -> Step[a] & f): Unit & Impure =
+    def foreachHelper(f: a ~> Unit, sf : Unit ~> Step[a]): Unit & Impure =
         match sf() {
             case Done => ()
             case Skip => foreachHelper(f, sf)
@@ -133,7 +133,7 @@ namespace Stream {
     ///
     /// `f` should return `None` to signal the end of building the stream.
     ///
-    pub def unfold(f: b -> Option[(a,b)], st: b): Stream[a, Impure] =
+    pub def unfold(f: b -> Option[(a,b)], st: b): Stream[a] =
         Stream(() -> 
             let state = ref st;
             let next = () -> 
@@ -155,20 +155,20 @@ namespace Stream {
     ///
     /// `next` should return `None` to signal the end of building the stream.
     ///
-    pub def unfoldWithIterator(f: () -> Option[a] & f): Stream[a, f] =
+    pub def unfoldWithIterator(f: () ~> Option[a]): Stream[a] =
         Stream(() ->
             let next = () ->
                 match f() {
                     case None => Done
                     case Some(x) => Yield(x)
                 };
-            next as & f
+            next as & Impure
         )
 
     ///
     /// Returns the result of applying `f` to every element in Stream `s`.
     ///
-    pub def map(f: a -> b, s: Stream[a, f]): Stream[b, f] =
+    pub def map(f: a -> b, s: Stream[a]): Stream[b] =
         Stream(() -> 
             let Stream(body) = s;
             let sf = body();
@@ -184,7 +184,7 @@ namespace Stream {
     ///
     /// Returns a stream built from the elements of list `xs`.
     ///
-    pub def fromList(xs: List[a]): Stream[a, Impure] =
+    pub def fromList(xs: List[a]): Stream[a] =
         Stream(() -> 
             let rxs = ref xs;
             let next = () -> 
@@ -201,7 +201,7 @@ namespace Stream {
     ///
     /// Returns a stream built from the elements of array `arr`.
     ///
-    pub def fromArray(arr: Array[a]): Stream[a, Impure] =
+    pub def fromArray(arr: Array[a]): Stream[a] =
         Stream(() -> 
             let x = ref 0;
             let next = () -> {
@@ -220,7 +220,7 @@ namespace Stream {
     ///
     /// Add element `x` to the front of stream `s`.
     ///
-    pub def cons(x: a, s: Stream[a, e]) : Stream[a, Impure] = 
+    pub def cons(x: a, s: Stream[a]) : Stream[a] =
         Stream(() -> 
             let Stream(body) = s;
             let sf = body();
@@ -243,7 +243,7 @@ namespace Stream {
     ///
     /// If the stream is exhausted return `None`.
     ///
-    pub def view(s: Stream[a, f]): Option[(a, Stream[a, f])] & f =
+    pub def view(s: Stream[a]): Option[(a, Stream[a])] & Impure =
         let Stream(body) = s;
         let sf = body();
         viewHelper(sf)
@@ -251,13 +251,13 @@ namespace Stream {
     ///
     /// Helper function for `view`.
     ///
-    def viewHelper(sf: () -> Step[a] & f): Option[(a, Stream[a, f])] & f =
+    def viewHelper(sf: () ~> Step[a]): Option[(a, Stream[a])] & Impure =
         match sf() {
             case Yield(a) => {
                 let tail =
                     Stream(() ->
                         let next = () -> sf();
-                        next as & f
+                        next as & Impure
                      );
                 Some(a, tail)
             }
@@ -271,7 +271,7 @@ namespace Stream {
     ///
     /// If either `s1` or `s2` becomes depleted, then no further elements are added to the resulting stream.
     ///
-    pub def zip(s1: Stream[a, f], s2: Stream[b, f]): Stream[(a,b), f] = zipWith((a,b) -> (a,b), s1, s2)
+    pub def zip(s1: Stream[a], s2: Stream[b]): Stream[(a,b)] = zipWith((a,b) -> (a,b), s1, s2)
 
     ///
     /// Returns a stream where the element at index `i` is `f(a, b)` where
@@ -279,7 +279,7 @@ namespace Stream {
     ///
     /// If either `s1` or `s2` becomes depleted, then no further elements are added to the resulting stream.
     ///
-    pub def zipWith(f: (a,b) -> c, s1: Stream[a, f], s2: Stream[b, f]): Stream[c, f] = 
+    pub def zipWith(f: (a,b) -> c, s1: Stream[a], s2: Stream[b]): Stream[c] =
         Stream(() -> 
             let Stream(body1) = s1;
             let Stream(body2) = s2;
@@ -294,7 +294,7 @@ namespace Stream {
     ///
     /// Any case with `Done` is `Done`.
     ///
-    def zipWithHelper(f: (a,b) -> c, sf1: Unit -> Step[a] & f, sf2: Unit -> Step[b] & f) : Step[c] & f= 
+    def zipWithHelper(f: (a,b) -> c, sf1: Unit ~> Step[a], sf2: Unit ~> Step[b]) : Step[c] & Impure=
         match (sf1(), sf2()) {
             case (Yield(a), Yield(b))   => Yield(f(a,b))
             case (Yield(a), Skip)       => zipWithHelperGoRight(f, a, sf2)
@@ -309,7 +309,7 @@ namespace Stream {
     /// Precondition: stream `s1` (left) has yielded the value `x` but `s2` (right) yielded a `Skip`.
     /// Go along s2 (right) to produce a value.
     ///
-    def zipWithHelperGoRight(f: (a,b) -> c, x: a, sf: Unit -> Step[b] & f) : Step[c] & f =
+    def zipWithHelperGoRight(f: (a,b) -> c, x: a, sf: Unit ~> Step[b]) : Step[c] & Impure =
         match sf() {
             case Yield(y)   => Yield(f(x,y))
             case Done       => Done
@@ -322,7 +322,7 @@ namespace Stream {
     /// Precondition: stream `s2` (right) has yielded the value `x` but `s1` (left) yielded a `Skip`.
     /// Go along s2 (left) to produce a value.
     ///
-    def zipWithHelperGoLeft(f: (a,b) -> c, sf: Unit -> Step[a] & f, y: b) : Step[c] & f =
+    def zipWithHelperGoLeft(f: (a,b) -> c, sf: Unit ~> Step[a], y: b) : Step[c] & Impure =
         match sf() {
             case Yield(x)   => Yield(f(x,y))
             case Done       => Done
@@ -334,14 +334,14 @@ namespace Stream {
     ///
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
     ///
-    pub def fold(f: (b, a) -> b, ac: b, s: Stream[a, f]): b & f = 
+    pub def fold(f: (b, a) -> b, ac: b, s: Stream[a]): b & Impure =
         let Stream(body) = s;
         foldHelper(f, ac, body()) 
 
     ///
     /// Helper function for `fold`.
     ///
-    def foldHelper(f: (b,a) -> b, ac: b, sf : Unit -> Step[a] & f): b & f = 
+    def foldHelper(f: (b,a) -> b, ac: b, sf : Unit ~> Step[a]): b & Impure =
         match sf() {
             case Done => ac
             case Skip => foldHelper(f, ac, sf)
@@ -351,7 +351,7 @@ namespace Stream {
     ///
     /// Returns `s2` appended to `s1`.
     ///
-    pub def append(s1: Stream[a, f], s2: Stream[a, f]): Stream[a, f] =
+    pub def append(s1: Stream[a], s2: Stream[a]): Stream[a] =
         Stream(() -> 
             let Stream(body1) = s1;
             let Stream(body2) = s2;
@@ -379,7 +379,7 @@ namespace Stream {
     /// Returns `s` if `n > length(s)`.
     /// Returns the empty stream if `n < 0`.
     ///
-    pub def take(n: Int32, s: Stream[a, f]): Stream[a, f] =
+    pub def take(n: Int32, s: Stream[a]): Stream[a] =
         if (n <= 0)
             empty()
         else
@@ -390,7 +390,7 @@ namespace Stream {
     ///
     /// Precondition: n > 0 .
     ///
-    def takeHelper(n: Int32, s: Stream[a, f]): Stream[a, f] =
+    def takeHelper(n: Int32, s: Stream[a]): Stream[a] =
         Stream(() -> 
             let x = ref 0;
             let Stream(body) = s;
@@ -416,7 +416,7 @@ namespace Stream {
     ///
     /// The function `f` must be pure.
     ///
-    pub def takeWhile(f: a -> Bool, s: Stream[a, f]): Stream[a, f] =
+    pub def takeWhile(f: a -> Bool, s: Stream[a]): Stream[a] =
         Stream(() ->
             let Stream(body) = s;
             let sf = body();
@@ -439,7 +439,7 @@ namespace Stream {
     /// Returns the empty stream if `n > length(xs)`.
     /// Returns `xs` if `n < 0`.
     ///
-    pub def drop(n: Int32, s: Stream[a, f]): Stream[a, f] =
+    pub def drop(n: Int32, s: Stream[a]): Stream[a] =
         if (n <= 0)
             s
         else
@@ -450,7 +450,7 @@ namespace Stream {
     ///
     /// Precondition: n >= 0 .
     ///
-    def dropHelper(n: Int32, s: Stream[a, f]): Stream[a, f] =
+    def dropHelper(n: Int32, s: Stream[a]): Stream[a] =
         Stream(() -> 
             let x = ref n;
             let Stream(body) = s;
@@ -474,7 +474,7 @@ namespace Stream {
     ///
     /// The function `f` must be pure.
     ///
-    pub def dropWhile(f: a -> Bool, s: Stream[a, f]): Stream[a, f] =
+    pub def dropWhile(f: a -> Bool, s: Stream[a]): Stream[a] =
         Stream(() ->
             let afterPrefix = ref false;
             let Stream(body) = s;
@@ -502,7 +502,7 @@ namespace Stream {
     ///
     /// The function `f` must be pure.
     ///
-    pub def filter(f: a -> Bool, s: Stream[a, f]): Stream[a, f] = 
+    pub def filter(f: a -> Bool, s: Stream[a]): Stream[a] =
         Stream(() -> 
             let Stream(body) = s;
             let sf = body();
@@ -525,7 +525,7 @@ namespace Stream {
     /// Note - `sameElements` forces both streams, it is a so-called "terminal operation" and
     /// you will not be able to do anything else with the streams afterwards.
     ///
-    pub def sameElements(s1: Stream[a, f], s2: Stream[a, f]): Bool & Impure =
+    pub def sameElements(s1: Stream[a], s2: Stream[a]): Bool & Impure =
         let Stream(body1) = s1;
         let Stream(body2) = s2;
         let sf1 = body1();
@@ -535,7 +535,7 @@ namespace Stream {
     ///
     /// Helper function for `sameElements`.
     ///
-    def sameElementsHelper(sf1: Unit -> Step[a] & f, sf2: Unit -> Step[b] & f) : Bool & f =
+    def sameElementsHelper(sf1: Unit ~> Step[a], sf2: Unit ~> Step[a]): Bool & Impure =
         match (sf1(), sf2()) {
             case (Yield(a), Yield(b))   => if (a != b) false else sameElementsHelper(sf1, sf2)
             case (Yield(a), Skip)       => sameElementsHelperGoRight(a, sf1, sf2)
@@ -554,7 +554,7 @@ namespace Stream {
     /// Precondition: stream `sf1` (left) has yielded the value `x` but `sf2` (right) yielded a `Skip`.
     /// Go along sf2 (right) to produce a value, if same continue along both.
     ///
-    def sameElementsHelperGoRight(x: a, sf1: Unit -> Step[a] & f, sf2: Unit -> Step[a] & f) : Bool & f =
+    def sameElementsHelperGoRight(x: a, sf1: Unit ~> Step[a], sf2: Unit ~> Step[a]) : Bool & Impure =
         match sf2() {
             case Yield(y)   => if (x != y) false else sameElementsHelper(sf1, sf2)
             case Done       => false
@@ -567,7 +567,7 @@ namespace Stream {
     /// Precondition: stream `sf2` (right) has yielded the value `x` but `sf1` (left) yielded a `Skip`.
     /// Go along sf2 (left) to produce a value, if same continue along both.
     ///
-    def sameElementsHelperGoLeft(sf1: Unit -> Step[a] & f, y: a, sf2: Unit -> Step[a] & f) : Bool & f =
+    def sameElementsHelperGoLeft(sf1: Unit ~> Step[a], y: a, sf2: Unit ~> Step[a]) : Bool & Impure =
         match sf1() {
             case Yield(x)   => if (x != y) false else sameElementsHelper(sf1, sf2)
             case Done       => true
@@ -580,7 +580,7 @@ namespace Stream {
     /// That is, an element at index `i` in `xs` is part of the returned sublist if and only if `i >= b` and `i < e`.
     /// Note: Indices that are out of bounds in `xs` are not considered (i.e. slice(b, e, xs) = slice(max(0,b), min(length(xs),e), xs)).
     ///
-    pub def slice(b: Int32, e: Int32, s: Stream[a, f]): Stream[a, Impure] =
+    pub def slice(b: Int32, e: Int32, s: Stream[a]): Stream[a] =
         if (b >= e)
             empty()
         else
@@ -591,7 +591,7 @@ namespace Stream {
     ///
     /// Preconditions: b >= 0 && b < e
     ///
-    pub def sliceHelper(b: Int32, e: Int32, s: Stream[a, f]): Stream[a, Impure] =
+    pub def sliceHelper(b: Int32, e: Int32, s: Stream[a]): Stream[a] =
         Stream(() ->
             let Stream(body) = s;
             let sf = body();
@@ -619,7 +619,7 @@ namespace Stream {
     ///
     /// Returns the empty stream if `n < 0`.
     ///
-    pub def repeat(a: a, n: Int32): Stream[a, Impure] =
+    pub def repeat(a: a, n: Int32): Stream[a] =
         if (n <= 0)
             empty()
         else repeatHelper(a, n)
@@ -627,7 +627,7 @@ namespace Stream {
     ///
     /// Helper function for `repeat`.
     ///
-    def repeatHelper(a: a, n: Int32): Stream[a, Impure] =
+    def repeatHelper(a: a, n: Int32): Stream[a] =
         Stream(() ->
             let ix = ref 0;
             let next = () ->

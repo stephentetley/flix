@@ -215,8 +215,8 @@ def unfoldWithIterator06(): Bool & Impure =
 
 @test
 def map01(): Bool & Impure =
-    let s1 = Stream.fromList(Nil): Stream[Int32, Impure];
-    let s2 = Stream.map(i -> i > 2, s1): Stream[Bool, Impure];
+    let s1 = Stream.fromList(Nil): Stream[Int32];
+    let s2 = Stream.map(i -> i > 2, s1): Stream[Bool];
     Stream.toList(s2) == Nil
 
 @test
@@ -431,9 +431,9 @@ def zip09(): Bool & Impure =
 
 @test
 def zipWith01(): Bool & Impure =
-    let s1 = Stream.fromList(Nil): Stream[Int32, Impure];
-    let s2 = Stream.fromList(Nil): Stream[Bool, Impure];
-    let s3 = Stream.zipWith((a, b) -> if (b) a+1 else a, s1, s2): Stream[Int32, Impure];
+    let s1 = Stream.fromList(Nil): Stream[Int32];
+    let s2 = Stream.fromList(Nil): Stream[Bool];
+    let s3 = Stream.zipWith((a, b) -> if (b) a+1 else a, s1, s2): Stream[Int32];
     Stream.toList(s3) == Nil
 
 @test
@@ -796,14 +796,14 @@ def filter08(): Bool & Impure =
 
 @test
 def sameElements01(): Bool & Impure =
-    let s1 = Stream.fromList(Nil): Stream[Int32, Impure];
-    let s2 = Stream.fromList(Nil): Stream[Int32, Impure];
+    let s1 = Stream.fromList(Nil): Stream[Int32];
+    let s2 = Stream.fromList(Nil): Stream[Int32];
     Stream.sameElements(s1, s2) == true
 
 @test
 def sameElements02(): Bool & Impure =
     let s1 = Stream.fromList(1 :: Nil);
-    let s2 = Stream.fromList(Nil): Stream[Int32, Impure];
+    let s2 = Stream.fromList(Nil): Stream[Int32];
     Stream.sameElements(s1, s2) == false
 
 @test
