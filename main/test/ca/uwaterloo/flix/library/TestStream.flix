@@ -60,7 +60,7 @@ def range05(): Bool & Impure =
 
 @test
 def toList01(): Bool & Impure =
-    let s = Stream.fromList(Nil);
+    let s = Stream.fromList(Nil): Stream[Int32];
     Stream.toList(s) == Nil
 
 @test
@@ -75,7 +75,7 @@ def toList02(): Bool & Impure =
 @test
 def foreach01(): Bool & Impure =
     let r = ref 21;
-    let s = Stream.fromList(Nil);
+    let s = Stream.fromList(Nil): Stream[Int32];
     Stream.foreach(x -> r := x, s);
     21 == deref r
 
@@ -253,7 +253,7 @@ def map07(): Bool & Impure =
 
 @test
 def fromList01(): Bool & Impure =
-    let s = Stream.fromList(Nil);
+    let s = Stream.fromList(Nil): Stream[Int32];
     Stream.toList(s) == Nil
 
 @test
@@ -282,7 +282,7 @@ def fromList05(): Bool & Impure =
 
 @test
 def fromArray01(): Bool & Impure =
-    let s = Stream.fromArray([]);
+    let s = Stream.fromArray([]: Array[Int32]): Stream[Int32];
     Stream.toList(s) == Nil
 
 @test
@@ -340,7 +340,7 @@ def cons05(): Bool & Impure =
 
 @test
 def view01(): Bool & Impure =
-    let s = Stream.fromList(Nil);
+    let s = Stream.fromList(Nil): Stream[Int32];
     Stream.view(s) == None
 
 @test
@@ -437,12 +437,12 @@ def zipWith01(): Bool & Impure =
 
 @test
 def zipWith02(): Bool & Impure =
-    let s = Stream.zipWith((a, b) -> if (b) a+1 else a, Stream.fromList(1 :: Nil), Stream.fromList(Nil));
+    let s = Stream.zipWith((a, b) -> if (b) a+1 else a, Stream.fromList(1 :: Nil), Stream.fromList(Nil): Stream[Bool]);
     Stream.toList(s) == Nil
 
 @test
 def zipWith03(): Bool & Impure =
-    let s = Stream.zipWith((a, b) -> if (b) a+1 else a, Stream.fromList(Nil), Stream.fromList(true :: Nil));
+    let s = Stream.zipWith((a, b) -> if (b) a+1 else a, Stream.fromList(Nil): Stream[Int32], Stream.fromList(true :: Nil));
     Stream.toList(s) == Nil
 
 @test
@@ -472,7 +472,7 @@ def zipWith07(): Bool & Impure =
 
 @test
 def foldLeft01(): Bool & Impure =
-    Stream.fold((i, e) -> (i - e)*(e % 2 + 1), 100, Stream.fromList(Nil)) == 100
+    Stream.fold((i, e) -> (i - e)*(e % 2 + 1), 100, Stream.fromList(Nil): Stream[Int32]) == 100
 
 @test
 def foldLeft02(): Bool & Impure =
@@ -491,27 +491,27 @@ def foldLeft04(): Bool & Impure =
 /////////////////////////////////////////////////////////////////////////////
 @test
 def append01(): Bool & Impure =
-    let s = Stream.append(Stream.fromList(Nil), Stream.fromList(Nil));
+    let s = Stream.append(Stream.fromList(Nil): Stream[Int32], Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
 def append02(): Bool & Impure =
-    let s = Stream.append(Stream.fromList(Nil), Stream.fromList(1 :: Nil));
+    let s = Stream.append(Stream.fromList(Nil): Stream[Int32], Stream.fromList(1 :: Nil));
     Stream.toList(s) == 1 :: Nil
 
 @test
 def append03(): Bool & Impure =
-    let s = Stream.append(Stream.fromList(Nil), Stream.fromList(1 :: 2 :: Nil));
+    let s = Stream.append(Stream.fromList(Nil): Stream[Int32], Stream.fromList(1 :: 2 :: Nil));
     Stream.toList(s) == 1 :: 2 :: Nil
 
 @test
 def append04(): Bool & Impure =
-    let s = Stream.append(Stream.fromList(1 :: Nil), Stream.fromList(Nil));
+    let s = Stream.append(Stream.fromList(1 :: Nil), Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) ==  1 :: Nil
 
 @test
 def append05(): Bool & Impure =
-    let s = Stream.append(Stream.fromList(1 :: 2 :: Nil), Stream.fromList(Nil));
+    let s = Stream.append(Stream.fromList(1 :: 2 :: Nil), Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == 1 :: 2 :: Nil
 
 @test
@@ -535,17 +535,17 @@ def append08(): Bool & Impure =
 
 @test
 def take01(): Bool & Impure =
-    let s = Stream.take(-1, Stream.fromList(Nil));
+    let s = Stream.take(-1, Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
 def take02(): Bool & Impure =
-    let s = Stream.take(0, Stream.fromList(Nil));
+    let s = Stream.take(0, Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
 def take03(): Bool & Impure =
-    let s = Stream.take(1, Stream.fromList(Nil));
+    let s = Stream.take(1, Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 @test
 
@@ -599,7 +599,7 @@ def take12(): Bool & Impure =
 
 @test
 def takeWhile01(): Bool & Impure =
-    let s = Stream.takeWhile(i -> i > 3, Stream.fromList(Nil));
+    let s = Stream.takeWhile(i -> i > 3, Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
@@ -643,17 +643,17 @@ def takeWhile08(): Bool & Impure =
 
 @test
 def drop01(): Bool & Impure =
-    let s = Stream.drop(-1, Stream.fromList(Nil));
+    let s = Stream.drop(-1, Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
 def drop02(): Bool & Impure =
-    let s = Stream.drop(0, Stream.fromList(Nil));
+    let s = Stream.drop(0, Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
 def drop03(): Bool & Impure =
-    let s = Stream.drop(1, Stream.fromList(Nil));
+    let s = Stream.drop(1, Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
@@ -707,7 +707,7 @@ def drop12(): Bool & Impure =
 
 @test
 def dropWhile01(): Bool & Impure =
-    let s = Stream.dropWhile(i -> i > 3, Stream.fromList(Nil));
+    let s = Stream.dropWhile(i -> i > 3, Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
@@ -751,7 +751,7 @@ def dropWhile08(): Bool & Impure =
 
 @test
 def filter01(): Bool & Impure =
-    let s = Stream.filter(i -> i > 3, Stream.fromList(Nil));
+    let s = Stream.filter(i -> i > 3, Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
@@ -807,7 +807,7 @@ def sameElements02(): Bool & Impure =
 
 @test
 def sameElements03(): Bool & Impure =
-    let s1 = Stream.fromList(Nil);
+    let s1 = Stream.fromList(Nil): Stream[Int32];
     let s2 = Stream.fromList(1 :: Nil);
     Stream.sameElements(s1, s2) == false
 
@@ -841,12 +841,12 @@ def sameElements07(): Bool & Impure =
 
 @test
 def slice01(): Bool & Impure =
-    let s = Stream.slice(0, 0, Stream.fromList(Nil));
+    let s = Stream.slice(0, 0, Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
 def slice02(): Bool & Impure =
-    let s = Stream.slice(-1, 1, Stream.fromList(Nil));
+    let s = Stream.slice(-1, 1, Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
