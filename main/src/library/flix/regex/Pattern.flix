@@ -17,6 +17,8 @@
 use Regex.Pattern;
 use Regex.Pattern.{Pattern};
 
+/// TODO - not sure if this merits a module / namespace...
+
 namespace Regex {
 
     ///
@@ -28,6 +30,43 @@ namespace Regex {
 
 namespace Regex/Pattern {
 
+    pub enum Flag {
+        case CanonEq,
+        case CaseInsenstive,
+        case Comments,
+        case Dotall,
+        case Literal,
+        case Multiline,
+        case UnicodeCase,
+        case UnicodeCharacterClass,
+        case UnixLines
+    }
+
+    def toInt(flag: Flag): Int32 =
+        import flix.runtime.library.Regex:getCANON_EQ() as getCanonEq;
+        import flix.runtime.library.Regex:getCASE_INSENSITIVE() as getCaseInsensitive;
+        import flix.runtime.library.Regex:getCOMMENTS() as getComments;
+        import flix.runtime.library.Regex:getDOTALL() as getDotall;
+        import flix.runtime.library.Regex:getLITERAL() as getLiteral;
+        import flix.runtime.library.Regex:getMULTILINE() as getMultiline;
+        import flix.runtime.library.Regex:getUNICODE_CASE() as getUnicodeCase;
+        import flix.runtime.library.Regex:getUNICODE_CHARACTER_CLASS() as getUnicodeCharacterClass;
+        import flix.runtime.library.Regex:getUNIX_LINES() as getUnixLines;
+        match flag {
+            case CanonEq                => getCanonEq()
+            case CaseInsenstive         => getCaseInsensitive()
+            case Comments               => getComments()
+            case Dotall                 => getDotall()
+            case Literal                => getLiteral()
+            case Multiline              => getMultiline()
+            case UnicodeCase            => getUnicodeCase()
+            case UnicodeCharacterClass  => getUnicodeCharacterClass()
+            case UnixLines              => getUnixLines()
+        } as & Pure
+
+    def sumFlags(flags: List[Flag]): Int32 =
+        List.foldLeft((ac,e) -> ac + toInt(e), 0, flags)
+
     ///
     /// Compile the regular expression `regex` into a Pattern.
     ///
@@ -36,8 +75,24 @@ namespace Regex/Pattern {
             import java.util.regex.Pattern:compile(String);
             Ok(Pattern(compile(regex)))
         } catch {
-            case _: ##java.util.regex.PatternSyntaxException => Err("compile - pattern syntax error")
+            case _: ##java.util.regex.PatternSyntaxException => Err("Regex/Pattern.compile - pattern syntax error")
         }
+
+    ///
+    /// Compile the regular expression `regex` into a Pattern.
+    ///
+    pub def compileWithFlags(regex: String, flags: List[Flag]): Result[Pattern, String] & Impure =
+        try {
+            import java.util.regex.Pattern:compile(String, Int32);
+            Ok(Pattern(compile(regex, sumFlags(flags))))
+        } catch {
+            case _: ##java.util.regex.PatternSyntaxException => Err("Regex/Pattern.compileWithFlags - pattern syntax error")
+            case _: ##java.lang.IllegalArgumentException =>  Err("Regex/Pattern.compileWithFlags - illegal argument error")
+        }
+
+
+
+
 
     ///
     /// Return the string representation of the Pattern `patt`.
@@ -46,5 +101,7 @@ namespace Regex/Pattern {
         import java.util.regex.Pattern.toString();
         let Pattern(p1) = patt;
         p1.toString()
+
+
 
 }

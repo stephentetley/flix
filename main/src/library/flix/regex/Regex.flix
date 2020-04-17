@@ -39,6 +39,16 @@ namespace Regex {
         m1.isSubmatch()
 
     ///
+    /// Splits the string `s` around matches of the pattern `p`.
+    ///
+    pub def split(patt: Pattern, s: String): Array[String] & Impure =
+        import java.util.regex.Pattern.split(##java.lang.CharSequence);
+        let Pattern(p1) = patt;
+        let cs1 = s as ##java.lang.CharSequence;
+        p1.split(cs1)
+
+
+    ///
     /// Returns `input` with every match of the pattern `patt` replaced by the string `rep`.
     ///
     pub def replace(patt: Pattern, rep: String, input: String): String & Impure =

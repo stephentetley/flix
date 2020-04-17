@@ -19,9 +19,24 @@ namespace TestRegex {
 /////////////////////////////////////////////////////////////////////////////
 // compile                                                                 //
 /////////////////////////////////////////////////////////////////////////////
+
 @test
 def compile01(): Bool & Impure =
     let step = () -> Regex/Pattern.compile("\s+");
     step() |> Result.isOk
+
+/////////////////////////////////////////////////////////////////////////////
+// split                                                                   //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def split01(): Bool & Impure =
+    use Result.flatMap;
+    let step = () -> {
+        let* patt = Regex/Pattern.compile("\s+");
+        let arr = Regex.split(patt, "aa bb cc");
+        Ok(Array.sameElements(arr, ["aa","bb","cc"]))
+    };
+    Result.getWithDefault(step(), false)
 
 }
