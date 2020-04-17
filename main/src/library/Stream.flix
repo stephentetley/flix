@@ -23,6 +23,9 @@
 ///
 /// Note - a stream is not "replayable".
 ///
+/// TODO - Potentially Stream has to be pair of generator and finalizer.
+/// Currently this is just a generator.
+///
 pub opaque type Stream[a] = Unit -> (Unit ~> Step[a]) & Impure
 
 ///
@@ -704,5 +707,27 @@ namespace Stream {
                 };
             next
         )
+
+    ///
+    /// Applies `f` to a start value `ac` and all elements in `s` going from left to right.
+    ///
+    /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
+    ///
+    pub def foldResults(f: (b, a) -> b & e, ac: b, s: Stream[Result[a, err]]): Result[b, err] & Impure =
+        let Stream(body) = s;
+        foldResultsHelper(f, ac, body())
+
+    ///
+    /// Helper function for `fold`.
+    ///
+    def foldResultsHelper(f: (b,a) -> b & e, ac: b, sf : Unit ~> Step[Result[a, err]]): Result[b, err] & Impure =
+        match sf() {
+            case Done => Ok(ac)
+            case Skip => foldResultsHelper(f, ac, sf)
+            case Yield(Err(err)) => Err(err)
+            case Yield(Ok(a)) =>
+                foldResultsHelper(f, f(ac,a) as & Impure, sf)
+        }
+
 
 }
