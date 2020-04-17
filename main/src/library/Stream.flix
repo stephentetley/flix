@@ -212,6 +212,40 @@ namespace Stream {
         )
 
     ///
+    /// Returns the result of applying `f` to every element in Stream `s` and the accumulator `ac`.
+    ///
+    pub def mapAccum(f: (ac, a) -> (ac, b), ac: ac, s: Stream[a]): Stream[b] =
+        Stream(() ->
+            let Stream(body) = s;
+            let sf = body();
+            let next = () -> {
+                let accum = ref ac;
+                match sf() {
+                    case Yield(a) => {
+                        let (ac1, b) = f(deref accum, a);
+                        accum := ac1;
+                        Yield(b)
+                    }
+                    case Skip     => Skip
+                    case Done     => Done
+                }
+            };
+            next
+        )
+
+    ///
+    /// Pair each element of stream `s` with its index, the index starts at `k`.
+    ///
+    pub def index(k: Int32, s: Stream[a]): Stream[(Int32, a)] =
+        mapAccum((ix,a) -> (ix+1, (ix, a)), k, s)
+
+    ///
+    /// Pair each element of stream `s` with its index, the index starts at 0.
+    ///
+    pub def zeroIndex(s: Stream[a]): Stream[(Int32, a)] =
+        mapAccum((ix,a) -> (ix+1, (ix, a)), 0, s)
+
+    ///
     /// Returns a stream built from the elements of list `xs`.
     ///
     pub def fromList(xs: List[a]): Stream[a] =
