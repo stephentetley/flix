@@ -122,11 +122,11 @@ def unfold06(): Bool & Impure =
     Stream.toList(s) == '0' :: '2' :: '4' :: '6' :: '8' :: Nil
 
 /////////////////////////////////////////////////////////////////////////////
-// unfoldWithIterator                                                      //
+// unfoldWithIter                                                          //
 /////////////////////////////////////////////////////////////////////////////
 
 @test
-def unfoldWithIterator01(): Bool & Impure =
+def unfoldWithIter01(): Bool & Impure =
     let x = ref 0;
     let step = () ->
         if (true)
@@ -136,11 +136,11 @@ def unfoldWithIterator01(): Bool & Impure =
             x := deref x + 1;
             Some(c)
         };
-    let s = Stream.unfoldWithIterator(step);
+    let s = Stream.unfoldWithIter(step);
     Stream.toList(s) == Nil
 
 @test
-def unfoldWithIterator02(): Bool & Impure =
+def unfoldWithIter02(): Bool & Impure =
     let x = ref 0;
     let step = () ->
         if (deref x > 0)
@@ -150,11 +150,11 @@ def unfoldWithIterator02(): Bool & Impure =
             x := deref x + 1;
             Some(c)
         };
-    let s = Stream.unfoldWithIterator(step);
+    let s = Stream.unfoldWithIter(step);
     Stream.toList(s) == '0' :: Nil
 
 @test
-def unfoldWithIterator03(): Bool & Impure =
+def unfoldWithIter03(): Bool & Impure =
     let x = ref 0;
     let step = () ->
         if (deref x > 1)
@@ -164,11 +164,11 @@ def unfoldWithIterator03(): Bool & Impure =
             x := deref x + 1;
             Some(c)
         };
-    let s = Stream.unfoldWithIterator(step);
+    let s = Stream.unfoldWithIter(step);
     Stream.toList(s) == '0' :: '1' :: Nil
 
 @test
-def unfoldWithIterator04(): Bool & Impure =
+def unfoldWithIter04(): Bool & Impure =
     let x = ref 0;
     let step = () ->
         if (deref x >= 10)
@@ -178,11 +178,11 @@ def unfoldWithIterator04(): Bool & Impure =
             x := deref x + 1;
             Some(c)
         };
-    let s = Stream.unfoldWithIterator(step);
+    let s = Stream.unfoldWithIter(step);
     Stream.toList(s) == '0' :: '1' :: '2' :: '3' :: '4' :: '5' :: '6' :: '7' :: '8' :: '9' :: Nil
 
 @test
-def unfoldWithIterator05(): Bool & Impure =
+def unfoldWithIter05(): Bool & Impure =
     let x = ref 5;
     let step = () ->
         if (deref x >= 10)
@@ -192,11 +192,11 @@ def unfoldWithIterator05(): Bool & Impure =
             x := deref x + 1;
             Some(c)
         };
-    let s = Stream.unfoldWithIterator(step);
+    let s = Stream.unfoldWithIter(step);
     Stream.toList(s) == '5' :: '6' :: '7' :: '8' :: '9' :: Nil
 
 @test
-def unfoldWithIterator06(): Bool & Impure =
+def unfoldWithIter06(): Bool & Impure =
     let x = ref 0;
     let step = () ->
         if (deref x >= 10)
@@ -206,7 +206,7 @@ def unfoldWithIterator06(): Bool & Impure =
             x := deref x + 2;
             Some(c)
         };
-    let s = Stream.unfoldWithIterator(step);
+    let s = Stream.unfoldWithIter(step);
     Stream.toList(s) == '0' :: '2' :: '4' :: '6' :: '8' :: Nil
 
 /////////////////////////////////////////////////////////////////////////////
