@@ -34,7 +34,6 @@ def range01(): Bool & Impure =
     let s = Stream.range(1, 0);
     Stream.toList(s) == Nil
 
-
 @test
 def range02(): Bool & Impure =
     let s = Stream.range(1, 1);
@@ -248,7 +247,6 @@ def map06(): Bool & Impure =
 def map07(): Bool & Impure =
     let s = Stream.fromList(7 :: 8 :: Nil) |>  Stream.map(i -> i > 2);
     Stream.toList(s) == true :: true :: Nil
-
 /////////////////////////////////////////////////////////////////////////////
 // fromList                                                                //
 /////////////////////////////////////////////////////////////////////////////
@@ -376,23 +374,24 @@ def view05(): Bool & Impure =
         case Some("abc", s2) => Stream.toList(s2) == "def" :: "ghi" :: Nil
         case _ => false
     }
+
 /////////////////////////////////////////////////////////////////////////////
 // zip                                                                     //
 /////////////////////////////////////////////////////////////////////////////
 
 @test
 def zip01(): Bool & Impure =
-    let s = Stream.zip(Stream.empty(), Stream.empty());
+    let s = Stream.zip(Stream.empty(): Stream[Int32], Stream.empty(): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
 def zip02(): Bool & Impure =
-    let s = Stream.zip(Stream.fromList(1 :: Nil), Stream.fromList(Nil));
+    let s = Stream.zip(Stream.fromList(1 :: Nil), Stream.fromList(Nil): Stream[Int32]);
     Stream.toList(s) == Nil
 
 @test
 def zip03(): Bool & Impure =
-    let s = Stream.zip(Stream.fromList(Nil), Stream.fromList(2 :: Nil));
+    let s = Stream.zip(Stream.fromList(Nil): Stream[Int32], Stream.fromList(2 :: Nil));
     Stream.toList(s) == Nil
 
 @test

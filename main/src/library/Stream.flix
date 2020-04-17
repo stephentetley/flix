@@ -23,7 +23,7 @@
 ///
 /// Note - a stream is not "replayable".
 ///
-pub opaque type Stream[a] = { generate: Unit -> (Unit ~> Step[a]) & Impure, finalize: Unit -> Unit & Impure }
+pub opaque type Stream[a] = { generate: Unit ~> (Unit ~> Step[a]), finalize: Unit ~> Unit }
 
 ///
 /// The internal type of stream answers.
@@ -429,7 +429,7 @@ namespace Stream {
     ///
     /// Any case with `Done` is `Done`.
     ///
-    def zipWithHelper(f: (a,b) -> c, sf1: Unit ~> Step[a], sf2: Unit ~> Step[b]) : Step[c] & Impure=
+    def zipWithHelper(f: (a,b) -> c, sf1: Unit ~> Step[a], sf2: Unit ~> Step[b]) : Step[c] & Impure =
         match (sf1(), sf2()) {
             case (Yield(a), Yield(b))   => Yield(f(a,b))
             case (Yield(a), Skip)       => zipWithHelperGoRight(f, a, sf2)
@@ -463,7 +463,6 @@ namespace Stream {
             case Done       => Done
             case Skip       => zipWithHelperGoLeft(f, sf, y)
         }
-
 
     ///
     /// Applies `f` to a start value `ac` and all elements in `s` going from left to right.
