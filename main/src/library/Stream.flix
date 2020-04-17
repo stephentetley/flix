@@ -388,12 +388,8 @@ namespace Stream {
                 let tail =
                     Stream({
                         generate = () ->
-                            let dummy = ref 0;
-                            let next =  () -> {
-                                if (deref dummy == 0) () else { dummy := 0 };   // Seems to stop Compiler crash!
-                                sf()
-                            };
-                            next
+                            let next = () -> sf();
+                            next as & Impure
                         ,
                         finalize = () -> finalizer()
                      });
