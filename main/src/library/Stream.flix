@@ -153,7 +153,8 @@ namespace Stream {
     pub def toList(s: Stream[a]): List[a] & Impure =
         let generate1 = getGenerator(s);
         let finalize1 = getFinalizer(s);
-        let ans = toListHelper(generate1(), Nil);
+        let sf = generate1();
+        let ans = toListHelper(sf, Nil);
         finalize1();
         ans
 
@@ -178,7 +179,8 @@ namespace Stream {
     pub def foreach(f: a ~> Unit, s: Stream[a]): Unit & Impure =
         let generate1 = getGenerator(s);
         let finalize1 = getFinalizer(s);
-        let ans = foreachHelper(f, generate1());
+        let sf = generate1();
+        let ans = foreachHelper(f, sf);
         finalize1();
         ans
 
@@ -190,7 +192,7 @@ namespace Stream {
             case Done => ()
             case Skip => foreachHelper(f, sf)
             case Yield(a) => {
-                f(a) as & Impure;
+                f(a);
                 foreachHelper(f, sf)
             }
         }
@@ -495,7 +497,6 @@ namespace Stream {
             case Yield(a) =>
                 foldHelper(f, sf, f(ac,a) as & Impure)
         }
-
 
     ///
     /// Returns `s2` appended to `s1`.
@@ -826,14 +827,16 @@ namespace Stream {
         })
 
     ///
-    /// Applies `f` to a start value `ac` and all elements in `s` going from left to right.
+    /// Applies `f` to a start value `ac` and all `Ok` elements in `s` going from left to right.
+    /// If an `Err` is encountered the stream closed and the error is returned.
     ///
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
     ///
     pub def foldResults(f: (b, a) -> b & e, ac: b, s: Stream[Result[a, err]]): Result[b, err] & Impure =
         let generate1 = getGenerator(s);
         let finalize1 = getGenerator(s);
-        let ans = foldResultsHelper(f, generate1(), ac);
+        let sf = generate1();
+        let ans = foldResultsHelper(f, sf, ac);
         finalize1();
         ans
 
