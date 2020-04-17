@@ -311,7 +311,7 @@ def fromArray05(): Bool & Impure =
 
 @test
 def cons01(): Bool & Impure =
-    let s = Stream.cons(1, Stream.fromArray([]));
+    let s = Stream.cons(1, Stream.fromArray([]: Array[Int32]));
     Stream.toList(s) == 1 :: Nil
 
 @test
@@ -341,7 +341,10 @@ def cons05(): Bool & Impure =
 @test
 def view01(): Bool & Impure =
     let s = Stream.fromList(Nil): Stream[Int32];
-    Stream.view(s) == None
+    match Stream.view(s) {
+        case None => true 
+        case _ => false
+    }
 
 @test
 def view02(): Bool & Impure =
@@ -471,19 +474,19 @@ def zipWith07(): Bool & Impure =
 /////////////////////////////////////////////////////////////////////////////
 
 @test
-def foldLeft01(): Bool & Impure =
+def fold01(): Bool & Impure =
     Stream.fold((i, e) -> (i - e)*(e % 2 + 1), 100, Stream.fromList(Nil): Stream[Int32]) == 100
 
 @test
-def foldLeft02(): Bool & Impure =
+def fold02(): Bool & Impure =
     Stream.fold((i, e) -> (i - e)*(e % 2 + 1), 100, Stream.fromList(1 :: Nil)) == 198
 
 @test
-def foldLeft03(): Bool & Impure =
+def fold03(): Bool & Impure =
     Stream.fold((i, e) -> (i - e)*(e % 2 + 1), 100, Stream.fromList(1 :: 2 :: Nil)) == 196
 
 @test
-def foldLeft04(): Bool & Impure =
+def fold04(): Bool & Impure =
     Stream.fold((i, e) -> (i - e)*(e % 2 + 1), 100, Stream.fromList(1 :: 2 :: 3 :: Nil)) == 386
 
 /////////////////////////////////////////////////////////////////////////////

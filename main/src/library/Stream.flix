@@ -372,26 +372,31 @@ namespace Stream {
     pub def view(s: Stream[a]): Option[(a, Stream[a])] & Impure =
         let generate1 = getGenerator(s);
         let finalize1 = getFinalizer(s);
-        viewHelper(generate1(), finalize1)
+        let sf = generate1();
+        viewHelper(sf, finalize1)
 
     ///
     /// Helper function for `view`.
     ///
-    def viewHelper(sf: Unit ~> Step[a], finalizer: Unit -> Unit & Impure): Option[(a, Stream[a])] & Impure =
+    def viewHelper(sf: Unit ~> Step[a], finalizer: Unit ~> Unit): Option[(a, Stream[a])] & Impure =
         match sf() {
+            case Done => { finalizer(); None }
+            case Skip => viewHelper(sf, finalizer)
             case Yield(a) => {
                 let tail =
                     Stream({
                         generate = () ->
-                            let next = () -> sf();
-                            next as & Impure
+                            let dummy = ref 0;
+                            let next =  () -> {
+                                if (deref dummy == 0) () else { dummy := 0 };   // Seems to stop Compiler crash!
+                                sf()
+                            };
+                            next
                         ,
-                        finalize = finalizer
+                        finalize = () -> finalizer()
                      });
                 Some(a, tail)
             }
-            case Done => { finalizer(); None }
-            case Skip => viewHelper(sf, finalizer)
         }
 
     ///
@@ -413,7 +418,9 @@ namespace Stream {
             generate = () ->
                 let generate1 = getGenerator(s1);
                 let generate2 = getGenerator(s2);
-                let next = () -> zipWithHelper(f, generate1(), generate2());
+                let sf1 = generate1();
+                let sf2 = generate2();
+                let next = () -> zipWithHelper(f, sf1, sf2);
                 next as & Impure
             ,
             finalize = () -> {
@@ -435,7 +442,7 @@ namespace Stream {
             case (Yield(a), Skip)       => zipWithHelperGoRight(f, a, sf2)
             case (Skip, Yield(b))       => zipWithHelperGoLeft(f, sf1, b)
             case (Skip, Skip)           => Skip
-            case (_,_)                  => Done
+            case (_, _)                 => Done
         }
 
     ///
@@ -472,7 +479,8 @@ namespace Stream {
     pub def fold(f: (b, a) -> b & e, ac: b, s: Stream[a]): b & Impure =
         let generate1 = getGenerator(s);
         let finalize1 = getFinalizer(s);
-        let ans = foldHelper(f, generate1(), ac);
+        let sf = generate1();
+        let ans = foldHelper(f, sf, ac);
         finalize1();
         ans
 
