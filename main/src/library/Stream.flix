@@ -245,14 +245,17 @@ namespace Stream {
     ///
     /// Returns the result of applying `f` to every element in Stream `s`.
     ///
-    pub def map(f: a -> b, s: Stream[a]): Stream[b] =
+    pub def map!(f: a -> b & e, s: Stream[a]): Stream[b] =
         Stream({
             generate = () ->
                 let generate1 = getGenerator(s);
                 let sf = generate1();
                 let next = () ->
                     match sf() {
-                        case Yield(a) => Yield(f(a))
+                        case Yield(a) => {
+                            let a1 = f(a) as & Impure;
+                            Yield(a1)
+                        }
                         case Skip     => Skip
                         case Done     => Done
                     };

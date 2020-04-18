@@ -209,44 +209,45 @@ def unfoldWithIter06(): Bool & Impure =
     Stream.toList(s) == '0' :: '2' :: '4' :: '6' :: '8' :: Nil
 
 /////////////////////////////////////////////////////////////////////////////
-// map                                                                     //
+// map!                                                                     //
 /////////////////////////////////////////////////////////////////////////////
 
 @test
-def map01(): Bool & Impure =
+def map01!(): Bool & Impure =
     let s1 = Stream.fromList(Nil): Stream[Int32];
-    let s2 = Stream.map(i -> i > 2, s1): Stream[Bool];
+    let s2 = Stream.map!(i -> i > 2, s1): Stream[Bool];
     Stream.toList(s2) == Nil
 
 @test
-def map02(): Bool & Impure =
-    let s = Stream.fromList(1 :: Nil) |> Stream.map(i -> i > 2);
+def map02!(): Bool & Impure =
+    let s = Stream.fromList(1 :: Nil) |> Stream.map!(i -> i > 2);
     Stream.toList(s) == false :: Nil
 
 @test
-def map03(): Bool & Impure =
-    let s = Stream.fromList(3 :: Nil) |> Stream.map(i -> i > 2);
+def map03!(): Bool & Impure =
+    let s = Stream.fromList(3 :: Nil) |> Stream.map!(i -> i > 2);
     Stream.toList(s) == true :: Nil
 
 @test
-def map04(): Bool & Impure =
-    let s = Stream.fromList(1 :: 2 :: Nil) |> Stream.map(i -> i > 2);
+def map04!(): Bool & Impure =
+    let s = Stream.fromList(1 :: 2 :: Nil) |> Stream.map!(i -> i > 2);
     Stream.toList(s) ==  false :: false :: Nil
 
 @test
-def map05(): Bool & Impure =
-    let s = Stream.fromList(1 :: 8 :: Nil) |> Stream.map(i -> i > 2);
+def map05!(): Bool & Impure =
+    let s = Stream.fromList(1 :: 8 :: Nil) |> Stream.map!(i -> i > 2);
     Stream.toList(s) == false :: true :: Nil
 
 @test
-def map06(): Bool & Impure =
-    let s = Stream.fromList(8 :: 1 :: Nil) |> Stream.map(i -> i > 2);
+def map06!(): Bool & Impure =
+    let s = Stream.fromList(8 :: 1 :: Nil) |> Stream.map!(i -> i > 2);
     Stream.toList(s) == true :: false :: Nil
 
 @test
-def map07(): Bool & Impure =
-    let s = Stream.fromList(7 :: 8 :: Nil) |>  Stream.map(i -> i > 2);
+def map07!(): Bool & Impure =
+    let s = Stream.fromList(7 :: 8 :: Nil) |>  Stream.map!(i -> i > 2);
     Stream.toList(s) == true :: true :: Nil
+
 /////////////////////////////////////////////////////////////////////////////
 // fromList                                                                //
 /////////////////////////////////////////////////////////////////////////////
