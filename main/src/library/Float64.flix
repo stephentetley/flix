@@ -93,24 +93,24 @@ namespace Float64 {
         import java.lang.Double:toString(Float64);
         x.toString() as & Pure
 
-// TODO
-//    ///
-//    /// Return a decimal representation of `x`.
-//    ///
-//    pub def toDecimalString(decimalPlaces: Int32, x: Float64): String =
-//        toDecimalStringHelper(decimalPlaces, x) as & Pure
-//
-//    ///
-//    /// Helper function for `toDecimalString`.
-//    ///
-//    pub def toDecimalStringHelper(decimalPlaces: Int32, x: Float64): String & Impure =
-//        import new java.text.DecimalFormat() as newDecimalFormat;
-//        import java.text.DecimalFormat.setMaximumFractionDigits(Int32);
-//        import java.text.NumberFormat.format(Float64);
-//        let df = newDecimalFormat();
-//        df.setMaximumFractionDigits(decimalPlaces);
-//        let nf = df as ##java.text.NumberFormat;
-//        nf.format(x)
+
+    ///
+    /// Return a decimal representation of `x`.
+    ///
+    pub def toDecimalString(decimalPlaces: Int32, x: Float64): String =
+        toDecimalStringHelper(decimalPlaces, x) as & Pure
+
+    ///
+    /// Helper function for `toDecimalString`.
+    ///
+    pub def toDecimalStringHelper(decimalPlaces: Int32, x: Float64): String & Impure =
+        import new java.text.DecimalFormat() as newDecimalFormat;
+        import java.text.DecimalFormat.setMaximumFractionDigits(Int32);
+        import java.text.NumberFormat.format(Float64);
+        let df = newDecimalFormat();
+        df.setMaximumFractionDigits(decimalPlaces);
+        let nf = df as ##java.text.NumberFormat;
+        nf.format(x)
 
     ///
     /// Parse the string `s` as a Float64, leading or trailing whitespace is trimmed.
@@ -122,6 +122,27 @@ namespace Float64 {
         Ok(s.strip().parseDouble()) as & Pure
     } catch {
         case _: ##java.lang.NumberFormatException => Err("Float64.fromString")
+    }
+
+    ///
+    /// Parse the string `s` as a Float64, leading or trailing whitespace is trimmed.
+    /// A successful parse is wrapped with `OK(x)`, a parse failure is indicated by `Err(_)`.
+    ///
+    pub def fromDecimalString(s: String): Result[Float64, String] = fromDecimalStringHelper(s) as & Pure
+
+    ///
+    /// Helper function for `fromDecimalString`.
+    ///
+    pub def fromDecimalStringHelper(s: String): Result[Float64, String] & Impure = try {
+        import new java.text.DecimalFormat() as newDecimalFormat;
+        import java.lang.String.strip();
+        import java.text.NumberFormat.parse(String);
+        import java.lang.Number.doubleValue();
+        let nf = newDecimalFormat() as ##java.text.NumberFormat;
+        let n1 = nf.parse(s.strip());
+        Ok(n1.doubleValue())
+    } catch {
+        case _: ##java.lang.NumberFormatException => Err("Float64.fromDecimalString")
     }
 
     ///
