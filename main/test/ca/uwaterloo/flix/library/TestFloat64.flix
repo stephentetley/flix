@@ -202,33 +202,75 @@ namespace TestFloat64 {
     /////////////////////////////////////////////////////////////////////////////
     @test
     def toDecimalString01(): Bool =
-        let step = () -> Float64.toDecimalString(2, 0.0f64) |> Float64.fromDecimalString;
-        step() |> Result.isOk
+        use Result.flatMap;
+        let step = () -> {
+            let* d = Float64.toDecimalString(2, 0.0f64) |> Float64.fromDecimalString;
+            Option.toOk(Float64.tryToInt32(d), "conversion error")
+        };
+        step() == Ok(0)
 
     @test
     def toDecimalString02(): Bool =
-        let step = () -> Float64.toDecimalString(2, 3.14159f64) |> Float64.fromDecimalString;
-        step() |> Result.isOk
+        use Result.flatMap;
+        let step = () -> {
+            let* d = Float64.toDecimalString(2, 3.14159f64) |> Float64.fromDecimalString;
+            Option.toOk(Float64.tryToInt32(d), "conversion error")
+        };
+        step() == Ok(3)
 
     @test
     def toDecimalString03(): Bool =
-        let step = () -> Float64.toDecimalString(4, 3.14159f64) |> Float64.fromDecimalString;
-        step() |> Result.isOk
+        use Result.flatMap;
+        let step = () -> {
+            let* d = Float64.toDecimalString(4, 3.14159f64) |> Float64.fromDecimalString;
+            Option.toOk(Float64.tryToInt32(d), "conversion error")
+        };
+        step() == Ok(3)
 
     @test
-    def toDecimalString01a(): Bool =
-        let step = () -> Float64.toDecimalString(2, 0.0f64) |> Float64.fromString;
-        step() |> Result.isOk
+    def toDecimalString04(): Bool =
+        use Result.flatMap;
+        let step = () -> {
+            let* d = Float64.toDecimalString(4, 10000.1f64) |> Float64.fromDecimalString;
+            Option.toOk(Float64.tryToInt32(d), "conversion error")
+        };
+        step() == Ok(10000)
 
     @test
-    def toDecimalString02a(): Bool =
-        let step = () -> Float64.toDecimalString(2, 3.14159f64) |> Float64.fromString;
-        step() |> Result.isOk
+    def toDecimalString05(): Bool =
+        use Result.flatMap;
+        let step = () -> {
+            let* d = Float64.toDecimalString(2, 0.0f64) |> Float64.fromString;
+            Option.toOk(Float64.tryToInt32(d), "conversion error")
+        };
+        step() == Ok(0)
 
     @test
-    def toDecimalString03a(): Bool =
-        let step = () -> Float64.toDecimalString(4, 3.14159f64) |> Float64.fromString;
-        step() |> Result.isOk
+    def toDecimalString06(): Bool =
+        use Result.flatMap;
+        let step = () -> {
+            let* d = Float64.toDecimalString(2, 3.14159f64) |> Float64.fromString;
+            Option.toOk(Float64.tryToInt32(d), "conversion error")
+        };
+        step() == Ok(3)
+
+    @test
+    def toDecimalString07(): Bool =
+        use Result.flatMap;
+        let step = () -> {
+            let* d = Float64.toDecimalString(4, 3.14159f64) |> Float64.fromString;
+            Option.toOk(Float64.tryToInt32(d), "conversion error")
+        };
+        step() == Ok(3)
+
+    @test
+    def toDecimalString08(): Bool =
+        use Result.flatMap;
+        let step = () -> {
+            let* d = Float64.toDecimalString(4, 10000.1f64) |> Float64.fromString;
+            Option.toOk(Float64.tryToInt32(d), "conversion error")
+        };
+        step() == Ok(10000)
 
     /////////////////////////////////////////////////////////////////////////////
     // fromString                                                              //
