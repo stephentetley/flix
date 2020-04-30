@@ -550,6 +550,21 @@ namespace List {
     }
 
     ///
+    /// Returns the sublist of `xs` without the last element.
+    /// Returns `None` if the list `xs` is `Nil`.
+    ///
+    pub def init(xs: List[a]): Option[List[a]] = initHelper(xs, Nil)
+
+    ///
+    /// Helper function for `init`.
+    ///
+    def initHelper(xs: List[a], acc: List[a]): Option[List[a]] = match xs {
+        case Nil => None
+        case _ :: Nil => Some(reverse(acc))
+        case x :: rs => initHelper(rs, x :: acc)
+    }
+
+    ///
     /// Returns the sublist of `xs` from index `b` (inclusive) to index `e` (exclusive).
     ///
     /// That is, an element at index `i` in `xs` is part of the returned sublist if and only if `i >= b` and `i < e`.
@@ -951,6 +966,28 @@ namespace List {
     def unfoldWithIterHelper(next: () ~> Option[a], k: List[a] -> List[a]): List[a] & Impure = match next() {
         case None => k(Nil)
         case Some(a) => unfoldWithIterHelper(next, xs -> k(a :: xs))
+    }
+
+
+    ///
+    /// Build a list by applying the function `next` to `()`. `next` is expected to encapsulate
+    /// a stateful resource such as a file handle that can be iterated.
+    ///
+    /// `next` should return `Ok(Some(a)` to signal a new list element `Ok(a)`.
+    ///
+    /// `next` should return `Ok(None)` to signal the end of building the list.
+    ///
+    /// `next` should return `Err(e)` to signal that an error occurred. The function returns `Err(e)`.
+    ///
+    pub def unfoldWithOkIter(next: Unit ~> Result[Option[a], e]): Result[List[a], e] & Impure = unfoldWithOkIterHelper(next, xs -> xs)
+
+    ///
+    /// Helper function for `unfoldWithOkIter`
+    ///
+    def unfoldWithOkIterHelper(next: Unit ~> Result[Option[a], e], k: Result[List[a], e] -> Result[List[a], e]): Result[List[a], e] & Impure = match next() {
+        case Ok(None) => k(Ok(Nil))
+        case Err(e) => k(Err(e))
+        case Ok(Some(a)) => unfoldWithOkIterHelper(next, Result.flatMap(xs -> k(Ok(a :: xs))))
     }
 
     ///

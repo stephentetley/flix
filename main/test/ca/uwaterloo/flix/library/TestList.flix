@@ -1141,6 +1141,30 @@ def filter07(): Bool = List.filter(i -> i > 3, 8 :: 9 :: Nil) `assertEq!` 8 :: 9
 def filter08(): Bool = List.filter(i -> i > 3, 1 :: 4 :: 11 :: 2 :: -22 :: 17 :: Nil) `assertEq!` 4 :: 11 :: 17 :: Nil
 
 /////////////////////////////////////////////////////////////////////////////
+// init                                                                  //
+/////////////////////////////////////////////////////////////////////////////
+@test
+def init01(): Bool = List.init(Nil) `assertEq!` None
+
+@test
+def init02(): Bool = List.init(0 :: Nil) `assertEq!` Some(Nil)
+
+@test
+def init03(): Bool = List.init(0 :: 1 :: Nil) `assertEq!` Some(0 :: Nil)
+
+@test
+def init04(): Bool = List.init(2 :: 1 :: 0 :: Nil) `assertEq!` Some(2 :: 1 :: Nil)
+
+@test
+def init05(): Bool = List.init('a' :: 'b' :: 'c' :: 'd' :: Nil) `assertEq!` Some('a' :: 'b' :: 'c' :: Nil)
+
+@test
+def init06(): Bool = List.init("test1" :: "test2" :: "test3" :: Nil) `assertEq!` Some("test1" :: "test2" :: Nil)
+
+@test
+def init07(): Bool = List.init(2 :: 1 :: 0 :: -1 :: Nil) `assertEq!` Some(2 :: 1 :: 0 :: Nil)
+
+/////////////////////////////////////////////////////////////////////////////
 // slice                                                                   //
 /////////////////////////////////////////////////////////////////////////////
 @test
@@ -1919,3 +1943,42 @@ def unfoldWithIter06(): Bool & Impure =
     List.unfoldWithIter(step) == '0' :: '2' :: '4' :: '6' :: '8' :: Nil
 
 }
+
+/////////////////////////////////////////////////////////////////////////////
+// unfoldWithOkIter                                                        //
+/////////////////////////////////////////////////////////////////////////////
+
+@test
+def unfoldWithOkIter01(): Bool & Impure =
+    let x = ref 0;
+    let step = () ->
+        if (true) {
+            Ok(None)
+        } else {
+            Ok(Some(deref x))
+        };
+    List.unfoldWithOkIter(step) == Ok(Nil)
+
+@test
+def unfoldWithOkIter02(): Bool & Impure =
+    let x = ref 0;
+    let step = () ->
+        if (true) {
+            Err(deref x)
+        } else {
+            Ok(Some(deref x))
+        };
+    List.unfoldWithOkIter(step) == Err(0)
+
+@test
+def unfoldWithOkIter03(): Bool & Impure =
+    let x = ref 1;
+    let step = () ->
+        if (deref x % 5 > 0) {
+            let c = deref x;
+            x := deref x + 1;
+            Ok(Some(c))
+        } else {
+            Ok(None)
+        };
+    List.unfoldWithOkIter(step) == Ok(1 :: 2 :: 3 :: 4 :: Nil)
