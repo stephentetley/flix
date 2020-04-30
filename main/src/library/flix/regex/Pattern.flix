@@ -43,15 +43,15 @@ namespace Regex/Pattern {
     }
 
     def toInt(flag: Flag): Int32 =
-        import flix.runtime.library.Regex:getCANON_EQ() as getCanonEq;
-        import flix.runtime.library.Regex:getCASE_INSENSITIVE() as getCaseInsensitive;
-        import flix.runtime.library.Regex:getCOMMENTS() as getComments;
-        import flix.runtime.library.Regex:getDOTALL() as getDotall;
-        import flix.runtime.library.Regex:getLITERAL() as getLiteral;
-        import flix.runtime.library.Regex:getMULTILINE() as getMultiline;
-        import flix.runtime.library.Regex:getUNICODE_CASE() as getUnicodeCase;
-        import flix.runtime.library.Regex:getUNICODE_CHARACTER_CLASS() as getUnicodeCharacterClass;
-        import flix.runtime.library.Regex:getUNIX_LINES() as getUnixLines;
+        import get java.util.regex.Pattern:CANON_EQ as getCanonEq;
+        import get java.util.regex.Pattern:CASE_INSENSITIVE as getCaseInsensitive;
+        import get java.util.regex.Pattern:COMMENTS as getComments;
+        import get java.util.regex.Pattern:DOTALL as getDotall;
+        import get java.util.regex.Pattern:LITERAL as getLiteral;
+        import get java.util.regex.Pattern:MULTILINE as getMultiline;
+        import get java.util.regex.Pattern:UNICODE_CASE as getUnicodeCase;
+        import get java.util.regex.Pattern:UNICODE_CHARACTER_CLASS as getUnicodeCharacterClass;
+        import get java.util.regex.Pattern:UNIX_LINES as getUnixLines;
         match flag {
             case CanonEq                => getCanonEq()
             case CaseInsenstive         => getCaseInsensitive()
