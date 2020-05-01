@@ -88,11 +88,13 @@ class Flix {
     "MutMap.flix" -> LocalResource.get("/library/MutMap.flix"),
 
     "Core/Io/File.flix" -> LocalResource.get("/library/Core/Io/File.flix"),
+    "Core/Io/FilePath.flix" -> LocalResource.get("/library/Core/Io/FilePath.flix"),
     "Core/Io/InputStream.flix" -> LocalResource.get("/library/Core/Io/InputStream.flix"),
     "Core/Io/IOError.flix" -> LocalResource.get("/library/Core/Io/IOError.flix"),
     "Core/Io/OutputStream.flix" -> LocalResource.get("/library/Core/Io/OutputStream.flix"),
     "Core/Io/ZipInput.flix" -> LocalResource.get("/library/Core/Io/ZipInput.flix"),
     "Core/Io/ZipOutput.flix" -> LocalResource.get("/library/Core/Io/ZipOutput.flix"),
+
 
     "Bounded.flix" -> LocalResource.get("/library/Bounded.flix"),
     "JoinLattice.flix" -> LocalResource.get("/library/JoinLattice.flix"),
