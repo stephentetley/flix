@@ -829,92 +829,25 @@ namespace Stream {
     /// Applies `f` to a start value `ac` and all `Ok` elements in `s` going from left to right.
     /// If an `Err` is encountered the stream closed and the error is returned.
     ///
-    pub def foldResults(f: (b, a) -> b & e, ac: b, s: Stream[Result[a, err]]): Result[b, err] & Impure =
+    pub def foldResult(f: (b, a) -> Result[b, err] & e, ac: b, s: Stream[a]): Result[b, err] & Impure =
         let generate1 = getGenerator(s);
         let finalize1 = getGenerator(s);
         let sf = generate1();
-        let ans = foldResultsHelper(f, sf, ac);
+        let ans = foldResultHelper(f, sf, ac);
         finalize1();
         ans
 
     ///
-    /// Helper function for `foldResults`.
+    /// Helper function for `foldResult`.
     ///
-    def foldResultsHelper(f: (b,a) -> b & e, sf: Unit ~> Step[Result[a, err]], ac: b): Result[b, err] & Impure =
+    def foldResultHelper(f: (b,a) -> Result[b, err] & e, sf: Unit ~> Step[a], ac: b): Result[b, err] & Impure =
         match sf() {
             case Done => Ok(ac)
-            case Skip => foldResultsHelper(f, sf, ac)
-            case Yield(Err(err)) => Err(err)
-            case Yield(Ok(a)) =>
-                foldResultsHelper(f, sf, f(ac,a) as & Impure)
-        }
-
-
-    ///
-    /// Applies `f` to a start value `ac` and all `Success` elements in `s` going from left to right.
-    /// Collect all `Failure` elements if encountered and close the stream.
-    ///
-    pub def foldValidations(f: (b, a) -> b & e, ac: b, s: Stream[Validation[a, err]]): Validation[b, err] & Impure =
-        let generate1 = getGenerator(s);
-        let finalize1 = getGenerator(s);
-        let sf = generate1();
-        let ans = foldValidationsSuccess(f, sf, ac);
-        finalize1();
-        ans
-
-    ///
-    /// Helper function for `foldValidations`.
-    ///
-    /// Precondition: no Failures.
-    ///
-    def foldValidationsSuccess(f: (b,a) -> b & e, sf: Unit ~> Step[Validation[a, err]], ac: b): Validation[b, err] & Impure =
-        match sf() {
-            case Done => Success(ac)
-            case Skip => foldValidationsSuccess(f, sf, ac)
-            case Yield(Failure(errs)) => foldValidationsFailure(sf, errs)
-            case Yield(Success(a)) => {
-                let ac1 = f(ac,a) as & Impure;
-                foldValidationsSuccess(f, sf, ac1)
-            }
-        }
-
-    ///
-    /// Helper function for `foldValidations`.
-    ///
-    /// Precondition: already at least one Failure.
-    ///
-    def foldValidationsFailure(sf: Unit ~> Step[Validation[a, err]], ac: Nel[err]): Validation[b, err] & Impure =
-        match sf() {
-            case Done => Failure(ac)
-            case Skip => foldValidationsFailure(sf, ac)
-            case Yield(Failure(errs)) => foldValidationsFailure(sf, Nel.append(ac, errs))
-            case Yield(Success(_)) => foldValidationsFailure(sf, ac)
-        }
-
-    ///
-    /// Applies `f` to a start value `ac` and all `Success` elements in `s` going from left to right.
-    /// If a `Failure` is encountered the stream closed and the error is returned.
-    ///
-    pub def foldValidations1(f: (b, a) -> b & e, ac: b, s: Stream[Validation[a, err]]): Validation[b, err] & Impure =
-        let generate1 = getGenerator(s);
-        let finalize1 = getGenerator(s);
-        let sf = generate1();
-        let ans = foldValidations1Helper(f, sf, ac);
-        finalize1();
-        ans
-
-    ///
-    /// Helper function for `fold`.
-    ///
-    def foldValidations1Helper(f: (b,a) -> b & e, sf: Unit ~> Step[Validation[a, err]], ac: b): Validation[b, err] & Impure =
-        match sf() {
-            case Done => Success(ac)
-            case Skip => foldValidations1Helper(f, sf, ac)
-            case Yield(Failure(errs)) => Failure(errs)
-            case Yield(Success(a)) => {
-                let ac1 = f(ac,a) as & Impure;
-                foldValidations1Helper(f, sf, ac1)
-            }
+            case Skip => foldResultHelper(f, sf, ac)
+            case Yield(a) => match f(ac, a) {
+                case Err(err) => Err(err)
+                case Ok(ac1) => foldResultHelper(f, sf, ac1)
+            } as & Impure
         }
 
 }
