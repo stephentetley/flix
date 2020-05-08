@@ -61,6 +61,21 @@ namespace Regex/Matcher {
         let Matcher(f) = x;
         f(m)
 
+    pub def ap(mf: Matcher[a -> b], x: Matcher[a]): Matcher[b] = 
+        Matcher(r -> 
+            let Matcher(f1) = mf;
+            match f1(r) { 
+                case Ok(f) => { 
+                    let Matcher(f2) = x;
+                    match f2(r) {
+                        case Ok(a) => Ok(f(a))
+                        case Err(e2) => Err(e2)
+                    }
+                    
+                }
+                case Err(e1) => Err(e1)
+            }
+        )
 
     pub def bind(x: Matcher[a], k: a -> Matcher[b]): Matcher[b] = 
         Matcher(r -> 
@@ -81,20 +96,23 @@ namespace Regex/Matcher {
 
     pub def value(): Matcher[String] = 
         use Regex/Internal/PrimMatcher.{group};
-        Matcher(r -> Ok(r.group()))
+        Matcher(r -> r.group())
 
-    // ///
-    // /// Get the end index in the input of this MatchResult.
-    // ///
-    // pub def value(x: MatchResult): Result[String, String] & Impure =
-    //     try {
-    //         import java.util.regex.Matcher.group();
-    //         let MatchResult(x1) = x;
-    //         Ok(x1.group())
-    //     } catch {
-    //         case _: ##java.lang.IllegalStateException => Err(IllegalStateException)
-    //     }
+    ///
+    /// Returns the number of groups in the pattern used by the matcher.
+    ///
+    pub def groupCountInPattern(): Matcher[Int32] =
+        use Regex/Internal/PrimMatcher.{groupCount};
+        Matcher(r -> Ok(r.groupCount()))
 
+    pub def groupElementByIndex(ix: Int32): Matcher[String] = 
+        use Regex/Internal/PrimMatcher.{groupElementByIndex};
+        Matcher(r -> r.groupElementByIndex(ix))
+
+
+    pub def groupElementByName(label: String): Matcher[String] = 
+        use Regex/Internal/PrimMatcher.{groupElementByName};
+        Matcher(r -> r.groupElementByName(label))
 
     // ///
     // /// Get the start index in the input of this MatchResult.
@@ -112,27 +130,7 @@ namespace Regex/Matcher {
     //     let MatchResult(x1) = x;
     //     x1.end()
 
-    // ///
-    // /// Get the end index in the input of this MatchResult.
-    // ///
-    // pub def groupCount(a: MatchResult): Int32 & Impure =
-    //     import java.util.regex.Matcher.groupCount();
-    //     let MatchResult(m1) = a;
-    //     m1.groupCount()
-
-    // ///
-    // /// Get the end index in the input of this MatchResult.
-    // ///
-    // pub def getGroupByName(a: MatchResult, name: String): Result[String, String] & Impure =
-    //     try {
-    //         import java.util.regex.Matcher.group(String);
-    //         let MatchResult(m1) = a;
-    //         Ok(m1.group(name))
-    //     } catch {
-    //         case _: ##java.lang.IllegalArgumentException => Err("getGroupByName - unknown group name")
-    //         case _: ##java.lang.IllegalStateException => Err("getGroupByName - match error")
-    //     }
-
+    
 
 
 

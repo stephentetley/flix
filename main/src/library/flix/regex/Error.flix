@@ -24,7 +24,11 @@ namespace Regex {
     pub enum Error {
         case PatternSyntaxException,
         case IllegalStateException,
+        case IllegalArgumentException,
+        case IndexOutOfBoundsException,
         case Generic(String)
     }
+
+    
 
 }
