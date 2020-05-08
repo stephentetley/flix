@@ -57,6 +57,15 @@ namespace Regex/Matcher {
     pub def return(x: a): Matcher[a] = 
         Matcher(_ -> Ok(x) as & Impure)
 
+    pub def map(f: a -> b, x: Matcher[a]): Matcher[b] = 
+        Matcher(r -> 
+            let Matcher(f1) = x;
+            match f1(r) { 
+                case Ok(a) => Ok(f(a))
+                case Err(e) => Err(e)
+            }
+        )        
+
     def apply1(x:Matcher[a], m: PrimMatcher): Result[a, Regex.Error] & Impure = 
         let Matcher(f) = x;
         f(m)
@@ -94,9 +103,17 @@ namespace Regex/Matcher {
         Matcher(r -> Ok(r.find()))
 
 
-    pub def value(): Matcher[String] = 
+    pub def getValue(): Matcher[String] = 
         use Regex/Internal/PrimMatcher.{group};
         Matcher(r -> r.group())
+
+    pub def getStart(): Matcher[Int32] = 
+        use Regex/Internal/PrimMatcher.{start};
+        Matcher(r -> r.start())
+
+    pub def getEnd(): Matcher[Int32] = 
+        use Regex/Internal/PrimMatcher.{end};
+        Matcher(r -> r.end())
 
     ///
     /// Returns the number of groups in the pattern used by the matcher.
@@ -114,21 +131,20 @@ namespace Regex/Matcher {
         use Regex/Internal/PrimMatcher.{groupElementByName};
         Matcher(r -> r.groupElementByName(label))
 
-    // ///
-    // /// Get the start index in the input of this MatchResult.
-    // ///
-    // pub def getStart(x: MatchResult): Int32 & Impure =
-    //     import java.util.regex.Matcher.start();
-    //     let MatchResult(x1) = x;
-    //     x1.start()
+    ///
+    /// Return the list of results form applying `x` to every match in the input string.
+    ///
+    pub def everyMatch(x: Matcher[a]): Matcher[List[a]] = everyMatchHelper(x, xs -> xs)
 
-    // ///
-    // /// Get the end index in the input of this MatchResult.
-    // ///
-    // pub def getEnd(x: MatchResult): Int32 & Impure =
-    //     import java.util.regex.Matcher.end();
-    //     let MatchResult(x1) = x;
-    //     x1.end()
+    def everyMatchHelper(x: Matcher[a], k: List[a] -> List[a]): Matcher[List[a]] = 
+        let* done = map(a1 -> !a1, find());
+        if (done)
+            return(k(Nil))
+        else {
+            let* a = x;
+            everyMatchHelper(x, xs -> k(a :: xs))
+        }
+
 
     
 

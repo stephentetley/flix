@@ -64,27 +64,23 @@ namespace Regex/Internal/PrimMatcher {
         let PrimMatcher(x1) = x;
         x1.find()
 
-    /// 
-    pub def appendReplacement!(x: PrimMatcher, sb: StringBuilder, rep: String): Result[Unit, Regex.Error] & Impure =
-        import java.util.regex.Matcher.appendReplacement(##java.lang.StringBuilder, String);    
+    pub def start(x: PrimMatcher): Result[Int32, Regex.Error] & Impure =
+        import java.util.regex.Matcher.start();
         try {
             let PrimMatcher(x1) = x;
-            let StringBuilder(sb1) = sb;
-            let _ = x1.appendReplacement(sb1, rep);
-            Ok()
-        } catch { 
-            case _: ##java.lang.IllegalStateException => Err(IllegalStateException) 
-            case _: ##java.lang.IndexOutOfBoundsException => Err(IndexOutOfBoundsException)
-            case _: ##java.lang.IllegalArgumentException => Err(IllegalArgumentException)
+            Ok(x1.start())
+        } catch {
+            case _: ##java.lang.IllegalStateException => Err(IllegalStateException)
         }
 
-    /// No exceptions.
-    pub def appendTail!(x: PrimMatcher, sb: StringBuilder): Unit & Impure =
-        import java.util.regex.Matcher.appendTail(##java.lang.StringBuilder);
-        let PrimMatcher(x1) = x;
-        let StringBuilder(sb1) = sb;
-        x1.appendTail(sb1);
-        ()
+    pub def end(x: PrimMatcher): Result[Int32, Regex.Error] & Impure =
+        import java.util.regex.Matcher.end();
+        try {
+            let PrimMatcher(x1) = x;
+            Ok(x1.end())
+        } catch {
+            case _: ##java.lang.IllegalStateException => Err(IllegalStateException)
+        }
 
     ///
     pub def group(x: PrimMatcher): Result[String, Regex.Error] & Impure =
@@ -127,6 +123,28 @@ namespace Regex/Internal/PrimMatcher {
             case _: ##java.lang.IllegalStateException => Err(IllegalStateException)
             case _: ##java.lang.IllegalArgumentException => Err(IllegalArgumentException)
         }
+
+    /// 
+    pub def appendReplacement!(x: PrimMatcher, sb: StringBuilder, rep: String): Result[Unit, Regex.Error] & Impure =
+        import java.util.regex.Matcher.appendReplacement(##java.lang.StringBuilder, String);    
+        try {
+            let PrimMatcher(x1) = x;
+            let StringBuilder(sb1) = sb;
+            let _ = x1.appendReplacement(sb1, rep);
+            Ok()
+        } catch { 
+            case _: ##java.lang.IllegalStateException => Err(IllegalStateException) 
+            case _: ##java.lang.IndexOutOfBoundsException => Err(IndexOutOfBoundsException)
+            case _: ##java.lang.IllegalArgumentException => Err(IllegalArgumentException)
+        }
+
+    /// No exceptions.
+    pub def appendTail!(x: PrimMatcher, sb: StringBuilder): Unit & Impure =
+        import java.util.regex.Matcher.appendTail(##java.lang.StringBuilder);
+        let PrimMatcher(x1) = x;
+        let StringBuilder(sb1) = sb;
+        x1.appendTail(sb1);
+        ()
 
     pub def replaceAllWith(x: PrimMatcher, f: String -> String): Result[String, Regex.Error] & Impure =
         use Result.flatMap;
