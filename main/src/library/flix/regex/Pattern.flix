@@ -16,8 +16,7 @@
 
 use Regex.Pattern;
 use Regex.Pattern.{Pattern};
-
-/// TODO - not sure if this merits a module / namespace...
+use Regex.Error.{PatternSyntaxException, Generic};
 
 namespace Regex {
 
@@ -70,37 +69,39 @@ namespace Regex/Pattern {
     ///
     /// Compile the regular expression `regex` into a Pattern.
     ///
-    pub def compile(regex: String): Result[Pattern, String] & Impure =
+    pub def compile(regex: String): Result[Pattern, Regex.Error] =
         try {
             import java.util.regex.Pattern:compile(String);
-            Ok(Pattern(compile(regex)))
+            Ok(Pattern(compile(regex))) as & Pure
         } catch {
-            case _: ##java.util.regex.PatternSyntaxException => Err("Regex/Pattern.compile - pattern syntax error")
+            case _: ##java.util.regex.PatternSyntaxException => Err(PatternSyntaxException)
         }
 
     ///
     /// Compile the regular expression `regex` into a Pattern.
     ///
-    pub def compileWithFlags(regex: String, flags: List[Flag]): Result[Pattern, String] & Impure =
+    pub def compileWithFlags(regex: String, flags: List[Flag]): Result[Pattern, Regex.Error] =
         try {
             import java.util.regex.Pattern:compile(String, Int32);
-            Ok(Pattern(compile(regex, sumFlags(flags))))
+            Ok(Pattern(compile(regex, sumFlags(flags)))) as & Pure
         } catch {
-            case _: ##java.util.regex.PatternSyntaxException => Err("Regex/Pattern.compileWithFlags - pattern syntax error")
-            case _: ##java.lang.IllegalArgumentException =>  Err("Regex/Pattern.compileWithFlags - illegal argument error")
+            case _: ##java.util.regex.PatternSyntaxException => Err(PatternSyntaxException)
+            case _: ##java.lang.IllegalArgumentException =>  Err(Generic("Regex/Pattern.compileWithFlags - illegal argument error"))
         }
 
 
-
+    pub def quote(s: String): String =
+        import java.util.regex.Pattern:quote(String);
+        s.quote() as & Pure
 
 
     ///
     /// Return the string representation of the Pattern `patt`.
     ///
-    pub def toString(patt: Pattern): String & Impure =
+    pub def toString(patt: Pattern): String =
         import java.util.regex.Pattern.toString();
         let Pattern(p1) = patt;
-        p1.toString()
+        p1.toString() as & Pure
 
 
 
