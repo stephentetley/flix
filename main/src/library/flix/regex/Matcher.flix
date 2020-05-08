@@ -30,10 +30,9 @@ namespace Regex {
 
 }
 
-
-
-
 namespace Regex/Matcher {
+
+    /// TODO - Can we generate a Stream through a run function?
 
     pub def runMatcher(x: Matcher[a], patt: Pattern, input: String): Result[a, Regex.Error] & Impure = 
         use Regex/Internal/PrimMatcher.{newPrimMatcher, isMatch};
@@ -98,38 +97,45 @@ namespace Regex/Matcher {
     pub def flatMap(k: a -> Matcher[b], x: Matcher[a]): Matcher[b] = bind(x, k)
 
 
-    pub def find(): Matcher[Bool] = 
-        use Regex/Internal/PrimMatcher.{find};
-        Matcher(r -> Ok(r.find()))
+    pub def liftAction(action: Unit -> a & e): Matcher[a] = 
+        Matcher(_ -> 
+            let a = action();
+            Ok(a)
+        )
 
 
-    pub def getValue(): Matcher[String] = 
-        use Regex/Internal/PrimMatcher.{group};
-        Matcher(r -> r.group())
+    def liftPrimOk(fn : PrimMatcher ~> a): Matcher[a] = 
+        Matcher(r -> 
+            let a = fn(r) as & Impure;
+            Ok(a)
+        )
+
+    def liftPrim(fn : PrimMatcher ~> Result[a, Regex.Error]): Matcher[a] = 
+        Matcher(r -> fn(r))
+
+
+    pub def find(): Matcher[Bool] = liftPrimOk(Regex/Internal/PrimMatcher.find)
+
+
+    pub def getValue(): Matcher[String] = liftPrim(Regex/Internal/PrimMatcher.group)
+
 
     pub def getStart(): Matcher[Int32] = 
-        use Regex/Internal/PrimMatcher.{start};
-        Matcher(r -> r.start())
+        liftPrim(Regex/Internal/PrimMatcher.start)
 
-    pub def getEnd(): Matcher[Int32] = 
-        use Regex/Internal/PrimMatcher.{end};
-        Matcher(r -> r.end())
-
+    pub def getEnd(): Matcher[Int32] = liftPrim(Regex/Internal/PrimMatcher.end)
+        
     ///
     /// Returns the number of groups in the pattern used by the matcher.
     ///
     pub def groupCountInPattern(): Matcher[Int32] =
-        use Regex/Internal/PrimMatcher.{groupCount};
-        Matcher(r -> Ok(r.groupCount()))
-
+        liftPrimOk(Regex/Internal/PrimMatcher.groupCount)
+        
     pub def groupElementByIndex(ix: Int32): Matcher[String] = 
-        use Regex/Internal/PrimMatcher.{groupElementByIndex};
-        Matcher(r -> r.groupElementByIndex(ix))
-
+        liftPrim(x -> Regex/Internal/PrimMatcher.groupElementByIndex(x, ix))
 
     pub def groupElementByName(label: String): Matcher[String] = 
-        use Regex/Internal/PrimMatcher.{groupElementByName};
-        Matcher(r -> r.groupElementByName(label))
+        liftPrim(x -> Regex/Internal/PrimMatcher.groupElementByName(x, label))
 
     ///
     /// Return the list of results form applying `x` to every match in the input string.
@@ -137,16 +143,61 @@ namespace Regex/Matcher {
     pub def everyMatch(x: Matcher[a]): Matcher[List[a]] = everyMatchHelper(x, xs -> xs)
 
     def everyMatchHelper(x: Matcher[a], k: List[a] -> List[a]): Matcher[List[a]] = 
-        let* done = map(a1 -> !a1, find());
-        if (done)
+        let* more = find();
+        if (!more)
             return(k(Nil))
         else {
             let* a = x;
             everyMatchHelper(x, xs -> k(a :: xs))
         }
 
+    pub def foreachMatch(x: Matcher[a]): Matcher[Unit] = foreachMatchHelper(x)
 
-    
+    def foreachMatchHelper(x: Matcher[a]): Matcher[Unit] = 
+        let* more = find();
+        if (!more)
+            return()
+        else {
+            let* _ = x;
+            foreachMatchHelper(x)
+        }
+
+    pub def foldMatches(f: (a,b) -> b, st: b, x: Matcher[a]): Matcher[b] =
+        let* more = find();
+        if (!more)
+            return(st)
+        else {
+            let* a = x;
+            let st2 = f(a, st);
+            foldMatches(f, st2, x)
+        }
+
+    /// Strategy for rewriting strings?
+
+    def appendReplacement!(sb: StringBuilder, rep: String): Matcher[Unit] =
+        liftPrim(x -> Regex/Internal/PrimMatcher.appendReplacement!(x, sb, rep))
+
+    def appendTail!(sb: StringBuilder): Matcher[Unit] =
+        liftPrimOk(x -> Regex/Internal/PrimMatcher.appendTail!(x, sb))
+
+
+    pub def rewriteSource(rep: String -> String & e): Matcher[String] = 
+        let* sb = liftAction(_ -> StringBuilder.new());
+        rewriteSourceHelper(sb, rep)
+
+
+    def rewriteSourceHelper(sb: StringBuilder, rep: String -> String & e): Matcher[String] = 
+        let* more = find();
+        if (!more) {
+            let* _ = appendTail!(sb);
+            let* s = liftAction(_ -> StringBuilder.toString(sb));
+            return(s)
+        } else {
+            let* s = getValue();
+            let* s1 = liftAction(_ -> rep(s) as & Impure);
+            let* _ = appendReplacement!(sb, s1);
+            rewriteSourceHelper(sb, rep)
+        }
 
 
 
