@@ -99,6 +99,34 @@ namespace Stream {
         Stream({ generate = gen, finalize = _ -> () as & Impure })
 
     ///
+    /// Returns the stream produced by applying the mapping function produced by Stream `sf` to the elements 
+    /// produced by Stream `s`.
+    ///    
+    pub def ap(sf: Stream[a -> b], s: Stream[a]): Stream[b] = 
+        zipWith((f,a) -> f(a), sf, s)
+
+
+    pub def bind(s: Stream[a], k: a -> Stream[b]): Stream[b] =
+        let gen = () -> {
+            let generate1 = getGenerator(s);
+            let sf = generate1();
+            let next = () ->
+                match sf() {
+                    case Yield(a) => { 
+                        let generate2 = getGenerator(k(a));
+                        let sf2 = generate2();
+                        sf2()
+                    }
+                    case Skip     => Skip
+                    case Done     => Done
+                };
+            next
+        };
+        Stream({ generate = gen, finalize = getFinalizer(s) })
+
+    pub def flatMap(k: a -> Stream[b], s: Stream[a]): Stream[b] = bind(s, k)
+
+    ///
     /// Construct an Iterator.
     ///
     /// The Iterator must provide three functions.
@@ -231,7 +259,7 @@ namespace Stream {
                 };
             next
         };
-        Stream({ generate = gen, finalize = () -> () as & Impure })
+        Stream({ generate = gen, finalize = _ -> () as & Impure })
 
     ///
     /// Build a stream by applying the function `next` to `()`. `next` is expected to encapsulate
