@@ -17,8 +17,10 @@
 use Regex.{Match};
 use Regex.Match.{Match};
 
+use Regex.Error.{IllegalStateException};
 use Regex.Pattern;
 use Regex.Pattern.Pattern;
+use Regex.MatchEvaluator;
 
 /// This is a simple "steppable" matcher like .Net `Regex.Match`.
 
@@ -51,41 +53,27 @@ namespace Regex/Match {
         let scref = m1.success;
         deref scref
     
-    pub def value(x: Match): Option[String] & Impure = 
+    pub def content(x: Match): Result[String, Regex.Error] & Impure = 
         use Regex/Internal/PrimMatcher.{group};
         let Match(m1) = x;
         let matcher = m1.primMatcher;
         let scref = m1.success;
-        if (deref scref == true) {
-            let ans = matcher.group();
-            match ans { 
-                case Ok(s) => Some(s)
-                case Err(_) => None
-            }
-        } else None
-
-    /// TODO Check Java indexing, I'm not sure we want to follow the convention of zero = return everything.
-    pub def getGroupByIndex(x: Match, ix: Int32): Result[String, Regex.Error] & Impure = 
-        use Regex/Internal/PrimMatcher.{groupElementByIndex};
-        let Match(m1) = x;
-        let matcher = m1.primMatcher;
-        let scref = m1.success;
         if (deref scref == true)
-            matcher.groupElementByIndex(ix)
+            matcher.group()
         else 
-            Err(Regex/Error.IllegalStateException)
-
-    pub def getGroupByLabel(x: Match, label: String): Result[String, Regex.Error] & Impure = 
-        use Regex/Internal/PrimMatcher.{groupElementByName};
-        let Match(m1) = x;
-        let matcher = m1.primMatcher;
-        let scref = m1.success;
-        if (deref scref == true)
-            matcher.groupElementByName(label)
-        else 
-            Err(Regex/Error.IllegalStateException)
+            Err(IllegalStateException)
 
     
+    pub def evaluate(x: Match, eval: MatchEvaluator[a]): Result[a, Regex.Error] & Impure =         
+        use Regex.MatchEvaluator.{MatchEvaluator};
+        let Match(m1) = x;
+        let matcher = m1.primMatcher;
+        let scref = m1.success;
+        if (deref scref == true) {
+            let MatchEvaluator(fn) = eval;
+            matcher.fn()
+        } else 
+            Err(Regex/Error.IllegalStateException)
 
 }        
 

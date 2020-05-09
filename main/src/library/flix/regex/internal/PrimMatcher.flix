@@ -16,7 +16,7 @@
 
 use Regex/Internal.{PrimMatcher, PrimMatchEvaluator};
 use Regex/Internal.PrimMatcher.{PrimMatcher};
-use Regex/Internal.PrimMatchEvaluator.{PrimMatchEvaluator};
+
 
 use Regex.Error.{IllegalStateException, IllegalArgumentException, IndexOutOfBoundsException};
 
@@ -30,7 +30,7 @@ namespace Regex/Internal {
     ///
     /// Represents a match `evaluator` a function that generates a value from a match (typically a replacement String).
     ///
-    pub opaque type PrimMatchEvaluator[a] = PrimMatcher -> Result[a, Regex.Error] & Impure
+    type alias PrimMatchEvaluator[a] = PrimMatcher -> Result[a, Regex.Error] & Impure
 
 }
 
@@ -165,8 +165,7 @@ namespace Regex/Internal/PrimMatcher {
             let _ = x.appendTail!(sb);
             Ok()
         } else {
-            let PrimMatchEvaluator(f) = eval;
-            let* rep = f(x);
+            let* rep = eval(x);
             let* _ = x.appendReplacement!(sb, rep);
             replaceAllWithHelper(x, eval, sb)
         }
@@ -183,8 +182,7 @@ namespace Regex/Internal/PrimMatcher {
             let _ = x.appendTail!(sb);
             Ok()
         } else {
-            let PrimMatchEvaluator(f) = eval(ix);
-            let* rep = f(x);
+            let* rep = eval(ix,x);
             let* _ = x.appendReplacement!(sb, rep);
             replaceAllWithIndexHelper(x, eval, sb, ix+1)
         }
