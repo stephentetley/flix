@@ -153,6 +153,8 @@ namespace Regex/Internal/PrimMatcher {
         x1.appendTail(sb1);
         ()
 
+    /// We cannot wrap Java's `replaceAll​(Function<MatchResult,​String> replacer)` because we can't 
+    /// marshal functions to Java, s owe remake it.
     pub def replaceAllWith(x: PrimMatcher, eval: PrimMatchEvaluator[String]): Result[String, Regex.Error] & Impure =
         use Result.flatMap;
         let sb = StringBuilder.new();

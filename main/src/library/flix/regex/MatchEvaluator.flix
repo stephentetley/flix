@@ -85,6 +85,9 @@ namespace Regex/MatchEvaluator {
 
     pub def value(): MatchEvaluator[String] = liftPrim(Regex/Internal/PrimMatcher.group)
 
+    pub def transformValue(f: String -> String): MatchEvaluator[String] = 
+        map(f, value())
+
 
     pub def getStart(): MatchEvaluator[Int32] = 
         liftPrim(Regex/Internal/PrimMatcher.start)

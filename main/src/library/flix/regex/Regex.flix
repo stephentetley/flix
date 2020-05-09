@@ -16,6 +16,8 @@
 
 use Regex.Pattern;
 use Regex.Pattern.Pattern;
+use Regex.MatchEvaluator;
+use Regex.MatchEvaluator.{MatchEvaluator};
 use Regex/Internal.PrimMatcher;
 
 namespace Regex {
@@ -71,29 +73,23 @@ namespace Regex {
     ///
     /// Rewrite the string `input` by apply the function `f` to the substring produced by each match of the pattern `patt`.
     ///
-    pub def replaceWith(patt: Pattern, f: String -> String, input: String): Result[String, Regex.Error] & Impure =
+    pub def replaceWith(patt: Pattern, eval: MatchEvaluator[String], input: String): Result[String, Regex.Error] & Impure =
         use Regex/Internal/PrimMatcher.{newPrimMatcher, replaceAllWith, group};
         let Pattern(p1) = patt;
         let m1 = newPrimMatcher(p1, input);
-        let rewrite = x -> match group(x) { 
-            case Ok(a) => { let ans = f(a); Ok(ans) }
-            case Err(e) => Err(e)
-        };
+        let MatchEvaluator(rewrite) = eval;
         m1.replaceAllWith(rewrite)
 
     ///
     /// Rewrite the string `input` by apply the function `f` to the substring produced by each match of the pattern `patt`.
     ///
-    pub def replaceWithIndex(patt: Pattern, f: (String, Int32) -> String, input: String): Result[String, Regex.Error] & Impure =
+    pub def replaceWithIndex(patt: Pattern, eval: Int32 -> MatchEvaluator[String], input: String): Result[String, Regex.Error] & Impure =
         use Regex/Internal/PrimMatcher.{newPrimMatcher, replaceAllWithIndex, group};
         let Pattern(p1) = patt;
         let m1 = newPrimMatcher(p1, input);
-        let rewrite = (ix,x) -> match group(x) { 
-            case Ok(a) => { let ans = f(a, ix); Ok(ans) }
-            case Err(e) => Err(e)
-        };        
-        let eval = ix -> rewrite(ix);
-        m1.replaceAllWithIndex(eval)
+        m1.replaceAllWithIndex(ix -> 
+            let MatchEvaluator(rewrite) = eval(ix);
+            rewrite
+        )
 
-    // pub def foldMatchResults
 }
