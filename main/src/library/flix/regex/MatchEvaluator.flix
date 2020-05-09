@@ -36,11 +36,14 @@ namespace Regex/MatchEvaluator {
     pub def return(x: a): MatchEvaluator[a] = 
         MatchEvaluator(_ -> Ok(x) as & Impure)
 
-    pub def map(f: a -> b, x: MatchEvaluator[a]): MatchEvaluator[b] = 
+    pub def map(f: a -> b & e, x: MatchEvaluator[a]): MatchEvaluator[b] =
         MatchEvaluator(r -> 
             let MatchEvaluator(f1) = x;
             match f1(r) { 
-                case Ok(a) => Ok(f(a))
+                case Ok(a) => {
+                    let ans = f(a) as & Impure;
+                    Ok(ans)
+                }
                 case Err(e) => Err(e)
             }
         )        
@@ -102,5 +105,76 @@ namespace Regex/MatchEvaluator {
         liftPrim(x -> Regex/Internal/PrimMatcher.groupElementByName(x, label))
 
 
+    ///
+    /// Applies the binary function `f` to the values in `o1` and `o2`.
+    ///
+    /// Returns an error if either `o1` or `o2` are errors.
+    ///
+    pub def lift2(f: (t1, t2) -> u & f, o1: MatchEvaluator[t1], o2: MatchEvaluator[t2]): MatchEvaluator[u] =
+        ap(map(f, o1), o2)
+
+    ///
+    /// Applies the ternary function `f` to the values in `o1`, `o2` and `o3`.
+    ///
+    /// Returns an error if any of `o1`, `o2` and `o3` are errors.
+    ///
+    pub def lift3(f: (t1, t2, t3) -> u & f, o1: MatchEvaluator[t1], o2: MatchEvaluator[t2], o3: MatchEvaluator[t3]): MatchEvaluator[u] & f =
+        ap(lift2(f, o1, o2), o3)
+
+    ///
+    /// Applies the 4-ary function `f` to the values in `o1`, `o2`, `o3` and `o4`.
+    ///
+    /// Returns an error if any of `o1`, `o2`, `o3` and `o4` are errors.
+    ///
+    pub def lift4(f: (t1, t2, t3, t4) -> u & f, o1: MatchEvaluator[t1], o2: MatchEvaluator[t2], o3: MatchEvaluator[t3], o4: MatchEvaluator[t4]): MatchEvaluator[u] & f =
+        ap(lift3(f, o1, o2, o3), o4)
+
+    ///
+    /// Applies the 5-ary function `f` to the values in `o1`, `o2`, ... `o5`.
+    ///
+    /// Returns an error if any of `o1`, `o2`, ... `o5` are errors.
+    ///
+    pub def lift5(f: (t1, t2, t3, t4, t5) -> u & f, o1: MatchEvaluator[t1], o2: MatchEvaluator[t2], o3: MatchEvaluator[t3], o4: MatchEvaluator[t4], o5: MatchEvaluator[t5]): MatchEvaluator[u] & f =
+        ap(lift4(f, o1, o2, o3, o4), o5)
+
+    ///
+    /// Applies the 6-ary function `f` to the values in `o1`, `o2`, ... `o6`.
+    ///
+    /// Returns an error if any of `o1`, `o2`, ... `o6` are errors.
+    ///
+    pub def lift6(f: (t1, t2, t3, t4, t5, t6) -> u & f, o1: MatchEvaluator[t1], o2: MatchEvaluator[t2], o3: MatchEvaluator[t3], o4: MatchEvaluator[t4], o5: MatchEvaluator[t5], o6: MatchEvaluator[t6]): MatchEvaluator[u] & f =
+        ap(lift5(f, o1, o2, o3, o4, o5), o6)
+
+    ///
+    /// Applies the 7-ary function `f` to the values in `o1`, `o2`, ... `o7`.
+    ///
+    /// Returns an error if any of `o1`, `o2`, ... `o7` are errors.
+    ///
+    pub def lift7(f: (t1, t2, t3, t4, t5, t6, t7) -> u & f, o1: MatchEvaluator[t1], o2: MatchEvaluator[t2], o3: MatchEvaluator[t3], o4: MatchEvaluator[t4], o5: MatchEvaluator[t5], o6: MatchEvaluator[t6], o7: MatchEvaluator[t7]): MatchEvaluator[u] & f=
+        ap(lift6(f, o1, o2, o3, o4, o5, o6), o7)
+
+    ///
+    /// Applies the 8-ary function `f` to the values in `o1`, `o2`, ... `o8`.
+    ///
+    /// Returns an error if any of `o1`, `o2`, ... `o8` are errors.
+    ///
+    pub def lift8(f: (t1, t2, t3, t4, t5, t6, t7, t8) -> u & f, o1: MatchEvaluator[t1], o2: MatchEvaluator[t2], o3: MatchEvaluator[t3], o4: MatchEvaluator[t4], o5: MatchEvaluator[t5], o6: MatchEvaluator[t6], o7: MatchEvaluator[t7], o8: MatchEvaluator[t8]): MatchEvaluator[u] & f =
+        ap(lift7(f, o1, o2, o3, o4, o5, o6, o7), o8)
+
+    ///
+    /// Applies the 9-ary function `f` to the values in `o1`, `o2`, ... `o9`.
+    ///
+    /// Returns an error if any of `o1`, `o2`, ... `o9` are errors.
+    ///
+    pub def lift9(f: (t1, t2, t3, t4, t5, t6, t7, t8, t9) -> u & f, o1: MatchEvaluator[t1], o2: MatchEvaluator[t2], o3: MatchEvaluator[t3], o4: MatchEvaluator[t4], o5: MatchEvaluator[t5], o6: MatchEvaluator[t6], o7: MatchEvaluator[t7], o8: MatchEvaluator[t8], o9: MatchEvaluator[t9]): MatchEvaluator[u] & f =
+        ap(lift8(f, o1, o2, o3, o4, o5, o6, o7, o8), o9)
+
+    ///
+    /// Applies the 10-ary function `f` to the values in `o1`, `o2`, ... `o10`.
+    ///
+    /// Returns an error if any of `o1`, `o2`, ... `o10` are errors.
+    ///
+    pub def lift10(f: (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) -> u & f, o1: MatchEvaluator[t1], o2: MatchEvaluator[t2], o3: MatchEvaluator[t3], o4: MatchEvaluator[t4], o5: MatchEvaluator[t5], o6: MatchEvaluator[t6], o7: MatchEvaluator[t7], o8: MatchEvaluator[t8], o9: MatchEvaluator[t9], o10: MatchEvaluator[t10]): MatchEvaluator[u] & f =
+        ap(lift9(f, o1, o2, o3, o4, o5, o6, o7, o8, o9), o10)
 
 }
