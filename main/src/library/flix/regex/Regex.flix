@@ -72,19 +72,31 @@ namespace Regex {
     /// Rewrite the string `input` by apply the function `f` to the substring produced by each match of the pattern `patt`.
     ///
     pub def replaceWith(patt: Pattern, f: String -> String, input: String): Result[String, Regex.Error] & Impure =
-        use Regex/Internal/PrimMatcher.{newPrimMatcher, replaceAllWith};
+        use Regex/Internal.PrimMatchEvaluator.{PrimMatchEvaluator};
+        use Regex/Internal/PrimMatcher.{newPrimMatcher, replaceAllWith, group};
         let Pattern(p1) = patt;
         let m1 = newPrimMatcher(p1, input);
-        m1.replaceAllWith(f)
+        let rewrite = x -> match group(x) { 
+            case Ok(a) => { let ans = f(a); Ok(ans) }
+            case Err(e) => Err(e)
+        };
+        let eval = PrimMatchEvaluator(rewrite);
+        m1.replaceAllWith(eval)
 
     ///
     /// Rewrite the string `input` by apply the function `f` to the substring produced by each match of the pattern `patt`.
     ///
     pub def replaceWithIndex(patt: Pattern, f: (String, Int32) -> String, input: String): Result[String, Regex.Error] & Impure =
-        use Regex/Internal/PrimMatcher.{newPrimMatcher, replaceAllWithIndex};
+        use Regex/Internal.PrimMatchEvaluator.{PrimMatchEvaluator};
+        use Regex/Internal/PrimMatcher.{newPrimMatcher, replaceAllWithIndex, group};
         let Pattern(p1) = patt;
         let m1 = newPrimMatcher(p1, input);
-        m1.replaceAllWithIndex(f)
+        let rewrite = (ix,x) -> match group(x) { 
+            case Ok(a) => { let ans = f(a, ix); Ok(ans) }
+            case Err(e) => Err(e)
+        };        
+        let eval = ix -> PrimMatchEvaluator(rewrite(ix));
+        m1.replaceAllWithIndex(eval)
 
     // pub def foldMatchResults
 }

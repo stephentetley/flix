@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-use Regex/Internal.PrimMatcher;
+use Regex/Internal.{PrimMatcher, PrimMatchEvaluator};
 use Regex/Internal.PrimMatcher.{PrimMatcher};
+use Regex/Internal.PrimMatchEvaluator.{PrimMatchEvaluator};
+
 use Regex.Error.{IllegalStateException, IllegalArgumentException, IndexOutOfBoundsException};
 
 namespace Regex/Internal {
@@ -24,6 +26,11 @@ namespace Regex/Internal {
     /// Represents a mutable, matching engine for a Pattern.
     ///
     pub opaque type PrimMatcher = ##java.util.regex.Matcher
+
+    ///
+    /// Represents a match `evaluator` a function that generates a value from a match (typically a replacement String).
+    ///
+    pub opaque type PrimMatchEvaluator[a] = PrimMatcher -> Result[a, Regex.Error] & Impure
 
 }
 
@@ -146,40 +153,40 @@ namespace Regex/Internal/PrimMatcher {
         x1.appendTail(sb1);
         ()
 
-    pub def replaceAllWith(x: PrimMatcher, f: String -> String): Result[String, Regex.Error] & Impure =
+    pub def replaceAllWith(x: PrimMatcher, eval: PrimMatchEvaluator[String]): Result[String, Regex.Error] & Impure =
         use Result.flatMap;
         let sb = StringBuilder.new();
-        let* _ = replaceAllWithHelper(x, f, sb);
+        let* _ = replaceAllWithHelper(x, eval, sb);
         Ok(StringBuilder.toString(sb))
 
-    pub def replaceAllWithHelper(x: PrimMatcher, f: String -> String, sb: StringBuilder): Result[Unit, Regex.Error] & Impure =
+    pub def replaceAllWithHelper(x: PrimMatcher, eval: PrimMatchEvaluator[String], sb: StringBuilder): Result[Unit, Regex.Error] & Impure =
         use Result.flatMap;
         if (x.find() == false) {
             let _ = x.appendTail!(sb);
             Ok()
         } else {
-            let* sub = x.group();
-            let rep = f(sub);
+            let PrimMatchEvaluator(f) = eval;
+            let* rep = f(x);
             let* _ = x.appendReplacement!(sb, rep);
-            replaceAllWithHelper(x, f, sb)
+            replaceAllWithHelper(x, eval, sb)
         }
 
-    pub def replaceAllWithIndex(x: PrimMatcher, f: (String, Int32) -> String): Result[String, Regex.Error] & Impure =
+    pub def replaceAllWithIndex(x: PrimMatcher, eval: Int32 -> PrimMatchEvaluator[String]): Result[String, Regex.Error] & Impure =
         use Result.flatMap;
         let sb = StringBuilder.new();
-        let* _ = replaceAllWithIndexHelper(x, f, sb, 0);
+        let* _ = replaceAllWithIndexHelper(x, eval, sb, 0);
         Ok(StringBuilder.toString(sb))
 
-    pub def replaceAllWithIndexHelper(x: PrimMatcher, f: (String, Int32) -> String, sb: StringBuilder, ix: Int32): Result[Unit, Regex.Error] & Impure =
+    pub def replaceAllWithIndexHelper(x: PrimMatcher, eval: Int32 -> PrimMatchEvaluator[String], sb: StringBuilder, ix: Int32): Result[Unit, Regex.Error] & Impure =
         use Result.flatMap;
         if (x.find() == false) {
             let _ = x.appendTail!(sb);
             Ok()
         } else {
-            let* sub = x.group();
-            let rep = f(sub, ix);
+            let PrimMatchEvaluator(f) = eval(ix);
+            let* rep = f(x);
             let* _ = x.appendReplacement!(sb, rep);
-            replaceAllWithIndexHelper(x, f, sb, ix+1)
+            replaceAllWithIndexHelper(x, eval, sb, ix+1)
         }
 
 
