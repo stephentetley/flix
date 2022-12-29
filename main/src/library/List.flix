@@ -121,7 +121,7 @@ instance Monoid[List[a]] {
 
 instance Iterable[List] {
     pub def iterator(rh: Region[r], l: List[a]): Iterator[a, r] \ Write(r) = List.iterator(rh, l)
-    override pub def enumerator(rh: Region[r], l: List[a]): Iterator[(a, Int32), r] \ Write(r) = List.enumerator(rh, l)
+    /// override pub def enumerator(rh: Region[r], l: List[a]): Iterator[(a, Int32), r] \ Write(r) = List.enumerator(rh, l)
 }
 
 namespace List {
@@ -131,7 +131,8 @@ namespace List {
     ///
     pub def toString(l: List[a]): String with ToString[a] = region r {
         let sb = new StringBuilder(r);
-        List.forEach(x -> StringBuilder.appendString!("${x} :: ", sb), l);
+        foreach (x <- iterator(r, l))
+            StringBuilder.appendString!("${x} :: ", sb);
         StringBuilder.appendString!("Nil", sb);
         StringBuilder.toString(sb)
     }

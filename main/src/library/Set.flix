@@ -92,7 +92,7 @@ instance CommutativeMonoid[Set[a]] with Order[a]
 
 instance Iterable[Set] {
     pub def iterator(rh: Region[r], s: Set[a]): Iterator[a, r] \ Write(r) = Set.iterator(rh, s)
-    override pub def enumerator(rh: Region[r], s: Set[a]): Iterator[(a, Int32), r] \ Write(r) = Set.enumerator(rh, s)
+    /// override pub def enumerator(rh: Region[r], s: Set[a]): Iterator[(a, Int32), r] \ Write(r) = Set.enumerator(rh, s)
 }
 
 namespace Set {
@@ -103,12 +103,12 @@ namespace Set {
     pub def toString(s: Set[a]): String with ToString[a] = region r {
         let sb = new StringBuilder(r);
         StringBuilder.appendString!("Set#{", sb);
-        foreach ((x, i) <- enumerator(r, s)) {
+        Set.forEachWithIndex((i, x) -> {
             if (i == 0)
                 StringBuilder.appendString!("${x}", sb)
             else
                 StringBuilder.appendString!(", ${x}", sb)
-        };
+        }, s);
         StringBuilder.appendString!("}", sb);
         StringBuilder.toString(sb)
     }
