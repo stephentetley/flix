@@ -90,6 +90,11 @@ instance Monoid[Set[a]] with Order[a] {
 
 instance CommutativeMonoid[Set[a]] with Order[a]
 
+instance Iterable[Set] {
+    pub def iterator(rh: Region[r], s: Set[a]): Iterator[a, r] \ Write(r) = Set.iterator(rh, s)
+    override pub def enumerator(rh: Region[r], s: Set[a]): Iterator[(a, Int32), r] \ Write(r) = Set.enumerator(rh, s)
+}
+
 namespace Set {
 
     ///
@@ -562,6 +567,15 @@ namespace Set {
     pub def forEach(f: a -> Unit \ ef, s: Set[a]): Unit \ ef =
         let Set(t) = s;
         RedBlackTree.forEach((x, _) -> f(x), t)
+
+
+    ///
+    /// Applies `f` to every element of `s`.
+    ///
+    pub def forEachWithIndex(f: (Int32, a) -> Unit \ ef, s: Set[a]): Unit \ ef =
+        let Set(t) = s;
+        RedBlackTree.forEachWithIndex((i, x, _) -> f(i, x), t)
+
 
     ///
     /// Build a set by applying `f` to the seed value `st`.

@@ -130,12 +130,12 @@ namespace DelayList {
     pub def toString(l: DelayList[a]): String with ToString[a] = region r {
         let sb = new StringBuilder(r);
         StringBuilder.appendString!("DelayList(", sb);
-        foreach ((x, i) <- enumerator(r, l)) {
+        forEachWithIndex((i, x) -> {
             if (i == 0)
                 StringBuilder.appendString!("${x}", sb)
             else
                 StringBuilder.appendString!(", ${x}", sb)
-        };
+            }, l);
         StringBuilder.appendString!(")", sb);
         StringBuilder.toString(sb)
     }
@@ -665,6 +665,18 @@ namespace DelayList {
         case ECons(x, xs) => f(x); forEach(f,       xs)
         case LCons(x, xs) => f(x); forEach(f, force xs)
         case LList(xs)    =>       forEach(f, force xs)
+    }
+
+    ///
+    /// Applies `f` to every element of `l`.
+    ///
+    /// Forces the entire list `l`.
+    ///
+    @Experimental
+    pub def forEachWithIndex(f: (Int32, a) -> Unit \ ef, l: DelayList[a]): Unit \ ef = region r {
+        let ix = ref 0 @ r;
+        let f1 = x -> {let i = deref ix; f(i, x); ix := i+1};
+        forEach(f1, l)
     }
 
     ///

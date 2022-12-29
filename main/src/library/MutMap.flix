@@ -569,6 +569,13 @@ namespace MutMap {
         Map.forEach(f, deref mm)
 
     ///
+    /// Applies `f` to every element in the mutable map `m`.
+    ///
+    pub def forEachWithIndex(f: (Int32, k, v) -> Unit \ ef, m: MutMap[k, v, r]): Unit \ { ef, Read(r) } =
+        let MutMap(mm) = m;
+        Map.forEachWithIndex(f, deref mm)
+
+    ///
     /// Returns an iterator over all key-value pairs in `m`.
     ///
     pub def iterator(m: MutMap[k, v, r]): Iterator[(k, v), r] \ Write(r) =

@@ -63,8 +63,8 @@ namespace Fixpoint/Ast {
             case Datalog.Datalog(facts, rules) => region r {
                 let sb = new StringBuilder(r);
                 let appendConstraint = f -> StringBuilder.appendLineWith!(ToString.toString, f, sb);
-                foreach (f <- List.iterator(r, facts)) appendConstraint(f);
-                foreach (ru <- List.iterator(r, rules)) appendConstraint(ru);
+                List.forEach(appendConstraint, facts);
+                List.forEach(appendConstraint, rules);
                 StringBuilder.toString(sb)
             }
             case Datalog.Model(db) => region r {

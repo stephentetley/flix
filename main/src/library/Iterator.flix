@@ -26,23 +26,17 @@ instance Scoped[Iterator[a]] {
     pub def regionOf(_: Iterator[a, r]): Region[r] = unsafe_cast () as Region[r]
 }
 
-instance Iterable[Iterator] {
-    pub def iterator(r1: Region[r1], iter: Iterator[a, r2]): Iterator[a, r1 and r2] \ { Write(r1), Read(r2) } =
-        let _ = r1; // Avoid redundancy error
-        unsafe_cast iter as Iterator[a, r1 and r2] \ { Write(r1), Read(r2) }
-}
-
 ///
 /// Alias for `Foldable.iterator`.
 ///
-pub def iterator(r: Region[r], t: t[a]): Iterator[a, r] \ Write(r) with Foldable[t] =
-    Foldable.iterator(r, t)
+/// pub def iterator(r: Region[r], t: t[a]): Iterator[a, r] \ Write(r) with Foldable[t] =
+///     Foldable.iterator(r, t)
 
 ///
 /// Alias for `Foldable.iterator |> Iterable.enumerator`.
 ///
-pub def enumerator(r: Region[r], t: t[a]): Iterator[(a, Int32), r] \ Write(r) with Foldable[t] =
-    Foldable.iterator(r, t) |> Iterable.enumerator(r)
+/// pub def enumerator(r: Region[r], t: t[a]): Iterator[(a, Int32), r] \ Write(r) with Foldable[t] =
+///     Foldable.iterator(r, t) |> Iterable.enumerator(r)
 
 namespace Iterator {
 

@@ -119,6 +119,11 @@ instance Monoid[List[a]] {
     pub def empty(): List[a] = Nil
 }
 
+instance Iterable[List] {
+    pub def iterator(rh: Region[r], l: List[a]): Iterator[a, r] \ Write(r) = List.iterator(rh, l)
+    override pub def enumerator(rh: Region[r], l: List[a]): Iterator[(a, Int32), r] \ Write(r) = List.enumerator(rh, l)
+}
+
 namespace List {
 
     ///
@@ -126,8 +131,7 @@ namespace List {
     ///
     pub def toString(l: List[a]): String with ToString[a] = region r {
         let sb = new StringBuilder(r);
-        foreach (x <- iterator(r, l))
-            StringBuilder.appendString!("${x} :: ", sb);
+        List.forEach(x -> StringBuilder.appendString!("${x} :: ", sb), l);
         StringBuilder.appendString!("Nil", sb);
         StringBuilder.toString(sb)
     }
@@ -1133,6 +1137,16 @@ namespace List {
         case Nil     => ()
         case x :: xs => f(x); forEach(f, xs)
     }
+
+    ///
+    /// Applies `f` to every element of `l`.
+    ///
+    pub def forEachWithIndex(f: (Int32, a) -> Unit \ ef, l: List[a]): Unit \ ef =
+        def loop(ll, i) = match ll {
+            case Nil     => ()
+            case x :: xs => f(i, x); loop(xs, i+1)
+        };
+        loop(l, 0)
 
     ///
     /// Returns the list `l` as an array.
