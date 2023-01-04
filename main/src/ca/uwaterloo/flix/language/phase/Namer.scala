@@ -976,6 +976,11 @@ object Namer {
       mapN(visitExp(exp1, ns0), visitExp(exp2, ns0)) {
         case (e1, e2) => NamedAst.Expression.FixpointProject(pred, e1, e2, loc)
       }
+
+    case WeededAst.Expression.Instanceof(exp, className, loc) =>
+      visitExp(exp, ns0) map {
+        case e => NamedAst.Expression.Instanceof(e, className, loc)
+      }
   }
 
   /**

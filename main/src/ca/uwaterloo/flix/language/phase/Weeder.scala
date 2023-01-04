@@ -44,7 +44,7 @@ object Weeder {
     "<=>", "==", "=>", ">", ">=", ">>>", "???", "@", "Absent", "Bool", "Impure", "Nil", "Predicate", "Present", "Pure",
     "Read", "RecordRow", "Region", "SchemaRow", "Type", "Write", "^^^", "alias", "case", "catch", "chan",
     "class", "def", "deref", "else", "enum", "false", "fix", "force",
-    "if", "import", "inline", "instance", "into", "lat", "law", "lawful", "lazy", "let", "let*", "match",
+    "if", "import", "inline", "instance", "instanceof", "into", "lat", "law", "lawful", "lazy", "let", "let*", "match",
     "null", "opaque", "override", "pub", "ref", "region",
     "rel", "sealed", "set", "spawn", "Static", "true",
     "type", "use", "where", "with", "|||", "~~~", "discard", "object"
@@ -804,6 +804,13 @@ object Weeder {
               val zero = mkApplyFqn(fqnZero, List(WeededAst.Expression.Cst(Ast.Constant.Unit, loc)), loc)
               WeededAst.Expression.IfThenElse(e1, exp0, zero, loc)
           }
+      }
+
+    case ParsedAst.Expression.Instanceof(exp, name, sp2) =>
+      val sp1 = leftMostSourcePosition(exp)
+      val loc = mkSL(sp1, sp2)
+      visitExp(exp, senv) map {
+        case e => WeededAst.Expression.Instanceof(e, name.toString, loc)
       }
 
     case ParsedAst.Expression.LetMatch(sp1, mod0, pat, tpe, exp1, exp2, sp2) =>

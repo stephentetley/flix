@@ -1359,6 +1359,12 @@ object Resolver {
           mapN(e1Val, e2Val) {
             case (e1, e2) => ResolvedAst.Expression.FixpointProject(pred, e1, e2, loc)
           }
+
+        case NamedAst.Expression.Instanceof(exp, className, loc) =>
+          val eVal = visitExp(exp, env0, region)
+          mapN(eVal) {
+            e => ResolvedAst.Expression.Instanceof(e, className, loc)
+          }
       }
 
       /**

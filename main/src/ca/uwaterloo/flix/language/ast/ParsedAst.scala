@@ -1151,6 +1151,15 @@ object ParsedAst {
     case class FixpointQueryWithSelect(sp1: SourcePosition, exps: Seq[ParsedAst.Expression], selects: Seq[ParsedAst.Expression], from: Seq[ParsedAst.Predicate.Body.Atom], whereExp: Option[ParsedAst.Expression], sp2: SourcePosition) extends ParsedAst.Expression
 
     /**
+     * Instanceof expression.
+     *
+     * @param exp the expression.
+     * @param name the Java class or interface name.
+     * @param sp2  the position of the last character in the expression.
+     */
+    case class Instanceof(exp: ParsedAst.Expression, name: Name.JavaName, sp2: SourcePosition) extends ParsedAst.Expression
+
+    /**
       * Debug expression.
       *
       * @param sp1  the position of the first character in the expression.

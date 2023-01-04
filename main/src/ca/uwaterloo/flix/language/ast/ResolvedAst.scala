@@ -212,6 +212,8 @@ object ResolvedAst {
 
     case class FixpointProject(pred: Name.Pred, exp1: ResolvedAst.Expression, exp2: ResolvedAst.Expression, loc: SourceLocation) extends ResolvedAst.Expression
 
+    case class Instanceof(exp: ResolvedAst.Expression, className: String, loc: SourceLocation) extends ResolvedAst.Expression
+
   }
 
   sealed trait Pattern {
