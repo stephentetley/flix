@@ -292,6 +292,7 @@ object TypedAst {
 
     case class FixpointProject(pred: Name.Pred, exp: TypedAst.Expression, tpe: Type, pur: Type, eff: Type, loc: SourceLocation) extends TypedAst.Expression
 
+    case class Instanceof(exp: TypedAst.Expression, className: String, tpe: Type, pur: Type, eff: Type, loc: SourceLocation) extends TypedAst.Expression
   }
 
   sealed trait Pattern {

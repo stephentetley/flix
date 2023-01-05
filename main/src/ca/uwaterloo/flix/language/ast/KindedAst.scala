@@ -201,6 +201,8 @@ object KindedAst {
 
     case class FixpointProject(pred: Name.Pred, exp1: KindedAst.Expression, exp2: KindedAst.Expression, tpe: Type.Var, loc: SourceLocation) extends KindedAst.Expression
 
+    case class Instanceof(exp: KindedAst.Expression, className: String, tpe: Type.Var, loc: SourceLocation) extends KindedAst.Expression
+
   }
 
   sealed trait Pattern {
