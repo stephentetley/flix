@@ -114,6 +114,8 @@ object Weeder {
 
     case d: ParsedAst.Declaration.Enum => visitEnum(d)
 
+    case d: ParsedAst.Declaration.RestrictableEnum => visitRestrictableEnum(d)
+
     case d: ParsedAst.Declaration.TypeAlias => visitTypeAlias(d)
 
     case d: ParsedAst.Declaration.Relation => visitRelation(d)
@@ -344,6 +346,12 @@ object Weeder {
           List(WeededAst.Declaration.Enum(doc, ann, mod, ident, tparams, derives.toList, cases.values.toList, mkSL(sp1, sp2)))
       }
   }
+
+  /**
+    * Performs weeding on the given enum declaration `d0`.
+    */
+  private def visitRestrictableEnum(d0: ParsedAst.Declaration.RestrictableEnum)(implicit flix: Flix): Validation[List[WeededAst.Declaration.Enum], WeederError] =
+    ???
 
   /**
     * Performs weeding on the given enum case `c0`.
@@ -1167,6 +1175,8 @@ object Weeder {
       mapN(expsVal, rulesVal) {
         case (es, rs) => WeededAst.Expression.RelationalChoose(star, es, rs, mkSL(sp1, sp2))
       }
+
+    case ParsedAst.Expression.RestrictableChoose(sp1, star, exp, rules, sp2) => ???
 
     case ParsedAst.Expression.Tuple(sp1, elms, sp2) =>
       /*
@@ -2948,6 +2958,7 @@ object Weeder {
     case ParsedAst.Expression.Scope(sp1, _, _, _) => sp1
     case ParsedAst.Expression.Match(sp1, _, _, _) => sp1
     case ParsedAst.Expression.RelationalChoose(sp1, _, _, _, _) => sp1
+    case ParsedAst.Expression.RestrictableChoose(sp1, _, _, _, _) => sp1
     case ParsedAst.Expression.TypeMatch(sp1, _, _, _) => sp1
     case ParsedAst.Expression.Tuple(sp1, _, _) => sp1
     case ParsedAst.Expression.RecordLit(sp1, _, _) => sp1
