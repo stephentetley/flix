@@ -228,6 +228,9 @@ object Eraser {
     case FinalAst.Expression.Force(exp, tpe, loc) =>
       ErasedAst.Expression.Force(visitExp(exp), tpe, loc)
 
+    case FinalAst.Expression.Instanceof(exp, className, tpe, loc) =>
+      ErasedAst.Expression.Instanceof(visitExp(exp), className, tpe, loc)
+
     case FinalAst.Expression.HoleError(sym, tpe, loc) =>
       ErasedAst.Expression.HoleError(sym, tpe, loc)
 

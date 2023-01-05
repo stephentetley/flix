@@ -192,6 +192,7 @@ object SimplifiedAst {
       def purity: Purity = Impure
     }
 
+    case class Instanceof(exp: SimplifiedAst.Expression, className: String, tpe: Type, purity: Purity, loc: SourceLocation) extends SimplifiedAst.Expression
   }
 
   case class Case(sym: Symbol.CaseSym, tpeDeprecated: Type, loc: SourceLocation)

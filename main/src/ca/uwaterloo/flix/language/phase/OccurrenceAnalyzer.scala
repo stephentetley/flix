@@ -423,6 +423,11 @@ object OccurrenceAnalyzer {
 
     case Expression.MatchError(tpe, loc) =>
       (OccurrenceAst.Expression.MatchError(tpe, loc), OccurInfo.One)
+
+    case Expression.Instanceof(exp, className, tpe, purity, loc) =>
+      val (e, o) = visitExp(sym0, exp)
+      (OccurrenceAst.Expression.Instanceof(e, className, tpe, purity, loc), o.increaseSizeByOne())
+
   }
 
   /**

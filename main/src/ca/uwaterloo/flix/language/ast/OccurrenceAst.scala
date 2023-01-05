@@ -180,6 +180,7 @@ object OccurrenceAst {
       def purity: Purity = Impure
     }
 
+    case class Instanceof(exp: OccurrenceAst.Expression, className: String, tpe: Type, purity: Purity, loc: SourceLocation) extends OccurrenceAst.Expression
   }
 
   case class Case(sym: Symbol.CaseSym, tpeDeprecated: Type, loc: SourceLocation)

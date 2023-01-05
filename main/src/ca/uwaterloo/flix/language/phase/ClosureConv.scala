@@ -271,6 +271,10 @@ object ClosureConv {
 
     case Expression.MatchError(_, _) => exp0
 
+    case Expression.Instanceof(exp, className, tpe, purity, loc) =>
+      val e = visitExp(exp)
+      Expression.Instanceof(e, className, tpe, purity, loc)
+
     case Expression.Closure(_, _, loc) => throw InternalCompilerException(s"Unexpected expression: '$exp0'.", loc)
 
     case Expression.LambdaClosure(_, _, _, _, loc) => throw InternalCompilerException(s"Unexpected expression: '$exp0'.", loc)
@@ -431,6 +435,8 @@ object ClosureConv {
     case Expression.HoleError(_, _, _) => SortedSet.empty
 
     case Expression.MatchError(_, _) => SortedSet.empty
+
+    case Expression.Instanceof(exp, _, _, _, _) => freeVars(exp)
 
     case Expression.LambdaClosure(_, _, _, _, loc) => throw InternalCompilerException(s"Unexpected expression: '$exp0'.", loc)
 
@@ -692,6 +698,11 @@ object ClosureConv {
       case Expression.HoleError(_, _, _) => e
 
       case Expression.MatchError(_, _) => e
+
+      case Expression.Instanceof(exp, className, tpe, purity, loc) =>
+        val e = visitExp(exp)
+        Expression.Instanceof(e, className, tpe, purity, loc)
+
     }
 
     visitExp(e0)

@@ -328,6 +328,10 @@ object LambdaLift {
       case SimplifiedAst.Expression.MatchError(tpe, loc) =>
         LiftedAst.Expression.MatchError(tpe, loc)
 
+      case SimplifiedAst.Expression.Instanceof(exp, className, tpe, purity, loc) =>
+        val e = visitExp(exp)
+        LiftedAst.Expression.Instanceof(e, className, tpe, purity, loc)
+
       case SimplifiedAst.Expression.Def(_, _, loc) => throw InternalCompilerException(s"Unexpected expression.", loc)
       case SimplifiedAst.Expression.Lambda(_, _, _, loc) => throw InternalCompilerException(s"Unexpected expression.", loc)
       case SimplifiedAst.Expression.Apply(_, _, _, _, loc) => throw InternalCompilerException(s"Unexpected expression.", loc)

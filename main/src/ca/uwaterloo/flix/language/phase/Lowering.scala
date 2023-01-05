@@ -778,6 +778,11 @@ object Lowering {
       val defExp = LoweredAst.Expression.Def(sym, defTpe, loc)
       val argExps = mkPredSym(pred) :: visitExp(exp) :: Nil
       LoweredAst.Expression.Apply(defExp, argExps, tpe, pur, eff, loc)
+
+    case TypedAst.Expression.Instanceof(exp, className, tpe, pur, eff, loc) =>
+      val e = visitExp(exp)
+      val t = visitType(tpe)
+      LoweredAst.Expression.Instanceof(e, className, t, pur, eff, loc)
   }
 
   /**
@@ -2004,6 +2009,11 @@ object Lowering {
     case LoweredAst.Expression.Force(exp, tpe, pur, eff, loc) =>
       val e = substExp(exp, subst)
       LoweredAst.Expression.Force(e, tpe, pur, eff, loc)
+
+    case LoweredAst.Expression.Instanceof(exp, className, tpe, pur, eff, loc) =>
+      val e = substExp(exp, subst)
+      LoweredAst.Expression.Instanceof(e, className, tpe, pur, eff, loc)
+
   }
 
   /**

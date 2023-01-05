@@ -138,6 +138,8 @@ object ErasedAst {
 
     case class Force(exp: ErasedAst.Expression, tpe: MonoType, loc: SourceLocation) extends ErasedAst.Expression
 
+    case class Instanceof(exp: ErasedAst.Expression, className: String, tpe: MonoType, loc: SourceLocation) extends ErasedAst.Expression
+
     case class HoleError(sym: Symbol.HoleSym, tpe: MonoType, loc: SourceLocation) extends ErasedAst.Expression
 
     case class MatchError(tpe: MonoType, loc: SourceLocation) extends ErasedAst.Expression

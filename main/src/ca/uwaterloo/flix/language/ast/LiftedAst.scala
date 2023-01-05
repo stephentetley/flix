@@ -179,6 +179,7 @@ object LiftedAst {
       def purity: Purity = Impure
     }
 
+    case class Instanceof(exp: LiftedAst.Expression, className: String, tpe: Type, purity: Purity, loc: SourceLocation) extends LiftedAst.Expression
   }
 
   case class Case(sym: Symbol.CaseSym, tpeDeprecated: Type, loc: SourceLocation)
