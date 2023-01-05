@@ -633,6 +633,8 @@ object JvmOps {
 
       case Expression.Force(exp, _, _) => visitExp(exp)
 
+      case Expression.Instanceof(exp, _, _, _) => visitExp(exp)
+
       case Expression.HoleError(_, _, _) => Set.empty
 
       case Expression.MatchError(_, _) => Set.empty
@@ -982,6 +984,8 @@ object JvmOps {
 
       case Expression.Force(exp, _, _) => visitExp(exp)
 
+      case Expression.Instanceof(exp, _, _, _) => visitExp(exp)
+
       case Expression.HoleError(_, _, _) => Set.empty
 
       case Expression.MatchError(_, _) => Set.empty
@@ -1220,6 +1224,8 @@ object JvmOps {
       case Expression.Lazy(exp, _, _) => visitExp(exp)
 
       case Expression.Force(exp, _, _) => visitExp(exp)
+
+      case Expression.Instanceof(exp, _, _, _) => visitExp(exp)
 
       case Expression.HoleError(_, _, _) => Set.empty
 

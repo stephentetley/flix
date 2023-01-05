@@ -301,7 +301,7 @@ object GenExpression {
       // When we exit the scope, call the region's `exit` method
       val iLoad = AsmOps.getLoadInstruction(JvmType.Reference(BackendObjType.Region.jvmName))
       visitor.visitVarInsn(iLoad, sym.getStackOffset + 1)
-      visitor.visitMethodInsn(INVOKEVIRTUAL, BackendObjType.Region.jvmName.toInternalName, BackendObjType.Region.ExitMethod.name, 
+      visitor.visitMethodInsn(INVOKEVIRTUAL, BackendObjType.Region.jvmName.toInternalName, BackendObjType.Region.ExitMethod.name,
         BackendObjType.Region.ExitMethod.d.toDescriptor, false)
 
     case Expression.Is(sym, exp, loc) =>
@@ -869,7 +869,7 @@ object GenExpression {
 
       exp2 match {
         // The expression represents the `Static` region, just start a thread directly
-        case Expression.Region(_, _) => 
+        case Expression.Region(_, _) =>
 
           // Compile the expression, putting a function implementing the Runnable interface on the stack
           compileExpression(exp1, visitor, currentClass, lenv0, entryPoint)
@@ -887,7 +887,7 @@ object GenExpression {
             visitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Thread", "start", AsmOps.getMethodDescriptor(Nil, JvmType.Void), false)
           }
 
-        case _ => 
+        case _ =>
           // Compile the expression representing the region
           compileExpression(exp2, visitor, currentClass, lenv0, entryPoint)
           visitor.visitTypeInsn(CHECKCAST, BackendObjType.Region.jvmName.toInternalName)
@@ -956,6 +956,11 @@ object GenExpression {
       visitor.visitLabel(end)
       // The result of force is a generic object so a cast is needed.
       AsmOps.castIfNotPrim(visitor, JvmOps.getJvmType(tpe))
+
+    /// TODO SPT
+    case Expression.Instanceof(exp, className, _, loc) =>
+      addSourceLine(visitor, loc)
+      AsmOps.compileThrowHoleError(visitor, "TODO", loc)
 
     case Expression.HoleError(sym, _, loc) =>
       addSourceLine(visitor, loc)
