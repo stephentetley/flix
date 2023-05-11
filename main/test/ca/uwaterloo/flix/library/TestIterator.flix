@@ -693,15 +693,13 @@ mod TestIterator {
         Iterator.append(iter1, iter2) |> Iterator.toList == 1 :: 2 :: 3 :: Nil
     }
 
-    // TODO - multiple region tests currently disabled
-    // @test
-    // def append09(): Bool = region r1 {
-    //     let iter1 = List.iterator(r1, 1 :: Nil);
-    //     region r2 {
-    //         let iter2 = List.iterator(r2, 2 :: 3 :: Nil);
-    //         Iterator.append(iter1, iter2) |> Iterator.toList == 1 :: 2 :: 3 :: Nil
-    //     }
-    // }
+    @test
+    def append09(): Bool = region rc {
+        let iter1 = List.iterator(rc, 1 :: Nil);
+        let iter2 = List.iterator(rc, 2 :: 3 :: Nil);
+        Iterator.append(iter1, iter2) |> Iterator.toList == 1 :: 2 :: 3 :: Nil
+    }
+
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -750,15 +748,13 @@ mod TestIterator {
         Iterator.zip(iterA, iterB) |> Iterator.toList == List.zip(List.range(0, 500), List.repeat(500, "b"))
     }
 
-    // TODO - multiple region tests currently disabled
-    // @test
-    // def zip07(): Bool = region r1 {
-    //     let iterA = Iterator.range(r1, 0, 500);
-    //     region r2 {
-    //         let iterB = Iterator.repeat(r2, 1000, "b");
-    //         Iterator.zip(iterA, iterB) |> Iterator.toList == List.zip(List.range(0, 500), List.repeat(500, "b"))
-    //     }
-    // }
+
+    @test
+    def zip07(): Bool = region rc {
+        let iterA = Iterator.range(rc, 0, 500);
+        let iterB = Iterator.repeat(rc, 1000, "b");
+        Iterator.zip(iterA, iterB) |> Iterator.toList == List.zip(List.range(0, 500), List.repeat(500, "b"))
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -808,12 +804,10 @@ mod TestIterator {
     }
 
     @test
-    def zipWith07(): Bool = region r1 {
-        let iterA = List.iterator(r1, 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: Nil);
-        region r2 {
-            let iterB = List.iterator(r2, false :: true :: true :: false :: false :: true :: true :: true :: Nil);
-            Iterator.zipWith((a, b) -> if (b) a + 1 else a, iterA, iterB) |> Iterator.toList == 1 :: 3 :: 4 :: 4 :: 5 :: 7 :: 8 :: 9 :: Nil
-        }
+    def zipWith07(): Bool = region rc {
+        let iterA = List.iterator(rc, 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: Nil);
+        let iterB = List.iterator(rc, false :: true :: true :: false :: false :: true :: true :: true :: Nil);
+        Iterator.zipWith((a, b) -> if (b) a + 1 else a, iterA, iterB) |> Iterator.toList == 1 :: 3 :: 4 :: 4 :: 5 :: 7 :: 8 :: 9 :: Nil
     }
 
 
@@ -1158,15 +1152,13 @@ mod TestIterator {
             Iterator.toList == 2 :: 2 :: 4 :: 4 :: 4 :: 4 :: Nil
     }
 
-    // TODO - multiple region tests currently disabled
-    // @test
-    // def flatMap08(): Bool = region r1 {
-    //     region r2 {
-    //         List.iterator(r1, 1 :: 2 :: 3 :: 4 :: Nil) |>
-    //             Iterator.flatMap(i -> if (i `Int32.rem` 2 == 0) Iterator.repeat(r2, i, i) else Iterator.empty(r2)) |>
-    //             Iterator.toList == 2 :: 2 :: 4 :: 4 :: 4 :: 4 :: Nil
-    //     }
-    // }
+    @test
+    def flatMap08(): Bool = region rc {
+        List.iterator(rc, 1 :: 2 :: 3 :: 4 :: Nil) |>
+            Iterator.flatMap(i -> if (i `Int32.rem` 2 == 0) Iterator.repeat(rc, i, i) else Iterator.empty(rc)) |>
+            Iterator.toList == 2 :: 2 :: 4 :: 4 :: 4 :: 4 :: Nil
+    }
+
 
 
     /////////////////////////////////////////////////////////////////////////////

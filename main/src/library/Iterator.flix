@@ -93,6 +93,9 @@ mod Iterator {
     ///
     /// Consumes the head element of `iter`.
     ///
+    /// NOT WORKING...
+    /// `getLoopBody(iter)` is actually not imperative so `next` has the
+    /// same start condition ever call...
     pub def next(iter: Iterator[a, ef, r]): Option[a] \ { ef, Read(r) } =
         let iterF = getLoopBody(iter);
         def loop() = match iterF() {
