@@ -1286,13 +1286,13 @@ mod String {
     ///
     /// Returns an iterator over `s`.
     ///
-    pub def iterator(rc: Region[r], s: String): Iterator[Char, r, r] \ Write(r) =
+    pub def iterator(rc: Region[r], s: String): Iterator[Char, r, r] =
         Iterator.range(rc, 0, length(s)) |> Iterator.map(i -> charAt(i, s))
 
     ///
     /// Returns an iterator over `l` zipped with the indices of the elements.
     ///
-    pub def enumerator(rc: Region[r], s: String): Iterator[(Int32, Char), r, r] \ Write(r) =
+    pub def enumerator(rc: Region[r], s: String): Iterator[(Int32, Char), r, r] =
         iterator(rc, s) |> Iterator.zipWithIndex
 
 }

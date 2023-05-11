@@ -87,11 +87,12 @@ instance Filterable[RedBlackTree[k]] with Order[k] {
 instance Witherable[RedBlackTree[k]] with Order[k]
 
 instance Iterable[RedBlackTree[k]] {
-    pub def iterator(rc: Region[r], t: RedBlackTree[k, v]): Iterator[v, r, r] \ Write(r) =
-            RedBlackTree.iterator(rc, t) |> Iterator.map(snd)
+    pub def iterator(rc: Region[r], t: RedBlackTree[k, v]): Iterator[v, r, r] =
+        RedBlackTree.iterator(rc, t) |> Iterator.map(snd)
 }
 
 mod RedBlackTree {
+    use Iterator.SimpleIterator.{SimpleIterator}
 
     ///
     /// The color of a red-black tree node.
@@ -963,17 +964,19 @@ mod RedBlackTree {
     ///
     /// Returns an iterator over `t`.
     ///
-    pub def iterator(rc: Region[r], t: RedBlackTree[k, v]): Iterator[(k, v), r, r] \ Write(r) =
-        let stack1 = leftmost(t, Nil);
-        let state = ref stack1 @ rc;
-        let next = () -> match (deref state) {
-            case Nil                 => None
-            case (k, v, rtree) :: es => {
-                state := leftmost(rtree, es);
-                Some((k, v))
-            }
-        };
-        Iterator.iterate(rc, next)
+    pub def iterator(rc: Region[r], t: RedBlackTree[k, v]): Iterator[(k, v), r, r] =
+        SimpleIterator(rc, _ -> {
+            let stack1 = leftmost(t, Nil);
+            let state = ref stack1 @ rc;
+            let loop = () -> match (deref state) {
+                case Nil                 => None
+                case (k, v, rtree) :: es => {
+                    state := leftmost(rtree, es);
+                    Some((k, v))
+                }
+            };
+            loop
+        }) |> Iterator.fromSimple
 
     ///
     /// This represents pending items `(key, value, right-tree)` encountered while finding the

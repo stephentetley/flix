@@ -136,10 +136,11 @@ instance ToString[Nec[a]] with ToString[a] {
 }
 
 instance Iterable[Nec] {
-    pub def iterator(r: Region[r], l: Nec[a]): Iterator[a, r, r] \ Write(r) = Nec.iterator(r, l)
+    pub def iterator(r: Region[r], l: Nec[a]): Iterator[a, r, r] = Nec.iterator(r, l)
 }
 
 mod Nec {
+    use Iterator.SimpleIterator.{SimpleIterator}
     use ViewLeft.{OneLeft, SomeLeft}
     use ViewRight.{OneRight, SomeRight}
 
@@ -791,31 +792,33 @@ mod Nec {
     ///
     /// Returns an iterator over `c`.
     ///
-    pub def iterator(rc: Region[r], c: Nec[a]): Iterator[a, r, r] \ Write(r) =
+    pub def iterator(rc: Region[r], c: Nec[a]): Iterator[a, r, r] =
         iteratorHelper(rc, Some(viewLeft(c)))
 
     ///
     /// Returns an iterator over `l`.
     ///
-    def iteratorHelper(rc: Region[r], vl: Option[ViewLeft[a]]): Iterator[a, r, r] \ Write(r) =
-        let cursor = ref vl @ rc;
-        let next = () -> match (deref cursor) {
-            case None             => None
-            case Some(OneLeft(x)) => {
-                cursor := None;
-                Some(x)
-            }
-            case Some(SomeLeft(x, xs)) => {
-                cursor := Some(viewLeft(xs));
-                Some(x)
-            }
-        };
-        Iterator.iterate(rc, next)
+    def iteratorHelper(rc: Region[r], vl: Option[ViewLeft[a]]): Iterator[a, r, r] =
+        SimpleIterator(rc, _ -> {
+            let cursor = ref vl @ rc;
+            let next = () -> match (deref cursor) {
+                case None             => None
+                case Some(OneLeft(x)) => {
+                    cursor := None;
+                    Some(x)
+                }
+                case Some(SomeLeft(x, xs)) => {
+                    cursor := Some(viewLeft(xs));
+                    Some(x)
+                }
+            };
+            next
+        }) |> Iterator.fromSimple
 
     ///
     /// Returns an iterator over `c` zipped with the indices of the elements.
     ///
-    pub def enumerator(rc: Region[r], c: Nec[a]): Iterator[(Int32, a), r, r] \ Write(r) =
+    pub def enumerator(rc: Region[r], c: Nec[a]): Iterator[(Int32, a), r, r] =
         iterator(rc, c) |> Iterator.zipWithIndex
 
     ///

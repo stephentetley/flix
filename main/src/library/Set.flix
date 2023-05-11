@@ -92,7 +92,7 @@ instance Collectable[Set] {
 }
 
 instance Iterable[Set] {
-    pub def iterator(rc: Region[r], s: Set[a]): Iterator[a, r, r] \ Write(r) = Set.iterator(rc, s)
+    pub def iterator(rc: Region[r], s: Set[a]): Iterator[a, r, r] = Set.iterator(rc, s)
 }
 
 mod Set {
@@ -588,14 +588,14 @@ mod Set {
     ///
     /// Returns an iterator over `s`.
     ///
-    pub def iterator(rc: Region[r], s: Set[a]): Iterator[a, r, r] \ Write(r) =
+    pub def iterator(rc: Region[r], s: Set[a]): Iterator[a, r, r] =
         let Set(t) = s;
         RedBlackTree.iterator(rc, t) |> Iterator.map(fst)
 
     ///
     /// Returns an iterator over `s` zipped with the indices of the elements.
     ///
-    pub def enumerator(r: Region[r], s: Set[a]): Iterator[(Int32, a), r, r] \ Write(r) =
+    pub def enumerator(r: Region[r], s: Set[a]): Iterator[(Int32, a), r, r] =
         iterator(r, s) |> Iterator.zipWithIndex
 
     ///

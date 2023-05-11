@@ -111,7 +111,7 @@ instance SemiGroup[Nel[a]] {
 }
 
 instance Iterable[Nel] {
-    pub def iterator(rc: Region[r], l: Nel[a]): Iterator[a, r, r] \ Write(r) = Nel.iterator(rc, l)
+    pub def iterator(rc: Region[r], l: Nel[a]): Iterator[a, r, r] = Nel.iterator(rc, l)
 }
 
 mod Nel {
@@ -614,14 +614,14 @@ mod Nel {
     ///
     /// Returns an iterator over `l`.
     ///
-    pub def iterator(rc: Region[r], l: Nel[a]): Iterator[a, r, r] \ Write(r) =
+    pub def iterator(rc: Region[r], l: Nel[a]): Iterator[a, r, r] =
        let Nel(x, xs) = l;
        List.iterator(rc, x :: xs)
 
     ///
     /// Returns an iterator over `l` zipped with the indices of the elements.
     ///
-    pub def enumerator(r: Region[r], l: Nel[a]): Iterator[(Int32, a), r, r] \ Write(r) =
+    pub def enumerator(r: Region[r], l: Nel[a]): Iterator[(Int32, a), r, r] =
         iterator(r, l) |> Iterator.zipWithIndex
 
     ///

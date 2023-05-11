@@ -115,12 +115,13 @@ instance Collectable[Chain] {
 }
 
 instance Iterable[Chain] {
-    pub def iterator(rc: Region[r], c: Chain[a]): Iterator[a, r, r] \ Write(r) = Chain.iterator(rc, c)
+    pub def iterator(rc: Region[r], c: Chain[a]): Iterator[a, r, r] = Chain.iterator(rc, c)
 }
 
 mod Chain {
     use ViewLeft.{NoneLeft, SomeLeft}
     use ViewRight.{NoneRight, SomeRight}
+    use Iterator.SimpleIterator.{SimpleIterator}
 
     ///
     /// A datatype for pattern matching on a chain (traversing left-to-right).
@@ -788,21 +789,23 @@ mod Chain {
     ///
     /// Returns an iterator over `c`.
     ///
-    pub def iterator(rc: Region[r], c: Chain[a]): Iterator[a, r, r] \ Write(r) =
-        let cursor = ref viewLeft(c) @ rc;
-        let next = () -> match (deref cursor) {
-            case ViewLeft.NoneLeft        => None
-            case ViewLeft.SomeLeft(x, xs) => {
-                cursor := viewLeft(xs);
-                Some(x)
-            }
-        };
-        Iterator.iterate(rc, next)
+    pub def iterator(rc: Region[r], c: Chain[a]): Iterator[a, r, r] =
+        SimpleIterator(rc, _ -> {
+            let cursor = ref viewLeft(c) @ rc;
+            let next = () -> match (deref cursor) {
+                case ViewLeft.NoneLeft        => None
+                case ViewLeft.SomeLeft(x, xs) => {
+                    cursor := viewLeft(xs);
+                    Some(x)
+                }
+            };
+            next
+        }) |> Iterator.fromSimple
 
     ///
     /// Returns an iterator over `c` zipped with the indices of the elements.
     ///
-    pub def enumerator(rc: Region[r], c: Chain[a]): Iterator[(Int32, a), r, r] \ Write(r) =
+    pub def enumerator(rc: Region[r], c: Chain[a]): Iterator[(Int32, a), r, r] =
         iterator(rc, c) |> Iterator.zipWithIndex
 
     ///

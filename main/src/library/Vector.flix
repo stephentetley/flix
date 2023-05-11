@@ -98,7 +98,7 @@ instance Collectable[Vector] {
 }
 
 instance Iterable[Vector] {
-    pub def iterator(rc: Region[r], v: Vector[a]): Iterator[a, r, r] \ Write(r) = Vector.iterator(rc, v)
+    pub def iterator(rc: Region[r], v: Vector[a]): Iterator[a, r, r] = Vector.iterator(rc, v)
 }
 
 mod Vector {
@@ -1363,7 +1363,7 @@ mod Vector {
     ///
     /// Returns an iterator over `v`
     ///
-    pub def iterator(rc: Region[r], v: Vector[a]): Iterator[a, r, r] \ { Write(r) } =
+    pub def iterator(rc: Region[r], v: Vector[a]): Iterator[a, r, r] =
         Iterator.range(rc, 0, length(v)) |> Iterator.map(i -> get(i, v))
 
     ///
@@ -1371,7 +1371,7 @@ mod Vector {
     ///
     /// Modifying `a` while using an iterator has undefined behavior and is dangerous.
     ///
-    pub def enumerator(rc: Region[r], v: Vector[a]): Iterator[(Int32, a), r, r] \ { Write(r) } =
+    pub def enumerator(rc: Region[r], v: Vector[a]): Iterator[(Int32, a), r, r] =
         iterator(rc, v) |> Iterator.zipWithIndex
 
 

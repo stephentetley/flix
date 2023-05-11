@@ -44,7 +44,7 @@ instance Foldable[DelayMap[k]] {
 }
 
 instance Iterable[DelayMap[k]] {
-    pub def iterator(rc: Region[r], m: DelayMap[k, v]): Iterator[v, r, r] \ Write(r) =
+    pub def iterator(rc: Region[r], m: DelayMap[k, v]): Iterator[v, r, r] =
         DelayMap.iterator(rc, m) |> Iterator.map(snd)
 }
 
@@ -791,7 +791,7 @@ mod DelayMap {
     /// Returns an iterator over all key-value pairs in `m`.
     ///
     @Experimental
-    pub def iterator(rc: Region[r], m: DelayMap[a, b]): Iterator[(a, b), r, r] \ Write(r) =
+    pub def iterator(rc: Region[r], m: DelayMap[a, b]): Iterator[(a, b), r, r] =
         let DMap(t) = m;
         RedBlackTree.iterator(rc, t) |> Iterator.map(match (k, v) -> (k, force v))
 

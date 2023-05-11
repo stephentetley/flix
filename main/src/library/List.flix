@@ -121,10 +121,11 @@ instance Collectable[List] {
 }
 
 instance Iterable[List] {
-    pub def iterator(rc: Region[r], l: List[a]): Iterator[a, r, r] \ Write(r) = List.iterator(rc, l)
+    pub def iterator(rc: Region[r], l: List[a]): Iterator[a, r, r] = List.iterator(rc, l)
 }
 
 mod List {
+    use Iterator.SimpleIterator.{SimpleIterator}
 
     ///
     /// Renders the list `l` to a String.
@@ -1306,20 +1307,22 @@ mod List {
     ///
     /// Returns an iterator over `l`.
     ///
-    pub def iterator(rc: Region[r], xs: List[a]): Iterator[a, r, r] \ Write(r) =
-        let ls = ref xs @ rc;
-        let next = () -> {
-            match (deref ls) {
-                case Nil     => None
-                case x :: rs => ls := rs; Some(x)
-            }
-        };
-        Iterator.iterate(rc, next)
+    pub def iterator(rc: Region[r], xs: List[a]): Iterator[a, r, r] =
+        SimpleIterator(rc, _ -> {
+            let ls = ref xs @ rc;
+            let next = () -> {
+                match (deref ls) {
+                    case Nil     => None
+                    case x :: rs => ls := rs; Some(x)
+                }
+            };
+            next
+        }) |> Iterator.fromSimple
 
     ///
     /// Returns an iterator over `l` zipped with the indices of the elements.
     ///
-    pub def enumerator(r: Region[r], l: List[a]): Iterator[(Int32, a), r, r] \ Write(r) =
+    pub def enumerator(r: Region[r], l: List[a]): Iterator[(Int32, a), r, r] =
         iterator(r, l) |> Iterator.zipWithIndex
 
     ///

@@ -120,10 +120,11 @@ instance Monoid[DelayList[a]] {
 }
 
 instance Iterable[DelayList] {
-    pub def iterator(rc: Region[r], l: DelayList[a]): Iterator[a, r, r] \ Write(r) = DelayList.iterator(rc, l)
+    pub def iterator(rc: Region[r], l: DelayList[a]): Iterator[a, r, r] = DelayList.iterator(rc, l)
 }
 
 mod DelayList {
+    use Iterator.SimpleIterator.{SimpleIterator}
 
     ///
     /// Returns a string representation of `l`.
@@ -1197,21 +1198,23 @@ mod DelayList {
     /// Does not force any elements of the list.
     ///
     @Experimental @Lazy
-    pub def iterator(rc: Region[r], l: DelayList[a]): Iterator[a, r, r] \ Write(r) =
-        let cursor = ref l @ rc;
-        let next = () -> match head(deref cursor) {
-            case None    => None
-            case Some(x) => {
-                cursor := tail(deref cursor);
-                Some(x)
-            }
-        };
-        Iterator.iterate(rc, next)
+    pub def iterator(rc: Region[r], l: DelayList[a]): Iterator[a, r, r] =
+        SimpleIterator(rc, _ -> {
+            let cursor = ref l @ rc;
+            let next = () -> match head(deref cursor) {
+                case None    => None
+                case Some(x) => {
+                    cursor := tail(deref cursor);
+                    Some(x)
+                }
+            };
+            next
+        }) |> Iterator.fromSimple
 
     ///
     /// Returns an iterator over `l` zipped with the indices of the elements.
     ///
-    pub def enumerator(r: Region[r], l: DelayList[a]): Iterator[(Int32, a), r, r] \ Write(r) =
+    pub def enumerator(r: Region[r], l: DelayList[a]): Iterator[(Int32, a), r, r] =
         iterator(r, l) |> Iterator.zipWithIndex
 
     ///
