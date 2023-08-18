@@ -2715,7 +2715,7 @@ object Weeder {
         case (ts, tr, eff) => mkCurriedArrow(ts, eff, tr, loc)
       }
 
-    case ParsedAst.Type.Native(sp1, fqn, sp2) =>
+    case ParsedAst.Type.Native(sp1, fqn, _, sp2) =>
       WeededAst.Type.Native(fqn.toString, mkSL(sp1, sp2)).toSuccess
 
     case ParsedAst.Type.Apply(tpe1, args0, sp2) =>
@@ -3436,7 +3436,7 @@ object Weeder {
     case ParsedAst.Type.SchemaRow(sp1, _, _, _) => sp1
     case ParsedAst.Type.UnaryPolymorphicArrow(tpe1, _, _, _) => leftMostSourcePosition(tpe1)
     case ParsedAst.Type.PolymorphicArrow(sp1, _, _, _, _) => sp1
-    case ParsedAst.Type.Native(sp1, _, _) => sp1
+    case ParsedAst.Type.Native(sp1, _, _, _) => sp1
     case ParsedAst.Type.Apply(tpe1, _, _) => leftMostSourcePosition(tpe1)
     case ParsedAst.Type.True(sp1, _) => sp1
     case ParsedAst.Type.False(sp1, _) => sp1

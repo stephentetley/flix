@@ -1495,9 +1495,10 @@ object ParsedAst {
       *
       * @param sp1 the position of the first character in the type.
       * @param fqn the fully qualified Java name.
+      * @param tparams the type parameters, if the type is generic.
       * @param sp2 the position of the last character in the type.
       */
-    case class Native(sp1: SourcePosition, fqn: Name.JavaName, sp2: SourcePosition) extends ParsedAst.Type
+    case class Native(sp1: SourcePosition, fqn: Name.JavaName, tparams: Option[Seq[ParsedAst.Type]], sp2: SourcePosition) extends ParsedAst.Type
 
     /**
       * Type Application.

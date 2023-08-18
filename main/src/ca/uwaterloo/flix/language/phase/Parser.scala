@@ -1569,7 +1569,7 @@ class Parser(val source: Source) extends org.parboiled2.Parser {
     }
 
     def Native: Rule1[ParsedAst.Type] = rule {
-      SP ~ atomic("##") ~ Names.JavaName ~ SP ~> ParsedAst.Type.Native
+      SP ~ atomic("##") ~ Names.JavaName ~ optional(TypeArguments) ~ SP ~> ParsedAst.Type.Native
     }
 
     def True: Rule1[ParsedAst.Type] = rule {
