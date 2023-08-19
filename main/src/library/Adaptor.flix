@@ -133,6 +133,18 @@ mod Adaptor {
         llist
 
     ///
+    /// Returns the elements of the given foldable `ma` as a new Java `LinkedList`.
+    ///
+    /// Creates a fresh `LinkedList` and copies all elements in `ma` into it.
+    ///
+    pub def toLinkedListWith(fn: a -> ##java.lang.Object \ ef, ma: m[a]): ##java.util.LinkedList \ {ef, IO} with Foldable[m] =
+        import new java.util.LinkedList(): ##java.util.LinkedList \ IO as newLinkedList;
+        import java.util.LinkedList.add(##java.lang.Object): Bool \ IO;
+        let llist = newLinkedList();
+        Foldable.forEach(x -> discard add(llist, fn(x)), ma);
+        llist
+
+    ///
     /// Alias for `toTreeSet`.
     ///
     pub def toSet(ma: m[a]): ##java.util.Set \ IO with Order[a], Foldable[m] = checked_cast(toTreeSet(ma))

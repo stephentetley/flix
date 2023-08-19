@@ -17,7 +17,7 @@
 /// Just a dummy module that uses generic Java types...
 
 mod Generics1 {
-
+/*
     /// Java: static <E> List<E> of(E e1)
 
     pub def listOf(e: t): ##java.util.List[ToJava.O[t]] \ IO with ToJava[t] =
@@ -32,9 +32,9 @@ mod Generics1 {
 
     pub def newLinkedList(t: t[a]): ##java.util.List[a] \ IO with Foldable[t], ToJava[a] =
         import new java.util.LinkedList(##java.util.Collection[a]): ##java.util.List[a] \ IO as new1 with ToJava[a];
-        let l = unchecked_cast(t as ##java.util.List[ToJava.O[t]]);
+        let l = Adaptor.toLinkedListWith(a -> unchecked_cast(ToJava.toJava(a) as ##java.lang.Object), t);
         let col = unchecked_cast(l as ##java.util.Collection[ToJava.O[t]]);
         new1(col)
 
-
+*/
 }
