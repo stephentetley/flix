@@ -115,6 +115,7 @@ object ParsedAst {
       * @param ident   the name of the law.
       * @param tparams the type parameters.
       * @param fparams the value parameters.
+      * @param tconstrs   the type constraints.
       * @param exp     the expression.
       * @param sp2     the position of the last character in the declaration.
       */
@@ -2002,75 +2003,82 @@ object ParsedAst {
     /**
       * Constructor Invocation.
       *
-      * @param fqn   the fully-qualified name of the constructor.
-      * @param sig   the types of the formal parameters.
-      * @param tpe   the return type of the constructor.
-      * @param eff   the effect of the constructor.
-      * @param ident the name given to the imported constructor.
+      * @param fqn      the fully-qualified name of the constructor.
+      * @param sig      the types of the formal parameters.
+      * @param tpe      the return type of the constructor.
+      * @param eff      the effect of the constructor.
+      * @param ident    the name given to the imported constructor.
+      * @param tconstrs the type constraints.
       */
-    case class Constructor(fqn: Name.JavaName, sig: Seq[ParsedAst.Type], tpe: Type, eff: Option[ParsedAst.Type], ident: Name.Ident) extends JvmOp
+    case class Constructor(fqn: Name.JavaName, sig: Seq[ParsedAst.Type], tpe: Type, eff: Option[ParsedAst.Type], ident: Name.Ident, tconstrs: Seq[ParsedAst.TypeConstraint]) extends JvmOp
 
     /**
       * Method Invocation.
       *
-      * @param fqn   the fully-qualified name of the method.
-      * @param sig   the types of the formal parameters.
-      * @param tpe   the return type of the imported method.
-      * @param eff   the effect of the imported method.
-      * @param ident the optional name given to the imported method.
+      * @param fqn      the fully-qualified name of the method.
+      * @param sig      the types of the formal parameters.
+      * @param tpe      the return type of the imported method.
+      * @param eff      the effect of the imported method.
+      * @param ident    the optional name given to the imported method.
+      * @param tconstrs the type constraints.
       */
-    case class Method(fqn: Name.JavaName, sig: Seq[ParsedAst.Type], tpe: Type, eff: Option[ParsedAst.Type], ident: Option[Name.Ident]) extends JvmOp
+    case class Method(fqn: Name.JavaName, sig: Seq[ParsedAst.Type], tpe: Type, eff: Option[ParsedAst.Type], ident: Option[Name.Ident], tconstrs: Seq[ParsedAst.TypeConstraint]) extends JvmOp
 
     /**
       * Static Method Invocation.
       *
-      * @param fqn   the fully-qualified name of the static method.
-      * @param sig   the declared types of the formal parameters.
-      * @param tpe   the return type of the imported method.
-      * @param eff   the effect of the imported method.
-      * @param ident the optional name given to the imported method.
-      */
-    case class StaticMethod(fqn: Name.JavaName, sig: Seq[ParsedAst.Type], tpe: Type, eff: Option[ParsedAst.Type], ident: Option[Name.Ident]) extends JvmOp
+      * @param fqn      the fully-qualified name of the static method.
+      * @param sig      the declared types of the formal parameters.
+      * @param tpe      the return type of the imported method.
+      * @param eff      the effect of the imported method.
+      * @param ident    the optional name given to the imported method.
+      * @param tconstrs the type constraints.
+     */
+    case class StaticMethod(fqn: Name.JavaName, sig: Seq[ParsedAst.Type], tpe: Type, eff: Option[ParsedAst.Type], ident: Option[Name.Ident], tconstrs: Seq[ParsedAst.TypeConstraint]) extends JvmOp
 
     /**
       * Get Object Field.
       *
-      * @param fqn   the fully-qualified name of the field.
-      * @param tpe   the return type of the generated function.
-      * @param eff   the effect of the generated function.
-      * @param ident the name given to the imported field.
+      * @param fqn      the fully-qualified name of the field.
+      * @param tpe      the return type of the generated function.
+      * @param eff      the effect of the generated function.
+      * @param ident    the name given to the imported field.
+      * @param tconstrs the type constraints.
       */
-    case class GetField(fqn: Name.JavaName, tpe: Type, eff: Option[ParsedAst.Type], ident: Name.Ident) extends JvmOp
+    case class GetField(fqn: Name.JavaName, tpe: Type, eff: Option[ParsedAst.Type], ident: Name.Ident, tconstrs: Seq[ParsedAst.TypeConstraint]) extends JvmOp
 
     /**
       * Put ObjectField.
       *
-      * @param fqn   the fully-qualified name of the field.
-      * @param tpe   the return type of the generated function.
-      * @param eff   the effect of the generated function.
-      * @param ident the name given to the imported field.
+      * @param fqn      the fully-qualified name of the field.
+      * @param tpe      the return type of the generated function.
+      * @param eff      the effect of the generated function.
+      * @param ident    the name given to the imported field.
+      * @param tconstrs the type constraints.
       */
-    case class PutField(fqn: Name.JavaName, tpe: Type, eff: Option[ParsedAst.Type], ident: Name.Ident) extends JvmOp
+    case class PutField(fqn: Name.JavaName, tpe: Type, eff: Option[ParsedAst.Type], ident: Name.Ident, tconstrs: Seq[ParsedAst.TypeConstraint]) extends JvmOp
 
     /**
       * Get Static Field.
       *
-      * @param fqn   the fully-qualified name of the field.
-      * @param tpe   the return type of the generated function.
-      * @param eff   the effect of the generated function.
-      * @param ident the name given to the imported field.
+      * @param fqn      the fully-qualified name of the field.
+      * @param tpe      the return type of the generated function.
+      * @param eff      the effect of the generated function.
+      * @param ident    the name given to the imported field.
+      * @param tconstrs the type constraints.
       */
-    case class GetStaticField(fqn: Name.JavaName, tpe: Type, eff: Option[ParsedAst.Type], ident: Name.Ident) extends JvmOp
+    case class GetStaticField(fqn: Name.JavaName, tpe: Type, eff: Option[ParsedAst.Type], ident: Name.Ident, tconstrs: Seq[ParsedAst.TypeConstraint]) extends JvmOp
 
     /**
       * Put Static Field.
       *
-      * @param fqn   the fully-qualified name of the field.
-      * @param tpe   the return type of the generated function.
-      * @param eff   the effect of the generated function.
-      * @param ident the name given to the imported field.
+      * @param fqn      the fully-qualified name of the field.
+      * @param tpe      the return type of the generated function.
+      * @param eff      the effect of the generated function.
+      * @param ident    the name given to the imported field.
+      * @param tconstrs the type constraints.
       */
-    case class PutStaticField(fqn: Name.JavaName, tpe: Type, eff: Option[ParsedAst.Type], ident: Name.Ident) extends JvmOp
+    case class PutStaticField(fqn: Name.JavaName, tpe: Type, eff: Option[ParsedAst.Type], ident: Name.Ident, tconstrs: Seq[ParsedAst.TypeConstraint]) extends JvmOp
 
   }
 

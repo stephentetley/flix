@@ -18,9 +18,23 @@
 
 mod Generics1 {
 
-    pub def listOf(e: a): ##java.util.List[a] \ IO =
-        import static java.util.List.of(##java.lang.Object): ##java.util.List[a] \ IO;
-        let obj = unchecked_cast(e as ##java.lang.Object);
-        of(obj)
+    /// Java: static <E> List<E> of(E e1)
+
+    pub def listOf(e: t): ##java.util.List[ToJava.O[t]] \ IO with ToJava[t] =
+        import static java.util.List.of(ToJava.O[t]): ##java.util.List[ToJava.O[t]] \ IO with ToJava[t];
+        let e1 = ToJava.toJava(e);
+        of(e1)
+
+
+    pub def listOfString(s: String): ##java.util.List[String] \ IO =
+        import static java.util.List.of(String): ##java.util.List[String] \ IO;
+        of(s)
+
+    pub def newLinkedList(t: t[a]): ##java.util.List[a] \ IO with Foldable[t], ToJava[a] =
+        import new java.util.LinkedList(##java.util.Collection[a]): ##java.util.List[a] \ IO as new1 with ToJava[a];
+        let l = unchecked_cast(t as ##java.util.List[ToJava.O[t]]);
+        let col = unchecked_cast(l as ##java.util.Collection[ToJava.O[t]]);
+        new1(col)
+
 
 }

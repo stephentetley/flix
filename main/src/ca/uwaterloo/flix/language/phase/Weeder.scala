@@ -1168,7 +1168,7 @@ object Weeder {
       // Visit the inner expression exp2.
       //
       impl match {
-        case ParsedAst.JvmOp.Constructor(fqn, sig0, tpe0, eff0, ident) =>
+        case ParsedAst.JvmOp.Constructor(fqn, sig0, tpe0, eff0, ident, _) =>
 
           val tsVal = traverse(sig0)(visitType)
           val e2Val = visitExp(exp2, senv)
@@ -1216,7 +1216,7 @@ object Weeder {
               }
           }
 
-        case ParsedAst.JvmOp.Method(fqn, sig0, tpe0, eff0, identOpt) =>
+        case ParsedAst.JvmOp.Method(fqn, sig0, tpe0, eff0, identOpt, _) =>
 
           val classMethodVal = parseClassAndMember(fqn)
           val tsVal = traverse(sig0)(visitType)
@@ -1260,7 +1260,7 @@ object Weeder {
               WeededAst.Expr.Let(ident, Ast.Modifiers.Empty, e1, e2, loc)
           }
 
-        case ParsedAst.JvmOp.StaticMethod(fqn, sig0, tpe0, eff0, identOpt) =>
+        case ParsedAst.JvmOp.StaticMethod(fqn, sig0, tpe0, eff0, identOpt, _) =>
 
           val classMethodVal = parseClassAndMember(fqn)
           val tsVal = traverse(sig0)(visitType)
@@ -1309,7 +1309,7 @@ object Weeder {
               WeededAst.Expr.Let(ident, Ast.Modifiers.Empty, e1, e2, loc)
           }
 
-        case ParsedAst.JvmOp.GetField(fqn, tpe0, eff0, ident) =>
+        case ParsedAst.JvmOp.GetField(fqn, tpe0, eff0, ident, _) =>
 
           val classMethodVal = parseClassAndMember(fqn)
           val tpeVal = visitType(tpe0)
@@ -1331,7 +1331,7 @@ object Weeder {
               WeededAst.Expr.Let(ident, Ast.Modifiers.Empty, e1, e2, loc)
           }
 
-        case ParsedAst.JvmOp.PutField(fqn, tpe0, eff0, ident) =>
+        case ParsedAst.JvmOp.PutField(fqn, tpe0, eff0, ident, _) =>
 
           val classMethodVal = parseClassAndMember(fqn)
           val tpeVal = visitType(tpe0)
@@ -1356,7 +1356,7 @@ object Weeder {
               WeededAst.Expr.Let(ident, Ast.Modifiers.Empty, e1, e2, loc)
           }
 
-        case ParsedAst.JvmOp.GetStaticField(fqn, tpe0, eff0, ident) =>
+        case ParsedAst.JvmOp.GetStaticField(fqn, tpe0, eff0, ident, _) =>
 
           val classMethodVal = parseClassAndMember(fqn)
           val tpeVal = visitType(tpe0)
@@ -1377,7 +1377,7 @@ object Weeder {
               WeededAst.Expr.Let(ident, Ast.Modifiers.Empty, e1, e2, loc)
           }
 
-        case ParsedAst.JvmOp.PutStaticField(fqn, tpe0, eff0, ident) =>
+        case ParsedAst.JvmOp.PutStaticField(fqn, tpe0, eff0, ident, _) =>
 
           val classMethodVal = parseClassAndMember(fqn)
           val tpeVal = visitType(tpe0)
